@@ -460,11 +460,11 @@
   /* Inventory Grid */
   .inventory-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 0;
   }
   @media (max-width: 600px) {
-    .inventory-grid { grid-template-columns: repeat(2, 1fr); }
+    .inventory-grid { grid-template-columns: repeat(3, 1fr); }
   }
   .inv-cell {
     padding: 16px;
@@ -737,11 +737,7 @@
           <div class="inv-value" id="qtyCommitted">—</div>
           <div class="inv-desc">في أوردرات لم تُشحن</div>
         </div>
-        <div class="inv-cell inv-unavailable">
-          <div class="inv-label">Unavailable</div>
-          <div class="inv-value" id="qtyUnavailable">—</div>
-          <div class="inv-desc">محجوز / تالف</div>
-        </div>
+
       </div>
     </div>
 
@@ -1026,7 +1022,6 @@ function renderProductCard(variant) {
   document.getElementById('qtyOnHand').textContent = get('on_hand');
   document.getElementById('qtyAvailable').textContent = get('available');
   document.getElementById('qtyCommitted').textContent = get('committed');
-  document.getElementById('qtyUnavailable').textContent = get('unavailable');
 
   document.getElementById('results').classList.add('visible');
   document.getElementById('ordersCard').style.display = 'none';
