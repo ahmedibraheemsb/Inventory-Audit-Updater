@@ -22,8 +22,6 @@
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:var(--text-primary);min-height:100vh;padding:20px 24px;font-size:14px;line-height:1.5;}
 .container{max-width:1100px;margin:0 auto;}
-
-/* App Header */
 .app-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
 .app-title{display:flex;align-items:center;gap:10px;}
 .app-title h1{font-size:17px;font-weight:700;}
@@ -31,8 +29,6 @@ body{font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:va
 .settings-btn{display:flex;align-items:center;gap:5px;padding:7px 13px;background:var(--surface);border:1px solid var(--border-strong);border-radius:var(--radius-sm);font-family:inherit;font-size:12px;font-weight:500;color:var(--text-secondary);cursor:pointer;transition:all .15s;}
 .settings-btn:hover{border-color:var(--accent);color:var(--accent);}
 .settings-btn.configured{border-color:var(--green);color:var(--green);background:var(--green-light);}
-
-/* Search Card */
 .search-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px;margin-bottom:14px;box-shadow:var(--shadow);}
 .search-tabs{display:flex;gap:6px;margin-bottom:14px;background:var(--bg);border-radius:var(--radius-sm);padding:3px;}
 .tab-btn{flex:1;padding:8px 10px;border:none;background:transparent;border-radius:6px;font-family:inherit;font-size:12px;font-weight:500;color:var(--text-secondary);cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:5px;}
@@ -60,12 +56,8 @@ body{font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:va
 #barcodeInput{flex:1;border:none;outline:none;padding:10px 14px;font-family:'IBM Plex Mono',monospace;font-size:14px;color:var(--text-primary);background:transparent;direction:rtl;text-align:right;}
 #barcodeInput::placeholder{font-family:'IBM Plex Sans Arabic',sans-serif;color:var(--text-muted);}
 .barcode-icon{padding:0 14px;color:var(--text-muted);font-size:20px;}
-
-/* Results */
 #results{display:none;}
 #results.visible{display:block;}
-
-/* Product Topbar */
 .product-topbar{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:11px 18px;margin-bottom:10px;box-shadow:var(--shadow);display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
 .product-name{flex:1;font-size:14px;font-weight:700;color:var(--text-primary);min-width:200px;}
 .sku-link{display:inline-flex;align-items:center;gap:4px;text-decoration:none;}
@@ -81,8 +73,6 @@ body{font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:va
 .option-pill-other{background:var(--bg);color:var(--text-secondary);border-color:var(--border);}
 .refresh-btn{display:none;align-items:center;gap:5px;padding:5px 11px;background:var(--bg);border:1px solid var(--border-strong);border-radius:var(--radius-sm);font-family:inherit;font-size:11px;font-weight:600;color:var(--text-secondary);cursor:pointer;transition:all .15s;}
 .refresh-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-light);}
-
-/* Stats Row */
 .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;text-align:center;box-shadow:var(--shadow);}
 .stat-label{font-size:10px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;}
 .stat-value{font-size:28px;font-weight:700;line-height:1.1;margin:4px 0;font-variant-numeric:tabular-nums;}
@@ -92,37 +82,48 @@ body{font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:va
 .val-onhand{color:var(--text-primary);}
 .val-shelf{color:#92400e;font-size:40px !important;}
 
-/* ─── Adjust Card ─────────────────────────────────── */
-.adjust-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px;margin-bottom:10px;box-shadow:var(--shadow);}
-.adjust-card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
-.adjust-card-title{font-size:13px;font-weight:700;color:var(--text-primary);display:flex;align-items:center;gap:6px;}
-.adjust-body{display:flex;align-items:flex-end;gap:10px;flex-wrap:wrap;}
+/* ─── Audit Card ─────────────────────────────────────────────────── */
+.audit-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px;margin-bottom:10px;box-shadow:var(--shadow);}
+/* Phase 1 */
+.audit-phase1{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
+.audit-q-left{display:flex;flex-direction:column;gap:3px;}
+.audit-q-text{font-size:14px;font-weight:700;color:var(--text-primary);display:flex;align-items:center;gap:7px;}
+.audit-q-sub{font-size:12px;color:var(--text-muted);}
+.audit-q-btns{display:flex;gap:8px;flex-shrink:0;}
+.btn-audit-ok{display:flex;align-items:center;gap:6px;padding:10px 22px;background:var(--green-light);color:var(--green);border:1.5px solid var(--green-border);border-radius:var(--radius-sm);font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;transition:all .15s;white-space:nowrap;}
+.btn-audit-ok:hover{background:var(--green);color:#fff;border-color:var(--green);}
+.btn-audit-ok:disabled{opacity:.5;cursor:not-allowed;}
+.btn-want-adjust{display:flex;align-items:center;gap:6px;padding:10px 22px;background:var(--surface-2);color:var(--text-secondary);border:1.5px solid var(--border-strong);border-radius:var(--radius-sm);font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;transition:all .15s;white-space:nowrap;}
+.btn-want-adjust:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-light);}
+/* Phase 2 */
+.adjust-panel{display:none;border-top:1px solid var(--border);margin-top:16px;padding-top:16px;}
+.adjust-panel.visible{display:block;}
+.adjust-panel-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.adjust-panel-title{font-size:13px;font-weight:700;color:var(--text-primary);}
+.btn-back{display:flex;align-items:center;gap:4px;padding:4px 10px;background:transparent;border:1px solid var(--border-strong);border-radius:var(--radius-sm);font-family:inherit;font-size:11px;color:var(--text-secondary);cursor:pointer;transition:all .15s;}
+.btn-back:hover{border-color:var(--text-secondary);color:var(--text-primary);}
+.adjust-body{display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap;}
 .adjust-field{display:flex;flex-direction:column;gap:5px;}
 .adjust-label{font-size:11px;font-weight:600;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.4px;}
-.adjust-current{display:flex;align-items:center;gap:8px;}
-.adjust-current-val{font-size:22px;font-weight:700;color:var(--green);font-variant-numeric:tabular-nums;min-width:40px;text-align:center;}
+.adjust-current-val{font-size:30px;font-weight:700;color:#92400e;font-variant-numeric:tabular-nums;line-height:1.1;}
 .delta-wrap{display:flex;align-items:center;border:1.5px solid var(--border-strong);border-radius:var(--radius-sm);background:var(--surface);overflow:hidden;transition:border-color .15s,box-shadow .15s;}
 .delta-wrap:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px rgba(37,99,235,.08);}
-.delta-btn{width:36px;height:38px;border:none;background:var(--surface-2);font-size:18px;font-weight:600;color:var(--text-secondary);cursor:pointer;transition:background .12s;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.delta-btn{width:40px;height:42px;border:none;background:var(--surface-2);font-size:20px;font-weight:600;color:var(--text-secondary);cursor:pointer;transition:background .12s;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 .delta-btn:hover{background:var(--accent-light);color:var(--accent);}
 .delta-btn.minus:hover{background:var(--red-light);color:var(--red);}
-#deltaInput{width:72px;border:none;outline:none;padding:8px 6px;font-family:'IBM Plex Mono',monospace;font-size:16px;font-weight:700;color:var(--text-primary);text-align:center;background:transparent;}
-.adjust-preview{font-size:12px;color:var(--text-muted);min-width:120px;}
-.adjust-preview .preview-new{font-size:18px;font-weight:700;font-variant-numeric:tabular-nums;}
+#deltaInput{width:80px;border:none;outline:none;padding:8px 6px;font-family:'IBM Plex Mono',monospace;font-size:18px;font-weight:700;color:var(--text-primary);text-align:center;background:transparent;}
+.preview-new{font-size:30px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.1;}
 .preview-new.positive{color:var(--green);}
 .preview-new.negative{color:var(--red);}
 .preview-new.zero{color:var(--text-muted);}
-.adjust-actions{display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap;margin-top:2px;}
-.btn-adjust{display:flex;align-items:center;gap:6px;padding:9px 18px;background:var(--accent);color:#fff;border:none;border-radius:var(--radius-sm);font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;transition:background .15s;white-space:nowrap;}
-.btn-adjust:hover{background:var(--accent-dark);}
-.btn-adjust:disabled{opacity:.5;cursor:not-allowed;}
-.btn-audit-ok{display:flex;align-items:center;gap:6px;padding:9px 18px;background:var(--green-light);color:var(--green);border:1.5px solid var(--green-border);border-radius:var(--radius-sm);font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;transition:all .15s;white-space:nowrap;}
-.btn-audit-ok:hover{background:var(--green);color:#fff;border-color:var(--green);}
-.btn-audit-ok:disabled{opacity:.5;cursor:not-allowed;}
-.audit-date-display{font-size:11px;color:var(--text-muted);display:flex;align-items:center;gap:4px;margin-top:4px;}
-.audit-date-display .audit-val{font-weight:600;color:var(--text-secondary);}
+.btn-apply{display:flex;align-items:center;gap:6px;padding:11px 22px;background:var(--accent);color:#fff;border:none;border-radius:var(--radius-sm);font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;transition:background .15s;white-space:nowrap;}
+.btn-apply:hover{background:var(--accent-dark);}
+.btn-apply:disabled{opacity:.5;cursor:not-allowed;}
+/* Audit date */
+.audit-date-row{display:none;align-items:center;gap:5px;font-size:11px;color:var(--text-muted);margin-top:12px;padding-top:12px;border-top:1px solid var(--border);}
+.audit-date-row .audit-val{font-weight:600;color:var(--text-secondary);}
 
-/* Orders Card */
+/* Orders */
 .orders-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;}
 .orders-card-header{padding:11px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
 .orders-card-title{font-size:13px;font-weight:600;color:var(--text-primary);}
@@ -149,8 +150,6 @@ body{font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:va
 .state-box p{font-size:12px;}
 .loading-spinner{display:inline-block;width:18px;height:18px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg);}}
-
-/* Modal */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .2s;}
 .modal-overlay.open{opacity:1;pointer-events:all;}
 .modal{background:var(--surface);border-radius:var(--radius);width:100%;max-width:460px;box-shadow:0 20px 60px rgba(0,0,0,.15);overflow:hidden;transform:translateY(12px);transition:transform .2s cubic-bezier(.34,1.56,.64,1);}
@@ -167,22 +166,15 @@ body{font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:va
 .btn-cancel{padding:8px 14px;background:transparent;color:var(--text-secondary);border:1px solid var(--border-strong);border-radius:var(--radius-sm);font-family:inherit;font-size:12px;cursor:pointer;}
 .btn-cancel:hover{color:var(--text-primary);border-color:var(--text-secondary);}
 .not-configured-banner{background:var(--amber-light);border:1px solid #fde68a;border-radius:var(--radius-sm);padding:9px 13px;font-size:12px;color:var(--amber);margin-bottom:12px;}
-
-/* Toast */
 .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--text-primary);color:#fff;padding:9px 18px;border-radius:8px;font-size:12px;font-weight:500;z-index:999;transition:transform .3s cubic-bezier(.34,1.56,.64,1);white-space:nowrap;}
 .toast.show{transform:translateX(-50%) translateY(0);}
 .toast.error{background:var(--red);}
 .toast.success{background:var(--green);}
-
-@media(max-width:700px){
-  .adjust-body{flex-direction:column;align-items:flex-start;}
-}
 </style>
 </head>
 <body>
 <div class="container">
 
-  <!-- Settings Modal -->
   <div class="modal-overlay" id="settingsOverlay" onclick="closeSettingsOnBackdrop(event)">
     <div class="modal">
       <div class="modal-header">⚙️ الإعدادات</div>
@@ -203,17 +195,14 @@ body{font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:va
     </div>
   </div>
 
-  <!-- App Header -->
   <div class="app-header">
     <div class="app-title">
-      <span>📦</span>
-      <h1>StockAudit</h1>
+      <span>📦</span><h1>StockAudit</h1>
       <span>أداة مراجعة وضبط الجرد</span>
     </div>
     <button class="settings-btn" id="settingsBtn" onclick="openSettings()">⚙️ الإعدادات</button>
   </div>
 
-  <!-- Search Card -->
   <div class="search-card">
     <div class="search-tabs">
       <button class="tab-btn active" id="tabSku" onclick="switchTab('sku')">🔍 بحث بالـ SKU</button>
@@ -237,10 +226,8 @@ body{font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:va
     </div>
   </div>
 
-  <!-- Results -->
   <div id="results">
 
-    <!-- Product Topbar -->
     <div class="product-topbar">
       <div class="product-name" id="productTitle">—</div>
       <a class="sku-link" id="productSkuLink" href="#" target="_blank">
@@ -254,100 +241,87 @@ body{font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:va
 
     <!-- Stats Row -->
     <div style="display:flex;align-items:center;gap:0;margin-bottom:10px;">
-
-      <!-- قطع الرف -->
       <div class="stat-card" style="flex:1.4;min-width:0;padding:16px 14px;border:2px solid #d97706;background:#fef9c3;">
         <div class="stat-label" style="font-size:11px;">قطع الرف</div>
         <div class="stat-value val-shelf" id="qtyShelf">—</div>
         <div class="stat-desc">المتوقع عند الجرد</div>
       </div>
-
       <div style="font-size:26px;font-weight:300;color:var(--text-muted);padding:0 8px;flex-shrink:0;">=</div>
-
-      <!-- Available -->
       <div class="stat-card" style="flex:1;min-width:0;">
         <div class="stat-label">Available</div>
         <div class="stat-value val-available" id="qtyAvailable">—</div>
         <div class="stat-desc">متاح للبيع</div>
       </div>
-
       <div style="font-size:26px;font-weight:300;color:var(--text-muted);padding:0 8px;flex-shrink:0;">+</div>
-
-      <!-- Committed -->
       <div class="stat-card" style="flex:1.2;min-width:0;">
         <div class="stat-label">Committed</div>
         <div class="stat-value val-committed" id="qtyCommitted">—</div>
         <div class="stat-desc" style="line-height:1.4;">إجمالي الأوردرات المطلوبة تحت التجهيز في المخزن</div>
       </div>
-
       <div style="font-size:26px;font-weight:300;color:var(--red);padding:0 8px;flex-shrink:0;">−</div>
-
-      <!-- Packed -->
       <div class="stat-card" style="flex:1;min-width:0;">
         <div class="stat-label">Packed</div>
         <div class="stat-value" style="color:var(--red);" id="qtyPacked">—</div>
         <div class="stat-desc">مغلف (بعيد عن الرف)</div>
       </div>
-
       <div style="font-size:32px;font-weight:200;color:var(--border-strong);padding:0 10px;flex-shrink:0;">|</div>
-
-      <!-- On Hand -->
       <div class="stat-card" style="flex:1;min-width:0;">
         <div class="stat-label">On Hand</div>
         <div class="stat-value val-onhand" id="qtyOnHand">—</div>
         <div class="stat-desc">إجمالي المخزن</div>
       </div>
-
     </div>
 
-    <!-- ─── Adjust Card ──────────────────────────────────────────── -->
-    <div class="adjust-card" id="adjustCard">
-      <div class="adjust-card-header">
-        <div class="adjust-card-title">🔧 تعديل المخزون (Available)</div>
-        <div class="audit-date-display" id="auditDateDisplay" style="display:none;">
-          📅 آخر جرد: <span class="audit-val" id="auditDateVal">—</span>
+    <!-- ─── Audit Card ─────────────────────────────── -->
+    <div class="audit-card" id="auditCard">
+
+      <!-- Phase 1: Question -->
+      <div class="audit-phase1" id="auditPhase1">
+        <div class="audit-q-left">
+          <div class="audit-q-text">🔎 هل عدد قطع الرف مظبوط؟</div>
+          <div class="audit-q-sub" id="auditShelfHint">قطع الرف: —</div>
+        </div>
+        <div class="audit-q-btns">
+          <button class="btn-audit-ok" id="btnAuditOk" onclick="markAuditOk()">✅ الجرد مظبوط</button>
+          <button class="btn-want-adjust" onclick="showAdjustPanel()">🔧 أريد التعديل</button>
         </div>
       </div>
 
-      <div class="adjust-body">
-
-        <!-- Current Available -->
-        <div class="adjust-field">
-          <div class="adjust-label">الكمية الحالية</div>
-          <div class="adjust-current">
+      <!-- Phase 2: Adjust Panel -->
+      <div class="adjust-panel" id="adjustPanel">
+        <div class="adjust-panel-header">
+          <div class="adjust-panel-title">🔧 تعديل المخزون</div>
+          <button class="btn-back" onclick="hideAdjustPanel()">← رجوع</button>
+        </div>
+        <div class="adjust-body">
+          <div class="adjust-field">
+            <div class="adjust-label">قطع الرف الحالية</div>
             <div class="adjust-current-val" id="adjustCurrentVal">—</div>
           </div>
-        </div>
-
-        <!-- Delta Input -->
-        <div class="adjust-field">
-          <div class="adjust-label">التعديل (+ زيادة / − نقصان)</div>
-          <div class="delta-wrap">
-            <button class="delta-btn minus" onclick="stepDelta(-1)">−</button>
-            <input type="number" id="deltaInput" value="0" min="-9999" max="9999" oninput="updatePreview()" />
-            <button class="delta-btn" onclick="stepDelta(1)">+</button>
+          <div class="adjust-field">
+            <div class="adjust-label">التعديل (+ زيادة / − نقصان)</div>
+            <div class="delta-wrap">
+              <button class="delta-btn minus" onclick="stepDelta(-1)">−</button>
+              <input type="number" id="deltaInput" value="0" min="-9999" max="9999" oninput="updatePreview()" />
+              <button class="delta-btn" onclick="stepDelta(1)">+</button>
+            </div>
           </div>
-        </div>
-
-        <!-- Preview -->
-        <div class="adjust-field">
-          <div class="adjust-label">الناتج الجديد</div>
-          <div class="adjust-preview">
+          <div class="adjust-field">
+            <div class="adjust-label">الناتج الجديد</div>
             <span class="preview-new zero" id="previewNew">—</span>
           </div>
+          <div class="adjust-field" style="padding-bottom:2px;">
+            <div class="adjust-label">&nbsp;</div>
+            <button class="btn-apply" id="btnApplyAdjust" onclick="applyAdjust()" disabled>✔ تطبيق التعديل</button>
+          </div>
         </div>
-
-        <!-- Actions -->
-        <div class="adjust-actions">
-          <button class="btn-adjust" id="btnApplyAdjust" onclick="applyAdjust()" disabled>
-            ✔ تطبيق التعديل
-          </button>
-          <button class="btn-audit-ok" id="btnAuditOk" onclick="markAuditOk()">
-            ✅ الجرد مظبوط
-          </button>
-        </div>
-
       </div>
+
+      <!-- Audit date -->
+      <div class="audit-date-row" id="auditDateDisplay">
+        📅 آخر جرد: <span class="audit-val" id="auditDateVal">—</span>
+      </div>
+
     </div>
 
     <!-- Warning Banner -->
@@ -356,13 +330,11 @@ body{font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:va
       <span>يجب التأكد من عدم وجود أوردرات مركونة على طاولة التحضير ولم يتم عمل سكان لها قبل إجراء الجرد</span>
     </div>
 
-    <!-- Orders Loading -->
     <div id="ordersLoading" style="display:none;text-align:center;padding:20px;">
       <div class="loading-spinner"></div>
       <p style="margin-top:8px;color:var(--text-muted);font-size:12px;">جاري تحميل الأوردرات...</p>
     </div>
 
-    <!-- Orders Card -->
     <div class="orders-card" id="ordersCard" style="display:none;">
       <div class="orders-card-header">
         <div class="orders-card-title">الأوردرات غير المشحونة (Unfulfilled)</div>
@@ -381,345 +353,299 @@ const SHOP_DOMAIN = '6c7e1a-53.myshopify.com';
 const LS_URL_KEY = 'stockaudit_worker_url';
 const LS_SEC_KEY = 'stockaudit_worker_secret';
 
-// ─── current variant state ────────────────────────────────────────────────────
-let currentSku = null;
-let currentVariant = null; // full variant object
+let currentSku = null, currentVariant = null, currentShelfQty = null;
 
-function getConfig() { return { url: localStorage.getItem(LS_URL_KEY) || '', secret: localStorage.getItem(LS_SEC_KEY) || '' }; }
-function isConfigured() { const c = getConfig(); return c.url.startsWith('http') && c.secret.length > 0; }
-function updateSettingsBtn() { document.getElementById('settingsBtn').classList.toggle('configured', isConfigured()); }
-
-function openSettings() { const c = getConfig(); document.getElementById('cfWorkerUrl').value = c.url; document.getElementById('cfWorkerSecret').value = c.secret; document.getElementById('settingsOverlay').classList.add('open'); }
-function closeSettings() { document.getElementById('settingsOverlay').classList.remove('open'); }
-function closeSettingsOnBackdrop(e) { if (e.target === document.getElementById('settingsOverlay')) closeSettings(); }
-function saveSettings() {
-  const url = document.getElementById('cfWorkerUrl').value.trim();
-  const secret = document.getElementById('cfWorkerSecret').value.trim();
-  if (!url || !secret) { showToast('الرجاء إدخال الـ URL والـ Secret', 'error'); return; }
-  localStorage.setItem(LS_URL_KEY, url); localStorage.setItem(LS_SEC_KEY, secret);
-  updateSettingsBtn(); closeSettings(); showToast('تم حفظ الإعدادات ✓', 'success');
+function getConfig(){return{url:localStorage.getItem(LS_URL_KEY)||'',secret:localStorage.getItem(LS_SEC_KEY)||''};}
+function isConfigured(){const c=getConfig();return c.url.startsWith('http')&&c.secret.length>0;}
+function updateSettingsBtn(){document.getElementById('settingsBtn').classList.toggle('configured',isConfigured());}
+function openSettings(){const c=getConfig();document.getElementById('cfWorkerUrl').value=c.url;document.getElementById('cfWorkerSecret').value=c.secret;document.getElementById('settingsOverlay').classList.add('open');}
+function closeSettings(){document.getElementById('settingsOverlay').classList.remove('open');}
+function closeSettingsOnBackdrop(e){if(e.target===document.getElementById('settingsOverlay'))closeSettings();}
+function saveSettings(){
+  const url=document.getElementById('cfWorkerUrl').value.trim();
+  const secret=document.getElementById('cfWorkerSecret').value.trim();
+  if(!url||!secret){showToast('الرجاء إدخال الـ URL والـ Secret','error');return;}
+  localStorage.setItem(LS_URL_KEY,url);localStorage.setItem(LS_SEC_KEY,secret);
+  updateSettingsBtn();closeSettings();showToast('تم حفظ الإعدادات ✓','success');
 }
 
-let searchDebounce = null, lastKeyTime = 0, barcodeTimeout = null;
-
+let searchDebounce=null,lastKeyTime=0,barcodeTimeout=null;
 updateSettingsBtn();
-if (!isConfigured()) {
-  const b = document.createElement('div'); b.className = 'not-configured-banner';
-  b.textContent = '⚠ الأداة غير مضبوطة — افتح الإعدادات وأدخل الـ Worker URL والـ Secret';
+if(!isConfigured()){
+  const b=document.createElement('div');b.className='not-configured-banner';
+  b.textContent='⚠ الأداة غير مضبوطة — افتح الإعدادات وأدخل الـ Worker URL والـ Secret';
   document.querySelector('.search-card').prepend(b);
 }
 
-function showToast(msg, type = '') {
-  const t = document.getElementById('toast'); t.textContent = msg;
-  t.className = 'toast' + (type ? ' ' + type : ''); t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 3000);
+function showToast(msg,type=''){
+  const t=document.getElementById('toast');t.textContent=msg;
+  t.className='toast'+(type?' '+type:'');t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3000);
 }
-
-function switchTab(tab) {
-  document.getElementById('tabSku').classList.toggle('active', tab === 'sku');
-  document.getElementById('tabBarcode').classList.toggle('active', tab === 'barcode');
-  document.getElementById('skuMode').style.display = tab === 'sku' ? 'block' : 'none';
-  document.getElementById('barcodeMode').classList.toggle('active', tab === 'barcode');
-  if (tab === 'barcode') document.getElementById('barcodeInput').focus();
+function switchTab(tab){
+  document.getElementById('tabSku').classList.toggle('active',tab==='sku');
+  document.getElementById('tabBarcode').classList.toggle('active',tab==='barcode');
+  document.getElementById('skuMode').style.display=tab==='sku'?'block':'none';
+  document.getElementById('barcodeMode').classList.toggle('active',tab==='barcode');
+  if(tab==='barcode')document.getElementById('barcodeInput').focus();
 }
-
-async function apiCall(params) {
-  if (!isConfigured()) { openSettings(); throw new Error('الإعدادات غير مكتملة'); }
-  const { url: WU, secret: WS } = getConfig();
-  const u = new URL(WU); Object.entries(params).forEach(([k, v]) => u.searchParams.set(k, v));
-  const res = await fetch(u.toString(), { headers: { 'X-Worker-Secret': WS } });
-  const data = await res.json();
-  if (!res.ok || !data.ok) throw new Error(data.error || 'خطأ في الاتصال');
+async function apiCall(params){
+  if(!isConfigured()){openSettings();throw new Error('الإعدادات غير مكتملة');}
+  const{url:WU,secret:WS}=getConfig();
+  const u=new URL(WU);Object.entries(params).forEach(([k,v])=>u.searchParams.set(k,v));
+  const res=await fetch(u.toString(),{headers:{'X-Worker-Secret':WS}});
+  const data=await res.json();
+  if(!res.ok||!data.ok)throw new Error(data.error||'خطأ في الاتصال');
   return data;
 }
 
 // ─── Search ───────────────────────────────────────────────────────────────────
-const skuSearch = document.getElementById('skuSearch');
-const dropdownList = document.getElementById('dropdownList');
-const clearBtn = document.getElementById('clearBtn');
-
-skuSearch.addEventListener('input', () => {
-  const val = skuSearch.value.trim();
-  clearBtn.classList.toggle('visible', val.length > 0);
+const skuSearch=document.getElementById('skuSearch');
+const dropdownList=document.getElementById('dropdownList');
+const clearBtn=document.getElementById('clearBtn');
+skuSearch.addEventListener('input',()=>{
+  const val=skuSearch.value.trim();
+  clearBtn.classList.toggle('visible',val.length>0);
   clearTimeout(searchDebounce);
-  if (!val) { dropdownList.innerHTML = ''; dropdownList.classList.remove('open'); return; }
-  searchDebounce = setTimeout(() => loadSkus(val), 350);
+  if(!val){dropdownList.innerHTML='';dropdownList.classList.remove('open');return;}
+  searchDebounce=setTimeout(()=>loadSkus(val),350);
 });
-skuSearch.addEventListener('focus', () => { if (skuSearch.value.trim()) loadSkus(skuSearch.value.trim()); });
-document.addEventListener('click', e => { if (!document.getElementById('dropdownWrap').contains(e.target)) dropdownList.classList.remove('open'); });
-
-function clearSearch() { skuSearch.value = ''; clearBtn.classList.remove('visible'); dropdownList.innerHTML = ''; dropdownList.classList.remove('open'); skuSearch.focus(); }
-
-async function loadSkus(search) {
-  dropdownList.innerHTML = '<div class="dropdown-loading"><div class="loading-spinner"></div></div>';
+skuSearch.addEventListener('focus',()=>{if(skuSearch.value.trim())loadSkus(skuSearch.value.trim());});
+document.addEventListener('click',e=>{if(!document.getElementById('dropdownWrap').contains(e.target))dropdownList.classList.remove('open');});
+function clearSearch(){skuSearch.value='';clearBtn.classList.remove('visible');dropdownList.innerHTML='';dropdownList.classList.remove('open');skuSearch.focus();}
+async function loadSkus(search){
+  dropdownList.innerHTML='<div class="dropdown-loading"><div class="loading-spinner"></div></div>';
   dropdownList.classList.add('open');
-  try { const data = await apiCall({ action: 'list_skus', search }); renderDropdown(data.variants); }
-  catch (e) { dropdownList.innerHTML = `<div class="dropdown-empty">⚠️ ${e.message}</div>`; }
+  try{const data=await apiCall({action:'list_skus',search});renderDropdown(data.variants);}
+  catch(e){dropdownList.innerHTML=`<div class="dropdown-empty">⚠️ ${e.message}</div>`;}
 }
-
-function renderDropdown(variants) {
-  if (!variants.length) { dropdownList.innerHTML = '<div class="dropdown-empty">لا توجد نتائج</div>'; return; }
-  dropdownList.innerHTML = variants.map(v => `
-    <div class="dropdown-item" onclick="selectVariant(${JSON.stringify(v).replace(/"/g, '&quot;')})">
-      <span class="item-sku">${v.sku || '—'}</span>
-      <span class="item-name">${v.product?.title || ''} ${v.selectedOptions?.map(o => o.value).join(' / ') || ''}</span>
+function renderDropdown(variants){
+  if(!variants.length){dropdownList.innerHTML='<div class="dropdown-empty">لا توجد نتائج</div>';return;}
+  dropdownList.innerHTML=variants.map(v=>`
+    <div class="dropdown-item" onclick="selectVariant(${JSON.stringify(v).replace(/"/g,'&quot;')})">
+      <span class="item-sku">${v.sku||'—'}</span>
+      <span class="item-name">${v.product?.title||''} ${v.selectedOptions?.map(o=>o.value).join(' / ')||''}</span>
     </div>`).join('');
   dropdownList.classList.add('open');
 }
-
-function selectVariant(variant) {
-  currentSku = variant.sku;
-  currentVariant = variant;
-  skuSearch.value = variant.sku;
-  clearBtn.classList.add('visible');
+function selectVariant(variant){
+  currentSku=variant.sku;currentVariant=variant;
+  skuSearch.value=variant.sku;clearBtn.classList.add('visible');
   dropdownList.classList.remove('open');
-  renderProductCard(variant);
-  loadOrders(variant.sku);
+  renderProductCard(variant);loadOrders(variant.sku);
 }
 
 // ─── Barcode ──────────────────────────────────────────────────────────────────
-const barcodeInput = document.getElementById('barcodeInput');
-const barcodeWrap = document.getElementById('barcodeWrap');
-barcodeInput.addEventListener('keydown', () => {
-  const now = Date.now(); const gap = now - lastKeyTime; lastKeyTime = now;
-  clearTimeout(barcodeTimeout); barcodeWrap.classList.add('scanning');
-  barcodeTimeout = setTimeout(handleBarcodeScan, gap < 80 ? 150 : 400);
+const barcodeInput=document.getElementById('barcodeInput');
+const barcodeWrap=document.getElementById('barcodeWrap');
+barcodeInput.addEventListener('keydown',()=>{
+  const now=Date.now();const gap=now-lastKeyTime;lastKeyTime=now;
+  clearTimeout(barcodeTimeout);barcodeWrap.classList.add('scanning');
+  barcodeTimeout=setTimeout(handleBarcodeScan,gap<80?150:400);
 });
-function handleBarcodeScan() {
-  const val = barcodeInput.value.trim(); barcodeInput.value = ''; barcodeInput.focus();
-  barcodeWrap.classList.remove('scanning'); if (!val) return; lookupByBarcode(val);
+function handleBarcodeScan(){
+  const val=barcodeInput.value.trim();barcodeInput.value='';barcodeInput.focus();
+  barcodeWrap.classList.remove('scanning');if(!val)return;lookupByBarcode(val);
 }
-async function lookupByBarcode(barcode) {
-  showToast('جاري البحث...', '');
-  try {
-    const data = await apiCall({ action: 'lookup_barcode', barcode });
-    if (!data.variant) { showToast('لا يوجد منتج بهذا الباركود', 'error'); return; }
-    showToast('تم العثور على المنتج', 'success');
-    currentVariant = data.variant;
-    selectVariant(data.variant);
-    switchTab('sku'); skuSearch.value = data.variant.sku; clearBtn.classList.add('visible');
-  } catch (e) { showToast(e.message, 'error'); }
+async function lookupByBarcode(barcode){
+  showToast('جاري البحث...','');
+  try{
+    const data=await apiCall({action:'lookup_barcode',barcode});
+    if(!data.variant){showToast('لا يوجد منتج بهذا الباركود','error');return;}
+    showToast('تم العثور على المنتج','success');
+    currentVariant=data.variant;selectVariant(data.variant);
+    switchTab('sku');skuSearch.value=data.variant.sku;clearBtn.classList.add('visible');
+  }catch(e){showToast(e.message,'error');}
 }
 
 // ─── Render Product Card ──────────────────────────────────────────────────────
-function renderProductCard(variant) {
-  currentVariant = variant;
+function renderProductCard(variant){
+  currentVariant=variant;
+  document.getElementById('productTitle').textContent=variant.product?.title||'—';
+  const sku=variant.sku||'—';
+  document.getElementById('productSkuDisplay').textContent='SKU: '+sku;
+  const vid=(variant.id||'').split('/').pop();
+  const pid=(variant.product?.id||'').split('/').pop();
+  document.getElementById('productSkuLink').href=pid&&vid?`https://admin.shopify.com/store/6c7e1a-53/products/${pid}/variants/${vid}`:'#';
 
-  document.getElementById('productTitle').textContent = variant.product?.title || '—';
-  const sku = variant.sku || '—';
-  document.getElementById('productSkuDisplay').textContent = 'SKU: ' + sku;
-  const vid = (variant.id || '').split('/').pop();
-  const pid = (variant.product?.id || '').split('/').pop();
-  const vurl = pid && vid ? `https://admin.shopify.com/store/6c7e1a-53/products/${pid}/variants/${vid}` : '#';
-  document.getElementById('productSkuLink').href = vurl;
-
-  const opts = variant.selectedOptions || [];
-  const sizeN = ['shoe size', 'size', 'مقاس'];
-  const colorN = ['color', 'colour', 'لون'];
-  document.getElementById('productOptions').innerHTML = opts
-    .filter(o => o.value !== 'Default Title')
-    .map(o => {
-      const k = o.name.toLowerCase();
-      let c = 'option-pill-other';
-      if (sizeN.some(n => k.includes(n))) c = 'option-pill-shoe';
-      else if (colorN.some(n => k.includes(n))) c = 'option-pill-color';
-      return `<span class="option-pill ${c}">${o.name}: ${o.value}</span>`;
+  const opts=variant.selectedOptions||[];
+  const sizeN=['shoe size','size','مقاس'];const colorN=['color','colour','لون'];
+  document.getElementById('productOptions').innerHTML=opts
+    .filter(o=>o.value!=='Default Title')
+    .map(o=>{
+      const k=o.name.toLowerCase();
+      let c='option-pill-other';
+      if(sizeN.some(n=>k.includes(n)))c='option-pill-shoe';
+      else if(colorN.some(n=>k.includes(n)))c='option-pill-color';
+      return`<span class="option-pill ${c}">${o.name}: ${o.value}</span>`;
     }).join('');
 
-  const status = variant.product?.status || '';
-  const labels = { ACTIVE: 'Active ✓', DRAFT: 'Draft', ARCHIVED: 'Archived', UNLISTED: 'Unlisted' };
-  const cls = status === 'ACTIVE' ? 'status-ACTIVE' : 'status-OTHER';
-  document.getElementById('productStatus').innerHTML = `<span class="status-badge ${cls}">${labels[status] || status}</span>`;
-  document.getElementById('refreshBtn').style.display = 'flex';
+  const status=variant.product?.status||'';
+  const labels={ACTIVE:'Active ✓',DRAFT:'Draft',ARCHIVED:'Archived',UNLISTED:'Unlisted'};
+  const cls=status==='ACTIVE'?'status-ACTIVE':'status-OTHER';
+  document.getElementById('productStatus').innerHTML=`<span class="status-badge ${cls}">${labels[status]||status}</span>`;
+  document.getElementById('refreshBtn').style.display='flex';
 
-  const levels = variant.inventoryItem?.inventoryLevels?.nodes?.[0]?.quantities || [];
-  const getQty = n => { const q = levels.find(l => l.name === n)?.quantity; return q != null ? q : null; };
+  const levels=variant.inventoryItem?.inventoryLevels?.nodes?.[0]?.quantities||[];
+  const getQty=n=>{const q=levels.find(l=>l.name===n)?.quantity;return q!=null?q:null;};
+  const available=getQty('available');
+  const committed=getQty('committed');
+  const onHand=getQty('on_hand');
 
-  const available = getQty('available');
-  const committed = getQty('committed');
-  const onHand = getQty('on_hand');
+  document.getElementById('qtyOnHand').textContent=onHand!=null?onHand.toLocaleString('en-US'):'—';
+  document.getElementById('qtyAvailable').textContent=available!=null?available.toLocaleString('en-US'):'—';
+  document.getElementById('qtyCommitted').textContent=committed!=null?committed.toLocaleString('en-US'):'—';
+  document.getElementById('qtyShelf').textContent='—';
+  document.getElementById('qtyPacked').textContent='—';
 
-  document.getElementById('qtyOnHand').textContent = onHand != null ? onHand.toLocaleString('en-US') : '—';
-  document.getElementById('qtyAvailable').textContent = available != null ? available.toLocaleString('en-US') : '—';
-  document.getElementById('qtyCommitted').textContent = committed != null ? committed.toLocaleString('en-US') : '—';
-  document.getElementById('qtyShelf').textContent = '—';
-  document.getElementById('qtyPacked').textContent = '—';
-
-  // Adjust card - set current value
-  document.getElementById('adjustCurrentVal').textContent = available != null ? available.toLocaleString('en-US') : '—';
-  document.getElementById('deltaInput').value = '0';
-  updatePreview();
-  document.getElementById('adjustCard').style.display = 'block';
-
-  // Reset audit date display
-  document.getElementById('auditDateDisplay').style.display = 'none';
+  // Reset audit card
+  currentShelfQty=null;
+  hideAdjustPanel();
+  document.getElementById('auditShelfHint').textContent='قطع الرف: —';
+  document.getElementById('auditDateDisplay').style.display='none';
 
   document.getElementById('results').classList.add('visible');
-  document.getElementById('ordersCard').style.display = 'none';
-  document.getElementById('warningBanner').style.display = 'none';
+  document.getElementById('ordersCard').style.display='none';
+  document.getElementById('warningBanner').style.display='none';
 }
 
-// ─── Delta & Preview ──────────────────────────────────────────────────────────
-function stepDelta(step) {
-  const input = document.getElementById('deltaInput');
-  const val = parseInt(input.value) || 0;
-  input.value = val + step;
+// ─── Audit Panel ──────────────────────────────────────────────────────────────
+function showAdjustPanel(){
+  document.getElementById('adjustPanel').classList.add('visible');
+  const shelf=currentShelfQty;
+  document.getElementById('adjustCurrentVal').textContent=shelf!=null?shelf.toLocaleString('en-US'):'—';
+  document.getElementById('deltaInput').value='0';
   updatePreview();
 }
+function hideAdjustPanel(){
+  document.getElementById('adjustPanel').classList.remove('visible');
+}
 
-function updatePreview() {
-  const input = document.getElementById('deltaInput');
-  const delta = parseInt(input.value) || 0;
-  const currentText = document.getElementById('adjustCurrentVal').textContent.replace(/,/g, '');
-  const current = parseInt(currentText);
-  const previewEl = document.getElementById('previewNew');
-  const btnApply = document.getElementById('btnApplyAdjust');
-
-  if (isNaN(current) || delta === 0) {
-    previewEl.textContent = isNaN(current) ? '—' : current.toLocaleString('en-US');
-    previewEl.className = 'preview-new zero';
-    btnApply.disabled = true;
-    return;
+function stepDelta(step){
+  const input=document.getElementById('deltaInput');
+  input.value=(parseInt(input.value)||0)+step;
+  updatePreview();
+}
+function updatePreview(){
+  const delta=parseInt(document.getElementById('deltaInput').value)||0;
+  const current=parseInt(document.getElementById('adjustCurrentVal').textContent.replace(/,/g,''));
+  const previewEl=document.getElementById('previewNew');
+  const btnApply=document.getElementById('btnApplyAdjust');
+  if(isNaN(current)||delta===0){
+    previewEl.textContent=isNaN(current)?'—':current.toLocaleString('en-US');
+    previewEl.className='preview-new zero';btnApply.disabled=true;return;
   }
-
-  const newVal = current + delta;
-  previewEl.textContent = newVal.toLocaleString('en-US');
-  previewEl.className = 'preview-new ' + (delta > 0 ? 'positive' : 'negative');
-  btnApply.disabled = false;
+  const newVal=current+delta;
+  previewEl.textContent=newVal.toLocaleString('en-US');
+  previewEl.className='preview-new '+(delta>0?'positive':'negative');
+  btnApply.disabled=false;
 }
 
 // ─── Apply Adjustment ─────────────────────────────────────────────────────────
-async function applyAdjust() {
-  const delta = parseInt(document.getElementById('deltaInput').value) || 0;
-  if (delta === 0) { showToast('التعديل يجب أن يكون غير صفر', 'error'); return; }
-  if (!currentVariant) { showToast('لم يتم اختيار منتج', 'error'); return; }
+async function applyAdjust(){
+  const delta=parseInt(document.getElementById('deltaInput').value)||0;
+  if(delta===0){showToast('التعديل يجب أن يكون غير صفر','error');return;}
+  if(!currentVariant){showToast('لم يتم اختيار منتج','error');return;}
+  const inventoryItemId=currentVariant.inventoryItem?.id;
+  const variantId=currentVariant.id;
+  if(!inventoryItemId){showToast('لا يوجد inventoryItem ID','error');return;}
 
-  const inventoryItemId = currentVariant.inventoryItem?.id;
-  const variantId = currentVariant.id;
+  const btn=document.getElementById('btnApplyAdjust');
+  const btnAudit=document.getElementById('btnAuditOk');
+  btn.disabled=true;btnAudit.disabled=true;
+  btn.textContent='⏳ جاري التعديل...';
 
-  if (!inventoryItemId) { showToast('لا يوجد inventoryItem ID', 'error'); return; }
-
-  const btn = document.getElementById('btnApplyAdjust');
-  const btnAudit = document.getElementById('btnAuditOk');
-  btn.disabled = true; btnAudit.disabled = true;
-  btn.textContent = '⏳ جاري التعديل...';
-
-  try {
-    const data = await apiCall({
-      action: 'adjust_inventory',
-      inventoryItemId,
-      variantId,
-      delta: delta.toString(),
-    });
-
-    showToast(`تم التعديل بنجاح (${delta > 0 ? '+' : ''}${delta}) ✓`, 'success');
-
-    // Update audit date display
-    if (data.auditDate) showAuditDate(data.auditDate);
-
-    // Refresh variant data
+  try{
+    const data=await apiCall({action:'adjust_inventory',inventoryItemId,variantId,delta:delta.toString()});
+    showToast(`تم التعديل بنجاح (${delta>0?'+':''}${delta}) ✓`,'success');
+    if(data.auditDate)showAuditDate(data.auditDate);
     await refreshCurrent();
-
-  } catch (e) {
-    showToast('خطأ: ' + e.message, 'error');
-    btn.disabled = false;
-  } finally {
-    btnAudit.disabled = false;
-    btn.textContent = '✔ تطبيق التعديل';
+    hideAdjustPanel();
+  }catch(e){
+    showToast('خطأ: '+e.message,'error');
+    btn.disabled=false;
+  }finally{
+    btnAudit.disabled=false;
+    btn.textContent='✔ تطبيق التعديل';
   }
 }
 
 // ─── Mark Audit OK ────────────────────────────────────────────────────────────
-async function markAuditOk() {
-  if (!currentVariant) { showToast('لم يتم اختيار منتج', 'error'); return; }
-
-  const variantId = currentVariant.id;
-  const btn = document.getElementById('btnAuditOk');
-  const btnApply = document.getElementById('btnApplyAdjust');
-  btn.disabled = true; btnApply.disabled = true;
-  btn.textContent = '⏳ جاري التسجيل...';
-
-  try {
-    const data = await apiCall({ action: 'set_audit_date', variantId });
-    showToast('تم تسجيل الجرد ✓', 'success');
-    if (data.auditDate) showAuditDate(data.auditDate);
-  } catch (e) {
-    showToast('خطأ: ' + e.message, 'error');
-  } finally {
-    btn.disabled = false;
-    btnApply.disabled = parseInt(document.getElementById('deltaInput').value) === 0;
-    btn.textContent = '✅ الجرد مظبوط';
-  }
+async function markAuditOk(){
+  if(!currentVariant){showToast('لم يتم اختيار منتج','error');return;}
+  const variantId=currentVariant.id;
+  const btn=document.getElementById('btnAuditOk');
+  btn.disabled=true;btn.textContent='⏳ جاري التسجيل...';
+  try{
+    const data=await apiCall({action:'set_audit_date',variantId});
+    showToast('تم تسجيل الجرد ✓','success');
+    if(data.auditDate)showAuditDate(data.auditDate);
+  }catch(e){showToast('خطأ: '+e.message,'error');}
+  finally{btn.disabled=false;btn.textContent='✅ الجرد مظبوط';}
 }
 
-function showAuditDate(isoString) {
-  const d = new Date(isoString);
-  const pad = n => String(n).padStart(2, '0');
-  const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-  const formatted = `${pad(d.getDate())}-${months[d.getMonth()]}-${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
-  document.getElementById('auditDateVal').textContent = formatted;
-  document.getElementById('auditDateDisplay').style.display = 'flex';
+function showAuditDate(isoString){
+  const d=new Date(isoString);
+  const pad=n=>String(n).padStart(2,'0');
+  const months=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const formatted=`${pad(d.getDate())}-${months[d.getMonth()]}-${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  document.getElementById('auditDateVal').textContent=formatted;
+  document.getElementById('auditDateDisplay').style.display='flex';
 }
 
 // ─── Refresh ──────────────────────────────────────────────────────────────────
-async function refreshCurrent() {
-  if (!currentSku) return;
-  try {
-    const data = await apiCall({ action: 'list_skus', search: currentSku });
-    const variant = (data.variants || []).find(v => v.sku === currentSku);
-    if (variant) {
-      currentVariant = variant;
-      renderProductCard(variant);
-      loadOrders(currentSku);
-    } else {
-      showToast('لم يتم العثور على الـ SKU', 'error');
-    }
-  } catch (e) {
-    showToast('خطأ في التحديث: ' + e.message, 'error');
-  }
+async function refreshCurrent(){
+  if(!currentSku)return;
+  try{
+    const data=await apiCall({action:'list_skus',search:currentSku});
+    const variant=(data.variants||[]).find(v=>v.sku===currentSku);
+    if(variant){currentVariant=variant;renderProductCard(variant);loadOrders(currentSku);}
+    else showToast('لم يتم العثور على الـ SKU','error');
+  }catch(e){showToast('خطأ في التحديث: '+e.message,'error');}
 }
 
 // ─── Load Orders ──────────────────────────────────────────────────────────────
-async function loadOrders(sku) {
-  document.getElementById('ordersLoading').style.display = 'block';
-  document.getElementById('ordersCard').style.display = 'none';
-  try { const data = await apiCall({ action: 'get_details', sku }); renderOrders(data.orders, sku); }
-  catch (e) { document.getElementById('ordersLoading').style.display = 'none'; showToast('خطأ في تحميل الأوردرات: ' + e.message, 'error'); }
+async function loadOrders(sku){
+  document.getElementById('ordersLoading').style.display='block';
+  document.getElementById('ordersCard').style.display='none';
+  try{const data=await apiCall({action:'get_details',sku});renderOrders(data.orders,sku);}
+  catch(e){document.getElementById('ordersLoading').style.display='none';showToast('خطأ في تحميل الأوردرات: '+e.message,'error');}
 }
 
-function renderOrders(orders, sku) {
-  document.getElementById('ordersLoading').style.display = 'none';
-  const card = document.getElementById('ordersCard'); card.style.display = 'block';
-  document.getElementById('ordersCountBadge').textContent = orders.length;
-  const body = document.getElementById('ordersBody');
+function renderOrders(orders,sku){
+  document.getElementById('ordersLoading').style.display='none';
+  const card=document.getElementById('ordersCard');card.style.display='block';
+  document.getElementById('ordersCountBadge').textContent=orders.length;
+  const body=document.getElementById('ordersBody');
 
-  function isPacked(tags) {
-    return tags.some(t => { const tl = t.toLowerCase().replace(/[\[\]]/g, ''); return tl === 'packed' || tl.startsWith('packed-') || tl.startsWith('packed by'); });
-  }
+  function isPacked(tags){return tags.some(t=>{const tl=t.toLowerCase().replace(/[\[\]]/g,'');return tl==='packed'||tl.startsWith('packed-')||tl.startsWith('packed by');});}
 
-  if (!orders.length) {
-    body.innerHTML = `<div class="state-box"><div class="state-icon">✅</div><p>لا توجد أوردرات Unfulfilled لهذا الـ SKU</p></div>`;
-    document.getElementById('warningBanner').style.display = 'none';
-    document.getElementById('qtyShelf').textContent = document.getElementById('qtyAvailable').textContent;
-    document.getElementById('qtyPacked').textContent = '0';
+  if(!orders.length){
+    body.innerHTML=`<div class="state-box"><div class="state-icon">✅</div><p>لا توجد أوردرات Unfulfilled لهذا الـ SKU</p></div>`;
+    document.getElementById('warningBanner').style.display='none';
+    const available=parseInt(document.getElementById('qtyAvailable').textContent.replace(/,/g,''))||0;
+    currentShelfQty=available;
+    document.getElementById('qtyShelf').textContent=available.toLocaleString('en-US');
+    document.getElementById('qtyPacked').textContent='0';
+    document.getElementById('auditShelfHint').textContent=`قطع الرف: ${available.toLocaleString('en-US')}`;
     return;
   }
 
-  let totalUnfulfilled = 0, packedQty = 0, unpackedCommitted = 0;
-  const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  let totalUnfulfilled=0,packedQty=0,unpackedCommitted=0;
+  const months=['January','February','March','April','May','June','July','August','September','October','November','December'];
 
-  const rows = orders.map(order => {
-    const unf = order.items.reduce((s, i) => s + i.unfulfilledQuantity, 0);
-    totalUnfulfilled += unf;
-    const d = new Date(order.createdAt);
-    const date = `${String(d.getDate()).padStart(2, '0')}-${months[d.getMonth()]}-${d.getFullYear()}`;
-    const orderId = order.id.split('/').pop();
-    const tags = order.tags || []; const packed = isPacked(tags);
-    if (packed) packedQty += unf; else unpackedCommitted += unf;
-    const packedTags = tags.filter(t => { const tl = t.toLowerCase().replace(/[\[\]]/g, ''); return tl === 'packed' || tl.startsWith('packed-') || tl.startsWith('packed by'); });
-    const tagsHtml = packedTags.length ? packedTags.map(t => `<span class="tag-pill">${t}</span>`).join('') : `<span style="color:var(--text-muted);font-size:11px;">—</span>`;
-    const packHtml = packed ? `<span class="pack-status pack-done">🔴 تم التغليف</span>` : `<span class="pack-status pack-shelf">🟢 على الرف</span>`;
-    return `<tr>
+  const rows=orders.map(order=>{
+    const unf=order.items.reduce((s,i)=>s+i.unfulfilledQuantity,0);
+    totalUnfulfilled+=unf;
+    const d=new Date(order.createdAt);
+    const date=`${String(d.getDate()).padStart(2,'0')}-${months[d.getMonth()]}-${d.getFullYear()}`;
+    const orderId=order.id.split('/').pop();
+    const tags=order.tags||[];const packed=isPacked(tags);
+    if(packed)packedQty+=unf;else unpackedCommitted+=unf;
+    const packedTags=tags.filter(t=>{const tl=t.toLowerCase().replace(/[\[\]]/g,'');return tl==='packed'||tl.startsWith('packed-')||tl.startsWith('packed by');});
+    const tagsHtml=packedTags.length?packedTags.map(t=>`<span class="tag-pill">${t}</span>`).join(''):`<span style="color:var(--text-muted);font-size:11px;">—</span>`;
+    const packHtml=packed?`<span class="pack-status pack-done">🔴 تم التغليف</span>`:`<span class="pack-status pack-shelf">🟢 على الرف</span>`;
+    return`<tr>
       <td><a class="order-name-link" href="https://${SHOP_DOMAIN}/admin/orders/${orderId}" target="_blank">${order.name}</a></td>
       <td><span class="order-date">${date}</span></td>
       <td style="text-align:center;"><span class="qty-badge qty-unfulfilled">${unf.toLocaleString('en-US')}</span></td>
@@ -728,7 +654,7 @@ function renderOrders(orders, sku) {
     </tr>`;
   }).join('');
 
-  body.innerHTML = `<table class="orders-table">
+  body.innerHTML=`<table class="orders-table">
     <thead><tr>
       <th>رقم الأوردر</th><th>التاريخ</th>
       <th style="text-align:center;">عدد القطع غير مشحونة</th>
@@ -742,13 +668,14 @@ function renderOrders(orders, sku) {
     </tbody>
   </table>`;
 
-  const available = parseInt(document.getElementById('qtyAvailable').textContent.replace(/,/g, '')) || 0;
-  const shelfCount = available + unpackedCommitted;
-  document.getElementById('qtyShelf').textContent = shelfCount.toLocaleString('en-US');
-  document.getElementById('qtyPacked').textContent = packedQty > 0 ? '-' + packedQty.toLocaleString('en-US') : '0';
+  const available=parseInt(document.getElementById('qtyAvailable').textContent.replace(/,/g,''))||0;
+  const shelfCount=available+unpackedCommitted;
+  currentShelfQty=shelfCount;
+  document.getElementById('qtyShelf').textContent=shelfCount.toLocaleString('en-US');
+  document.getElementById('qtyPacked').textContent=packedQty>0?'-'+packedQty.toLocaleString('en-US'):'0';
+  document.getElementById('auditShelfHint').textContent=`قطع الرف: ${shelfCount.toLocaleString('en-US')}`;
 
-  const wb = document.getElementById('warningBanner');
-  wb.style.display = 'flex';
+  document.getElementById('warningBanner').style.display='flex';
 }
 </script>
 </body>
