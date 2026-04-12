@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>جرد المخزون</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap');
+
+  :root {
+    --bg: #f4f5f7;
+    --surface: #ffffff;
+    --surface-2: #f9fafb;
+    --border: #e5e7eb;
+    --border-strong: #d1d5db;
+    --text-primary: #111827;
+    --text-secondary: #6b7280;
+    --text-muted: #9ca3af;
+    --accent: #2563eb;
+    --accent-light: #eff6ff;
+    --accent-dark: #1d4ed8;
+    --green: #16a34a;
+    --green-light: #f0fdf4;
+    --orange: #d97706;
+    --orange-light: #fffbeb;
+    --red: #dc2626;
+    --red-light: #fef2f2;
+    --purple: #7c3aed;
+    --purple-light: #f5f3ff;
+    --gray: #6b7280;
+    --gray-light: #f9fafb;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04);
+    --shadow-lg: 0 8px 24px rgba(0,0,0,0.1), 0 4px 8px rgba(0,0,0,0.04);
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'IBM Plex Sans Arabic', sans-serif;
+    background: var(--bg);
+    color: var(--text-primary);
+    min-height: 100vh;
+    padding: 24px 16px;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  /* ─── Header ─── */
+  .header {
+    background: var(--surface);
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    margin-bottom: 20px;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .header-icon {
+    width: 44px; height: 44px;
+    background: var(--accent-light);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+  .header-text h1 { font-size: 18px; font-weight: 700; color: var(--text-primary); }
+  .header-text p { font-size: 13px; color: var(--text-secondary); margin-top: 2px; }
+
+  /* ─── Search Card ─── */
+  .search-card {
+    background: var(--surface);
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    margin-bottom: 20px;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border);
+  }
+
+  .search-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+    background: var(--bg);
+    border-radius: var(--radius-sm);
+    padding: 4px;
+  }
+  .tab-btn {
+    flex: 1;
+    padding: 9px 12px;
+    border: none;
+    background: transparent;
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.18s;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+  }
+  .tab-btn.active {
+    background: var(--surface);
+    color: var(--accent);
+    box-shadow: var(--shadow-sm);
+  }
+
+  /* ─── SKU Dropdown ─── */
+  .dropdown-wrap { position: relative; }
+
+  .search-input-wrap {
+    display: flex;
+    align-items: center;
+    border: 1.5px solid var(--border-strong);
+    border-radius: var(--radius-sm);
+    background: var(--surface);
+    overflow: hidden;
+    transition: border-color 0.18s, box-shadow 0.18s;
+  }
+  .search-input-wrap:focus-within {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+  }
+  .search-icon {
+    padding: 0 12px;
+    color: var(--text-muted);
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+  #skuSearch {
+    flex: 1;
+    border: none;
+    outline: none;
+    padding: 11px 4px;
+    font-family: inherit;
+    font-size: 14px;
+    color: var(--text-primary);
+    background: transparent;
+    direction: ltr;
+    text-align: right;
+  }
+  #skuSearch::placeholder { color: var(--text-muted); direction: rtl; text-align: right; }
+
+  .clear-btn {
+    padding: 0 12px;
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 16px;
+    display: none;
+    align-items: center;
+  }
+  .clear-btn.visible { display: flex; }
+
+  .dropdown-list {
+    position: absolute;
+    top: calc(100% + 6px);
+    right: 0; left: 0;
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-lg);
+    max-height: 320px;
+    overflow-y: auto;
+    z-index: 100;
+    display: none;
+  }
+  .dropdown-list.open { display: block; }
+
+  .dropdown-item {
+    padding: 10px 14px;
+    cursor: pointer;
+    border-bottom: 1px solid var(--border);
+    transition: background 0.12s;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .dropdown-item:last-child { border-bottom: none; }
+  .dropdown-item:hover { background: var(--accent-light); }
+  .dropdown-item.selected { background: var(--accent-light); }
+
+  .item-sku {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--accent);
+    background: var(--accent-light);
+    padding: 2px 7px;
+    border-radius: 4px;
+    white-space: nowrap;
+    direction: ltr;
+  }
+  .item-name { font-size: 13px; color: var(--text-primary); flex: 1; }
+  .item-stock { font-size: 12px; color: var(--text-secondary); white-space: nowrap; }
+
+  .dropdown-loading, .dropdown-empty {
+    padding: 20px;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 13px;
+  }
+
+  /* ─── Barcode Mode ─── */
+  .barcode-area {
+    display: none;
+  }
+  .barcode-area.active { display: block; }
+
+  .barcode-input-wrap {
+    display: flex;
+    align-items: center;
+    border: 2px solid var(--border-strong);
+    border-radius: var(--radius-sm);
+    background: var(--surface);
+    overflow: hidden;
+    transition: all 0.18s;
+  }
+  .barcode-input-wrap.scanning {
+    border-color: var(--green);
+    box-shadow: 0 0 0 3px rgba(22,163,74,0.12);
+  }
+  #barcodeInput {
+    flex: 1;
+    border: none;
+    outline: none;
+    padding: 12px 14px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 15px;
+    color: var(--text-primary);
+    background: transparent;
+    direction: ltr;
+    text-align: center;
+    letter-spacing: 1px;
+  }
+  #barcodeInput::placeholder { font-family: 'IBM Plex Sans Arabic', sans-serif; letter-spacing: 0; color: var(--text-muted); }
+  .barcode-icon-wrap {
+    padding: 0 14px;
+    color: var(--text-muted);
+    font-size: 22px;
+  }
+  .barcode-hint {
+    margin-top: 8px;
+    font-size: 12px;
+    color: var(--text-muted);
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+  .pulse-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--green);
+    animation: pulse 1.5s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.8); }
+  }
+
+  /* ─── Results ─── */
+  #results { display: none; }
+  #results.visible { display: block; }
+
+  /* Status Badge */
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .status-ACTIVE { background: var(--green-light); color: var(--green); }
+  .status-DRAFT { background: var(--orange-light); color: var(--orange); }
+  .status-ARCHIVED { background: var(--gray-light); color: var(--gray); }
+
+  /* Product Info Card */
+  .product-card {
+    background: var(--surface);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 16px;
+    overflow: hidden;
+  }
+  .product-card-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .product-title { font-size: 16px; font-weight: 700; color: var(--text-primary); }
+  .product-sku {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-top: 3px;
+    direction: ltr;
+    display: inline-block;
+  }
+  .product-options {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-top: 6px;
+  }
+  .option-pill {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 2px 9px;
+    font-size: 12px;
+    color: var(--text-secondary);
+  }
+  .option-pill strong { color: var(--text-primary); font-weight: 600; }
+
+  /* Inventory Grid */
+  .inventory-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+  }
+  @media (max-width: 600px) {
+    .inventory-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  .inv-cell {
+    padding: 16px;
+    text-align: center;
+    border-left: 1px solid var(--border);
+    position: relative;
+  }
+  .inv-cell:last-child { border-left: none; }
+  @media (max-width: 600px) {
+    .inv-cell:nth-child(2) { border-left: none; }
+    .inv-cell:nth-child(3) { border-top: 1px solid var(--border); }
+    .inv-cell:nth-child(4) { border-top: 1px solid var(--border); border-left: none; }
+  }
+  .inv-label { font-size: 11px; color: var(--text-muted); font-weight: 500; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .inv-value { font-size: 28px; font-weight: 700; line-height: 1; font-variant-numeric: tabular-nums; }
+  .inv-desc { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+
+  .inv-on-hand .inv-value { color: var(--text-primary); }
+  .inv-available .inv-value { color: var(--green); }
+  .inv-committed .inv-value { color: var(--accent); }
+  .inv-unavailable .inv-value { color: var(--orange); }
+
+  /* Section title */
+  .section-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  /* Orders Card */
+  .orders-card {
+    background: var(--surface);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+  }
+  .orders-card-header {
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .orders-card-title { font-size: 14px; font-weight: 600; color: var(--text-primary); }
+  .orders-count-badge {
+    background: var(--accent-light);
+    color: var(--accent);
+    border-radius: 20px;
+    padding: 2px 10px;
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  .orders-table { width: 100%; border-collapse: collapse; }
+  .orders-table th {
+    padding: 10px 16px;
+    text-align: right;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    background: var(--surface-2);
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  .orders-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+    vertical-align: middle;
+  }
+  .orders-table tr:last-child td { border-bottom: none; }
+  .orders-table tr:hover td { background: var(--surface-2); }
+
+  .order-name-link {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+    text-decoration: none;
+    direction: ltr;
+    display: inline-block;
+  }
+  .order-name-link:hover { text-decoration: underline; }
+
+  .qty-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 28px; height: 28px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+  .qty-unfulfilled { background: var(--accent-light); color: var(--accent); }
+  .qty-total { background: var(--gray-light); color: var(--text-secondary); }
+
+  .order-date { color: var(--text-muted); font-size: 12px; }
+
+  /* Summary row */
+  .summary-row {
+    background: var(--surface-2);
+    border-top: 2px solid var(--border-strong);
+  }
+  .summary-row td {
+    padding: 12px 16px;
+    font-weight: 700;
+    font-size: 13px;
+    border-bottom: none !important;
+  }
+
+  /* Empty / Loading states */
+  .state-box {
+    padding: 40px 20px;
+    text-align: center;
+    color: var(--text-muted);
+  }
+  .state-box .state-icon { font-size: 36px; margin-bottom: 10px; }
+  .state-box p { font-size: 13px; }
+
+  .loading-spinner {
+    display: inline-block;
+    width: 20px; height: 20px;
+    border: 2px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: var(--text-primary);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    z-index: 999;
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    white-space: nowrap;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+  .toast.error { background: var(--red); }
+  .toast.success { background: var(--green); }
+
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="header-icon">📦</div>
+    <div class="header-text">
+      <h1>جرد المخزون</h1>
+      <p>ابحث بالـ SKU أو امسح الباركود لعرض تفاصيل المنتج والأوردرات</p>
+    </div>
+  </div>
+
+  <!-- Search Card -->
+  <div class="search-card">
+    <!-- Tabs -->
+    <div class="search-tabs">
+      <button class="tab-btn active" id="tabSku" onclick="switchTab('sku')">
+        🔍 بحث بالـ SKU
+      </button>
+      <button class="tab-btn" id="tabBarcode" onclick="switchTab('barcode')">
+        〡 مسح الباركود
+      </button>
+    </div>
+
+    <!-- SKU Dropdown -->
+    <div id="skuMode">
+      <div class="dropdown-wrap" id="dropdownWrap">
+        <div class="search-input-wrap">
+          <span class="search-icon">🔍</span>
+          <input
+            type="text"
+            id="skuSearch"
+            placeholder="ابحث بالـ SKU أو اسم المنتج..."
+            autocomplete="off"
+            spellcheck="false"
+          />
+          <button class="clear-btn" id="clearBtn" onclick="clearSearch()">✕</button>
+        </div>
+        <div class="dropdown-list" id="dropdownList"></div>
+      </div>
+    </div>
+
+    <!-- Barcode Mode -->
+    <div id="barcodeMode" class="barcode-area">
+      <div class="barcode-input-wrap" id="barcodeWrap">
+        <span class="barcode-icon-wrap">〡</span>
+        <input
+          type="text"
+          id="barcodeInput"
+          placeholder="امسح الباركود هنا..."
+          autocomplete="off"
+          spellcheck="false"
+          inputmode="numeric"
+        />
+      </div>
+      <div class="barcode-hint">
+        <span class="pulse-dot"></span>
+        جاهز للمسح — ضع المؤشر داخل الحقل ثم امسح
+      </div>
+    </div>
+  </div>
+
+  <!-- Results -->
+  <div id="results">
+
+    <!-- Product Card -->
+    <div class="product-card" id="productCard">
+      <div class="product-card-header">
+        <div>
+          <div class="product-title" id="productTitle">—</div>
+          <div class="product-sku" id="productSkuDisplay">—</div>
+          <div class="product-options" id="productOptions"></div>
+        </div>
+        <div id="productStatus"></div>
+      </div>
+      <div class="inventory-grid">
+        <div class="inv-cell inv-on-hand">
+          <div class="inv-label">On Hand</div>
+          <div class="inv-value" id="qtyOnHand">—</div>
+          <div class="inv-desc">إجمالي المخزن</div>
+        </div>
+        <div class="inv-cell inv-available">
+          <div class="inv-label">Available</div>
+          <div class="inv-value" id="qtyAvailable">—</div>
+          <div class="inv-desc">متاح للبيع</div>
+        </div>
+        <div class="inv-cell inv-committed">
+          <div class="inv-label">Committed</div>
+          <div class="inv-value" id="qtyCommitted">—</div>
+          <div class="inv-desc">في أوردرات لم تُشحن</div>
+        </div>
+        <div class="inv-cell inv-unavailable">
+          <div class="inv-label">Unavailable</div>
+          <div class="inv-value" id="qtyUnavailable">—</div>
+          <div class="inv-desc">محجوز / تالف</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Orders Loading -->
+    <div id="ordersLoading" style="display:none; text-align:center; padding:20px;">
+      <div class="loading-spinner"></div>
+      <p style="margin-top:10px; color:var(--text-muted); font-size:13px;">جاري تحميل الأوردرات...</p>
+    </div>
+
+    <!-- Orders Card -->
+    <div class="orders-card" id="ordersCard" style="display:none;">
+      <div class="orders-card-header">
+        <div class="orders-card-title">الأوردرات غير المشحونة (Unfulfilled)</div>
+        <div class="orders-count-badge" id="ordersCountBadge">0</div>
+      </div>
+      <div id="ordersBody"></div>
+    </div>
+
+  </div>
+
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ─── CONFIG ─────────────────────────────────────────────────────────────────
+const WORKER_URL = 'https://inventory-sku-checker.ecommoda24.workers.dev';
+const WORKER_SECRET = 'YOUR_WORKER_SECRET_HERE';
+
+const SHOP_DOMAIN = '6c7e1a-53.myshopify.com';
+
+// ─── State ───────────────────────────────────────────────────────────────────
+let currentSku = null;
+let searchDebounce = null;
+let barcodeBuffer = '';
+let barcodeTimeout = null;
+let lastKeyTime = 0;
+
+// ─── Toast ───────────────────────────────────────────────────────────────────
+function showToast(msg, type = '') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast' + (type ? ' ' + type : '');
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ─── Tabs ─────────────────────────────────────────────────────────────────────
+function switchTab(tab) {
+  document.getElementById('tabSku').classList.toggle('active', tab === 'sku');
+  document.getElementById('tabBarcode').classList.toggle('active', tab === 'barcode');
+  document.getElementById('skuMode').style.display = tab === 'sku' ? 'block' : 'none';
+  document.getElementById('barcodeMode').classList.toggle('active', tab === 'barcode');
+
+  if (tab === 'barcode') {
+    document.getElementById('barcodeInput').focus();
+  }
+}
+
+// ─── API ──────────────────────────────────────────────────────────────────────
+async function apiCall(params) {
+  const url = new URL(WORKER_URL);
+  Object.entries(params).forEach(([k, v]) => url.searchParams.set(k, v));
+  const res = await fetch(url.toString(), {
+    headers: { 'X-Worker-Secret': WORKER_SECRET },
+  });
+  const data = await res.json();
+  if (!res.ok || !data.ok) throw new Error(data.error || 'خطأ في الاتصال');
+  return data;
+}
+
+// ─── SKU Search / Dropdown ────────────────────────────────────────────────────
+const skuSearch = document.getElementById('skuSearch');
+const dropdownList = document.getElementById('dropdownList');
+const clearBtn = document.getElementById('clearBtn');
+
+skuSearch.addEventListener('input', () => {
+  const val = skuSearch.value.trim();
+  clearBtn.classList.toggle('visible', val.length > 0);
+  clearTimeout(searchDebounce);
+  if (val.length === 0) {
+    dropdownList.innerHTML = '';
+    dropdownList.classList.remove('open');
+    return;
+  }
+  searchDebounce = setTimeout(() => loadSkus(val), 350);
+});
+
+skuSearch.addEventListener('focus', () => {
+  if (skuSearch.value.trim()) loadSkus(skuSearch.value.trim());
+});
+
+document.addEventListener('click', e => {
+  if (!document.getElementById('dropdownWrap').contains(e.target)) {
+    dropdownList.classList.remove('open');
+  }
+});
+
+function clearSearch() {
+  skuSearch.value = '';
+  clearBtn.classList.remove('visible');
+  dropdownList.innerHTML = '';
+  dropdownList.classList.remove('open');
+  skuSearch.focus();
+}
+
+async function loadSkus(search) {
+  dropdownList.innerHTML = '<div class="dropdown-loading"><div class="loading-spinner"></div></div>';
+  dropdownList.classList.add('open');
+  try {
+    const data = await apiCall({ action: 'list_skus', search });
+    renderDropdown(data.variants);
+  } catch (e) {
+    dropdownList.innerHTML = `<div class="dropdown-empty">⚠️ ${e.message}</div>`;
+  }
+}
+
+function getStatusLabel(status) {
+  const map = { ACTIVE: 'نشط', DRAFT: 'مسودة', ARCHIVED: 'مؤرشف' };
+  return map[status] || status;
+}
+
+function renderDropdown(variants) {
+  if (!variants.length) {
+    dropdownList.innerHTML = '<div class="dropdown-empty">لا توجد نتائج</div>';
+    return;
+  }
+  dropdownList.innerHTML = variants.map(v => {
+    const levels = v.inventoryItem?.inventoryLevels?.nodes?.[0]?.quantities || [];
+    const avail = levels.find(q => q.name === 'available')?.quantity ?? '—';
+    return `
+      <div class="dropdown-item ${v.sku === currentSku ? 'selected' : ''}"
+           onclick="selectVariant(${JSON.stringify(v).replace(/"/g, '&quot;')})">
+        <span class="item-sku">${v.sku || '—'}</span>
+        <span class="item-name">${v.product?.title || ''} ${v.selectedOptions?.map(o => o.value).join(' / ') || ''}</span>
+        <span class="item-stock">متاح: ${avail}</span>
+      </div>`;
+  }).join('');
+  dropdownList.classList.add('open');
+}
+
+// ─── Select Variant ───────────────────────────────────────────────────────────
+function selectVariant(variant) {
+  currentSku = variant.sku;
+  skuSearch.value = variant.sku;
+  clearBtn.classList.add('visible');
+  dropdownList.classList.remove('open');
+  renderProductCard(variant);
+  loadOrders(variant.sku);
+}
+
+// ─── Barcode Input (scanner gun) ──────────────────────────────────────────────
+const barcodeInput = document.getElementById('barcodeInput');
+const barcodeWrap = document.getElementById('barcodeWrap');
+
+barcodeInput.addEventListener('keydown', e => {
+  const now = Date.now();
+  const gap = now - lastKeyTime;
+  lastKeyTime = now;
+
+  clearTimeout(barcodeTimeout);
+  const isScanner = gap < 80;
+  const delay = isScanner ? 150 : 400;
+
+  barcodeWrap.classList.add('scanning');
+  barcodeTimeout = setTimeout(() => {
+    handleBarcodeScan();
+  }, delay);
+});
+
+function handleBarcodeScan() {
+  const val = barcodeInput.value.trim();
+  barcodeInput.value = '';
+  barcodeInput.focus();
+  barcodeWrap.classList.remove('scanning');
+  if (!val) return;
+  lookupByBarcode(val);
+}
+
+async function lookupByBarcode(barcode) {
+  showToast('جاري البحث...', '');
+  try {
+    const data = await apiCall({ action: 'lookup_barcode', barcode });
+    if (!data.variant) {
+      showToast('لا يوجد منتج بهذا الباركود', 'error');
+      return;
+    }
+    showToast('تم العثور على المنتج', 'success');
+    selectVariant(data.variant);
+    // switch to SKU tab to show results
+    switchTab('sku');
+    skuSearch.value = data.variant.sku;
+    clearBtn.classList.add('visible');
+  } catch (e) {
+    showToast(e.message, 'error');
+  }
+}
+
+// ─── Render Product Card ──────────────────────────────────────────────────────
+function renderProductCard(variant) {
+  document.getElementById('productTitle').textContent = variant.product?.title || '—';
+  document.getElementById('productSkuDisplay').textContent = 'SKU: ' + (variant.sku || '—');
+
+  // Options
+  const opts = variant.selectedOptions || [];
+  document.getElementById('productOptions').innerHTML = opts
+    .filter(o => o.value !== 'Default Title')
+    .map(o => `<span class="option-pill"><strong>${o.name}:</strong> ${o.value}</span>`)
+    .join('');
+
+  // Status
+  const status = variant.product?.status || '';
+  const statusLabels = { ACTIVE: 'نشط ✓', DRAFT: 'مسودة', ARCHIVED: 'مؤرشف' };
+  document.getElementById('productStatus').innerHTML =
+    `<span class="status-badge status-${status}">${statusLabels[status] || status}</span>`;
+
+  // Inventory
+  const levels = variant.inventoryItem?.inventoryLevels?.nodes?.[0]?.quantities || [];
+  const get = name => {
+    const q = levels.find(l => l.name === name)?.quantity;
+    return q != null ? q.toLocaleString('en-US') : '—';
+  };
+  document.getElementById('qtyOnHand').textContent = get('on_hand');
+  document.getElementById('qtyAvailable').textContent = get('available');
+  document.getElementById('qtyCommitted').textContent = get('committed');
+  document.getElementById('qtyUnavailable').textContent = get('unavailable');
+
+  document.getElementById('results').classList.add('visible');
+  document.getElementById('ordersCard').style.display = 'none';
+}
+
+// ─── Load Unfulfilled Orders ──────────────────────────────────────────────────
+async function loadOrders(sku) {
+  document.getElementById('ordersLoading').style.display = 'block';
+  document.getElementById('ordersCard').style.display = 'none';
+
+  try {
+    const data = await apiCall({ action: 'get_details', sku });
+    renderOrders(data.orders, sku);
+  } catch (e) {
+    document.getElementById('ordersLoading').style.display = 'none';
+    showToast('خطأ في تحميل الأوردرات: ' + e.message, 'error');
+  }
+}
+
+function renderOrders(orders, sku) {
+  document.getElementById('ordersLoading').style.display = 'none';
+  const card = document.getElementById('ordersCard');
+  card.style.display = 'block';
+
+  document.getElementById('ordersCountBadge').textContent = orders.length;
+
+  const body = document.getElementById('ordersBody');
+
+  if (!orders.length) {
+    body.innerHTML = `<div class="state-box"><div class="state-icon">✅</div><p>لا توجد أوردرات Unfulfilled لهذا الـ SKU</p></div>`;
+    return;
+  }
+
+  let totalUnfulfilled = 0;
+  let totalOrdered = 0;
+
+  const rows = orders.map(order => {
+    const unf = order.items.reduce((s, i) => s + i.unfulfilledQuantity, 0);
+    const tot = order.items.reduce((s, i) => s + i.quantity, 0);
+    totalUnfulfilled += unf;
+    totalOrdered += tot;
+    const date = new Date(order.createdAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+    const orderId = order.id.split('/').pop();
+    return `
+      <tr>
+        <td>
+          <a class="order-name-link"
+             href="https://${SHOP_DOMAIN}/admin/orders/${orderId}"
+             target="_blank">${order.name}</a>
+        </td>
+        <td><span class="order-date">${date}</span></td>
+        <td style="text-align:center;">
+          <span class="qty-badge qty-unfulfilled">${unf.toLocaleString('en-US')}</span>
+        </td>
+        <td style="text-align:center;">
+          <span class="qty-badge qty-total">${tot.toLocaleString('en-US')}</span>
+        </td>
+      </tr>`;
+  }).join('');
+
+  body.innerHTML = `
+    <table class="orders-table">
+      <thead>
+        <tr>
+          <th>رقم الأوردر</th>
+          <th>التاريخ</th>
+          <th style="text-align:center;">غير مشحون</th>
+          <th style="text-align:center;">إجمالي الطلب</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${rows}
+        <tr class="summary-row">
+          <td colspan="2">الإجمالي (${orders.length} أوردر)</td>
+          <td style="text-align:center;"><span class="qty-badge qty-unfulfilled">${totalUnfulfilled.toLocaleString('en-US')}</span></td>
+          <td style="text-align:center;"><span class="qty-badge qty-total">${totalOrdered.toLocaleString('en-US')}</span></td>
+        </tr>
+      </tbody>
+    </table>`;
+}
+</script>
+</body>
+</html>
