@@ -191,6 +191,21 @@
   }
   .btn-cancel:hover { border-color: var(--text-secondary); color: var(--text-primary); }
 
+  .refresh-btn {
+    display: flex; align-items: center; gap: 5px;
+    padding: 6px 12px;
+    background: var(--bg);
+    border: 1.5px solid var(--border-strong);
+    border-radius: var(--radius-sm);
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.18s;
+  }
+  .refresh-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
+
   .not-configured-banner {
     background: var(--orange-light);
     border: 1px solid #fde68a;
@@ -433,29 +448,45 @@
     flex-wrap: wrap;
   }
   .product-title { font-size: 16px; font-weight: 700; color: var(--text-primary); }
-  .product-sku {
+  .product-sku-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 5px;
+    text-decoration: none;
+    direction: ltr;
+  }
+  .sku-pill {
     font-family: 'IBM Plex Mono', monospace;
     font-size: 12px;
-    color: var(--text-secondary);
-    margin-top: 3px;
+    font-weight: 700;
+    color: var(--accent);
+    background: var(--accent-light);
+    border: 1px solid #bfdbfe;
+    border-radius: 6px;
+    padding: 3px 10px;
     direction: ltr;
-    display: inline-block;
+    transition: background 0.15s;
+  }
+  .product-sku-link:hover .sku-pill {
+    background: #dbeafe;
   }
   .product-options {
     display: flex;
     gap: 6px;
     flex-wrap: wrap;
-    margin-top: 6px;
+    margin-top: 7px;
   }
   .option-pill {
-    background: var(--bg);
-    border: 1px solid var(--border);
     border-radius: 6px;
-    padding: 2px 9px;
+    padding: 3px 10px;
     font-size: 12px;
-    color: var(--text-secondary);
+    font-weight: 600;
+    border: 1px solid;
   }
-  .option-pill strong { color: var(--text-primary); font-weight: 600; }
+  .option-pill-shoe  { background: #f0fdf4; color: #15803d; border-color: #bbf7d0; }
+  .option-pill-color { background: #fdf4ff; color: #7e22ce; border-color: #e9d5ff; }
+  .option-pill-other { background: var(--bg); color: var(--text-secondary); border-color: var(--border); }
 
   /* Inventory Grid */
   .inventory-grid {
@@ -716,10 +747,17 @@
       <div class="product-card-header">
         <div>
           <div class="product-title" id="productTitle">—</div>
-          <div class="product-sku" id="productSkuDisplay">—</div>
+          <a class="product-sku-link" id="productSkuLink" href="#" target="_blank">
+            <span class="sku-pill" id="productSkuDisplay">SKU: —</span>
+          </a>
           <div class="product-options" id="productOptions"></div>
         </div>
-        <div id="productStatus"></div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;">
+          <div id="productStatus"></div>
+          <button class="refresh-btn" id="refreshBtn" onclick="refreshCurrent()" style="display:none;">
+            ↻ Refresh
+          </button>
+        </div>
       </div>
       <div class="inventory-grid">
         <div class="inv-cell inv-on-hand">
@@ -998,20 +1036,41 @@ async function lookupByBarcode(barcode) {
 // ─── Render Product Card ──────────────────────────────────────────────────────
 function renderProductCard(variant) {
   document.getElementById('productTitle').textContent = variant.product?.title || '—';
-  document.getElementById('productSkuDisplay').textContent = 'SKU: ' + (variant.sku || '—');
 
-  // Options
+  // SKU pill with link to variant page
+  const sku = variant.sku || '—';
+  document.getElementById('productSkuDisplay').textContent = 'SKU: ' + sku;
+  const variantGid = variant.id || '';
+  const productGid = variant.product?.id || '';
+  const variantNumId = variantGid.split('/').pop();
+  const productNumId = productGid.split('/').pop();
+  const variantUrl = productNumId && variantNumId
+    ? `https://admin.shopify.com/store/6c7e1a-53/products/${productNumId}/variants/${variantNumId}`
+    : '#';
+  document.getElementById('productSkuLink').href = variantUrl;
+
+  // Options — color-coded pills
   const opts = variant.selectedOptions || [];
+  const shoeSizeNames = ['shoe size', 'size', 'مقاس'];
+  const colorNames = ['color', 'colour', 'لون'];
   document.getElementById('productOptions').innerHTML = opts
     .filter(o => o.value !== 'Default Title')
-    .map(o => `<span class="option-pill"><strong>${o.name}:</strong> ${o.value}</span>`)
-    .join('');
+    .map(o => {
+      const key = o.name.toLowerCase();
+      let cls = 'option-pill-other';
+      if (shoeSizeNames.some(n => key.includes(n))) cls = 'option-pill-shoe';
+      else if (colorNames.some(n => key.includes(n))) cls = 'option-pill-color';
+      return `<span class="option-pill ${cls}">${o.name}: ${o.value}</span>`;
+    }).join('');
 
   // Status
   const status = variant.product?.status || '';
-  const statusLabels = { ACTIVE: 'نشط ✓', DRAFT: 'مسودة', ARCHIVED: 'مؤرشف' };
+  const statusLabels = { ACTIVE: 'Active ✓', DRAFT: 'Draft', ARCHIVED: 'Archived' };
   document.getElementById('productStatus').innerHTML =
     `<span class="status-badge status-${status}">${statusLabels[status] || status}</span>`;
+
+  // Show refresh btn
+  document.getElementById('refreshBtn').style.display = 'flex';
 
   // Inventory
   const levels = variant.inventoryItem?.inventoryLevels?.nodes?.[0]?.quantities || [];
@@ -1025,6 +1084,25 @@ function renderProductCard(variant) {
 
   document.getElementById('results').classList.add('visible');
   document.getElementById('ordersCard').style.display = 'none';
+}
+
+// ─── Refresh current SKU ──────────────────────────────────────────────────────
+async function refreshCurrent() {
+  if (!currentSku) return;
+  showToast('جاري التحديث...', '');
+  try {
+    const data = await apiCall({ action: 'list_skus', search: currentSku });
+    const variant = data.variants.find(v => v.sku === currentSku);
+    if (variant) {
+      renderProductCard(variant);
+      loadOrders(currentSku);
+      showToast('تم التحديث ✓', 'success');
+    } else {
+      showToast('لم يتم العثور على الـ SKU', 'error');
+    }
+  } catch (e) {
+    showToast('خطأ: ' + e.message, 'error');
+  }
 }
 
 // ─── Load Unfulfilled Orders ──────────────────────────────────────────────────
@@ -1056,14 +1134,14 @@ function renderOrders(orders, sku) {
   }
 
   let totalUnfulfilled = 0;
-  let totalOrdered = 0;
 
   const rows = orders.map(order => {
     const unf = order.items.reduce((s, i) => s + i.unfulfilledQuantity, 0);
-    const tot = order.items.reduce((s, i) => s + i.quantity, 0);
     totalUnfulfilled += unf;
-    totalOrdered += tot;
-    const date = new Date(order.createdAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+    const d = new Date(order.createdAt);
+    const day = String(d.getDate()).padStart(2,'0');
+    const monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    const date = `${day}-${monthNames[d.getMonth()]}-${d.getFullYear()}`;
     const orderId = order.id.split('/').pop();
     return `
       <tr>
@@ -1076,9 +1154,6 @@ function renderOrders(orders, sku) {
         <td style="text-align:center;">
           <span class="qty-badge qty-unfulfilled">${unf.toLocaleString('en-US')}</span>
         </td>
-        <td style="text-align:center;">
-          <span class="qty-badge qty-total">${tot.toLocaleString('en-US')}</span>
-        </td>
       </tr>`;
   }).join('');
 
@@ -1088,8 +1163,7 @@ function renderOrders(orders, sku) {
         <tr>
           <th>رقم الأوردر</th>
           <th>التاريخ</th>
-          <th style="text-align:center;">غير مشحون</th>
-          <th style="text-align:center;">إجمالي الطلب</th>
+          <th style="text-align:center;">عدد القطع غير مشحونة</th>
         </tr>
       </thead>
       <tbody>
@@ -1097,7 +1171,6 @@ function renderOrders(orders, sku) {
         <tr class="summary-row">
           <td colspan="2">الإجمالي (${orders.length} أوردر)</td>
           <td style="text-align:center;"><span class="qty-badge qty-unfulfilled">${totalUnfulfilled.toLocaleString('en-US')}</span></td>
-          <td style="text-align:center;"><span class="qty-badge qty-total">${totalOrdered.toLocaleString('en-US')}</span></td>
         </tr>
       </tbody>
     </table>`;
