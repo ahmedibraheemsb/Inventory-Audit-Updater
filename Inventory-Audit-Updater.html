@@ -82,26 +82,21 @@ body{font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:va
 .val-onhand{color:var(--text-primary);}
 .val-shelf{color:#92400e;font-size:40px !important;}
 
-/* ─── Audit Card ─────────────────────────────────────────────────── */
 .audit-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px;margin-bottom:10px;box-shadow:var(--shadow);}
 .audit-phase1{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
 .audit-q-left{display:flex;flex-direction:column;gap:4px;}
 .audit-q-text{font-size:14px;font-weight:700;color:var(--text-primary);display:flex;align-items:center;gap:7px;}
-
-/* آخر جرد row — يظهر تحت السؤال */
 .audit-last-row{display:none;align-items:center;gap:8px;margin-top:2px;}
 .audit-last-label{font-size:11px;color:var(--text-muted);}
 .audit-last-val{font-size:11px;font-weight:700;color:var(--text-secondary);font-family:'IBM Plex Mono',monospace;}
 .audit-history-link{font-size:11px;font-weight:600;color:var(--accent);text-decoration:none;display:flex;align-items:center;gap:2px;padding:2px 7px;border-radius:4px;background:var(--accent-light);transition:background .12s;white-space:nowrap;}
 .audit-history-link:hover{background:#dbeafe;}
-
 .audit-q-btns{display:flex;gap:8px;flex-shrink:0;}
 .btn-audit-ok{display:flex;align-items:center;gap:6px;padding:10px 22px;background:var(--green-light);color:var(--green);border:1.5px solid var(--green-border);border-radius:var(--radius-sm);font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;transition:all .15s;white-space:nowrap;}
 .btn-audit-ok:hover{background:var(--green);color:#fff;border-color:var(--green);}
 .btn-audit-ok:disabled{opacity:.5;cursor:not-allowed;}
 .btn-want-adjust{display:flex;align-items:center;gap:6px;padding:10px 22px;background:var(--surface-2);color:var(--text-secondary);border:1.5px solid var(--border-strong);border-radius:var(--radius-sm);font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;transition:all .15s;white-space:nowrap;}
 .btn-want-adjust:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-light);}
-
 .adjust-panel{display:none;border-top:1px solid var(--border);margin-top:16px;padding-top:16px;}
 .adjust-panel.visible{display:block;}
 .adjust-panel-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
@@ -126,14 +121,12 @@ body{font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:va
 .btn-apply:hover{background:var(--accent-dark);}
 .btn-apply:disabled{opacity:.5;cursor:not-allowed;}
 
-/* ─── Warning Banner (red) ───────────────────────────────────────── */
 #warningBanner{display:none;background:#fef2f2;border:2px solid var(--red);border-radius:var(--radius-sm);padding:16px 20px;margin-bottom:10px;align-items:flex-start;gap:12px;}
 .warning-icon{font-size:22px;flex-shrink:0;margin-top:1px;}
 .warning-text{display:flex;flex-direction:column;gap:3px;}
 .warning-title{font-size:14px;font-weight:800;color:var(--red);}
 .warning-body{font-size:13px;font-weight:500;color:#7f1d1d;}
 
-/* ─── Orders Card (collapsible) ──────────────────────────────────── */
 .orders-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;}
 .orders-card-header{padding:11px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;transition:background .12s;}
 .orders-card-header:hover{background:var(--surface-2);}
@@ -168,7 +161,6 @@ body{font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:va
 .loading-spinner{display:inline-block;width:18px;height:18px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg);}}
 
-/* ─── Settings Modal ─────────────────────────────────────────────── */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .2s;}
 .modal-overlay.open{opacity:1;pointer-events:all;}
 .modal{background:var(--surface);border-radius:var(--radius);width:100%;max-width:440px;box-shadow:0 20px 60px rgba(0,0,0,.2);overflow:hidden;transform:translateY(14px);transition:transform .2s cubic-bezier(.34,1.56,.64,1);}
@@ -185,7 +177,6 @@ body{font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:va
 .btn-modal-cancel{padding:8px 14px;background:transparent;color:var(--text-secondary);border:1px solid var(--border-strong);border-radius:var(--radius-sm);font-family:inherit;font-size:12px;cursor:pointer;}
 .btn-modal-cancel:hover{color:var(--text-primary);border-color:var(--text-secondary);}
 
-/* ─── Confirm Modal ──────────────────────────────────────────────── */
 .confirm-modal .modal-header{background:var(--surface-2);display:flex;align-items:center;gap:8px;}
 .confirm-detail-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);}
 .confirm-detail-row:last-of-type{border-bottom:none;}
@@ -328,7 +319,6 @@ body{font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:va
       <div class="audit-phase1">
         <div class="audit-q-left">
           <div class="audit-q-text">🔎 هل عدد قطع الرف مظبوط؟</div>
-          <!-- آخر جرد + عرض السجل -->
           <div class="audit-last-row" id="auditLastRow">
             <span class="audit-last-label">📅 آخر جرد:</span>
             <span class="audit-last-val" id="auditLastVal">—</span>
@@ -415,7 +405,6 @@ const LS_SEC_KEY = 'stockaudit_worker_secret';
 let currentSku = null, currentVariant = null, currentShelfQty = null;
 let currentInventoryItemId = null;
 
-// ─── Config ───────────────────────────────────────────────────────────────────
 function getConfig(){return{url:localStorage.getItem(LS_URL_KEY)||'',secret:localStorage.getItem(LS_SEC_KEY)||''};}
 function isConfigured(){const c=getConfig();return c.url.startsWith('http')&&c.secret.length>0;}
 function updateSettingsBtn(){document.getElementById('settingsBtn').classList.toggle('configured',isConfigured());}
@@ -506,7 +495,8 @@ function selectVariant(variant){
   currentSku=variant.sku;currentVariant=variant;
   skuSearch.value=variant.sku;clearBtn.classList.add('visible');
   dropdownList.classList.remove('open');
-  renderProductCard(variant);loadOrders(variant.sku);
+  renderProductCard(variant);
+  loadOrders(variant);
 }
 
 // ─── Barcode ──────────────────────────────────────────────────────────────────
@@ -575,7 +565,6 @@ function renderProductCard(variant){
 
   currentShelfQty=null;
   hideAdjustPanel();
-  // reset audit last row — don't hide it, just clear date until loaded
   document.getElementById('auditLastVal').textContent='جاري التحميل...';
   document.getElementById('auditLastRow').style.display='flex';
 
@@ -612,20 +601,16 @@ function updatePreview(){
   btnApply.disabled=false;
 }
 
-// ─── Confirm Modal (fixed) ────────────────────────────────────────────────────
-function openConfirm(headerHTML, bodyHTML, okLabel, okClass, onConfirm){
+// ─── Confirm Modal ────────────────────────────────────────────────────────────
+function openConfirm(headerHTML,bodyHTML,okLabel,okClass,onConfirm){
   document.getElementById('confirmHeader').innerHTML=headerHTML;
   document.getElementById('confirmBody').innerHTML=bodyHTML;
-
   const okBtn=document.getElementById('confirmOkBtn');
   const cancelBtn=document.getElementById('confirmCancelBtn');
-
-  // clone to remove old listeners
   const newOk=okBtn.cloneNode(true);
   const newCancel=cancelBtn.cloneNode(true);
   okBtn.parentNode.replaceChild(newOk,okBtn);
   cancelBtn.parentNode.replaceChild(newCancel,cancelBtn);
-
   newOk.textContent=okLabel;
   newOk.className='btn-confirm-ok '+okClass;
   newOk.addEventListener('click',()=>{
@@ -635,11 +620,9 @@ function openConfirm(headerHTML, bodyHTML, okLabel, okClass, onConfirm){
   newCancel.addEventListener('click',()=>{
     document.getElementById('confirmOverlay').classList.remove('open');
   });
-
   document.getElementById('confirmOverlay').classList.add('open');
 }
 
-// ─── Confirm: Audit OK ────────────────────────────────────────────────────────
 function confirmAuditOk(){
   if(!currentVariant){showToast('لم يتم اختيار منتج','error');return;}
   const shelf=currentShelfQty!=null?currentShelfQty.toLocaleString('en-US'):'—';
@@ -663,17 +646,14 @@ async function doAuditOk(){
   finally{btn.disabled=false;btn.textContent='✅ الجرد مظبوط';}
 }
 
-// ─── Confirm: Adjust ──────────────────────────────────────────────────────────
 function confirmAdjust(){
   const delta=parseInt(document.getElementById('deltaInput').value)||0;
   if(delta===0){showToast('التعديل يجب أن يكون غير صفر','error');return;}
   if(!currentVariant){showToast('لم يتم اختيار منتج','error');return;}
-
   const current=currentShelfQty!=null?currentShelfQty:0;
   const newVal=current+delta;
   const deltaStr=(delta>0?'+':'')+delta.toLocaleString('en-US');
   const deltaClass=delta>0?'green':'red';
-
   const body=`
     <div class="confirm-detail-row"><span class="confirm-detail-label">المنتج</span><span class="confirm-detail-val">${currentVariant.product?.title||'—'}</span></div>
     <div class="confirm-detail-row"><span class="confirm-detail-label">SKU</span><span class="confirm-detail-val accent">${currentVariant.sku||'—'}</span></div>
@@ -689,12 +669,10 @@ async function doApplyAdjust(){
   const inventoryItemId=currentVariant.inventoryItem?.id;
   const variantId=currentVariant.id;
   if(!inventoryItemId){showToast('لا يوجد inventoryItem ID','error');return;}
-
   const btn=document.getElementById('btnApplyAdjust');
   const btnAudit=document.getElementById('btnAuditOk');
   btn.disabled=true;btnAudit.disabled=true;
   btn.textContent='⏳ جاري التعديل...';
-
   try{
     const data=await apiCall({action:'adjust_inventory',inventoryItemId,variantId,delta:delta.toString()});
     showToast(`تم التعديل بنجاح (${delta>0?'+':''}${delta}) ✓`,'success');
@@ -729,25 +707,29 @@ async function refreshCurrent(){
   try{
     const data=await apiCall({action:'list_skus',search:currentSku});
     const variant=(data.variants||[]).find(v=>v.sku===currentSku);
-    if(variant){currentVariant=variant;renderProductCard(variant);loadOrders(currentSku);}
+    if(variant){currentVariant=variant;renderProductCard(variant);loadOrders(variant);}
     else showToast('لم يتم العثور على الـ SKU','error');
   }catch(e){showToast('خطأ في التحديث: '+e.message,'error');}
 }
 
 // ─── Load Orders ──────────────────────────────────────────────────────────────
-async function loadOrders(sku){
+// التعديل: بنمرر الـ variant object كاملاً عشان نجيب منه variantId و productId
+async function loadOrders(variant){
   document.getElementById('ordersLoading').style.display='block';
   document.getElementById('ordersCard').style.display='none';
   ordersCollapsed=false;
   document.getElementById('ordersBodyWrap').classList.remove('collapsed');
   document.getElementById('collapseIcon').classList.add('open');
   try{
-    // fetch audit date and orders in parallel
     const [ordersData] = await Promise.all([
-      apiCall({action:'get_details',sku}),
+      apiCall({
+        action: 'get_details',
+        variantId: variant.id,
+        productId: variant.product?.id,   // ← الجديد: بنبعت productId
+      }),
       loadAuditDate()
     ]);
-    renderOrders(ordersData.orders,sku);
+    renderOrders(ordersData.orders);
   }catch(e){
     document.getElementById('ordersLoading').style.display='none';
     showToast('خطأ في تحميل الأوردرات: '+e.message,'error');
@@ -757,7 +739,6 @@ async function loadOrders(sku){
 async function loadAuditDate(){
   if(!currentVariant)return;
   try{
-    // We read the metafield via a dedicated action
     const data=await apiCall({action:'get_audit_date',variantId:currentVariant.id});
     if(data.auditDate){
       updateLastAudit(data.auditDate);
@@ -769,7 +750,7 @@ async function loadAuditDate(){
   }
 }
 
-function renderOrders(orders,sku){
+function renderOrders(orders){
   document.getElementById('ordersLoading').style.display='none';
   const card=document.getElementById('ordersCard');card.style.display='block';
   document.getElementById('ordersCountBadge').textContent=orders.length;
