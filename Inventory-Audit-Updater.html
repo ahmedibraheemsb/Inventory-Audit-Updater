@@ -3,762 +3,167 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>جرد المخزون</title>
+<title>StockAudit</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap');
 
-  :root {
-    --bg: #f4f5f7;
-    --surface: #ffffff;
-    --surface-2: #f9fafb;
-    --border: #e5e7eb;
-    --border-strong: #d1d5db;
-    --text-primary: #111827;
-    --text-secondary: #6b7280;
-    --text-muted: #9ca3af;
-    --accent: #2563eb;
-    --accent-light: #eff6ff;
-    --accent-dark: #1d4ed8;
-    --green: #16a34a;
-    --green-light: #f0fdf4;
-    --orange: #d97706;
-    --orange-light: #fffbeb;
-    --red: #dc2626;
-    --red-light: #fef2f2;
-    --purple: #7c3aed;
-    --purple-light: #f5f3ff;
-    --gray: #6b7280;
-    --gray-light: #f9fafb;
-    --shadow-sm: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
-    --shadow-md: 0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04);
-    --shadow-lg: 0 8px 24px rgba(0,0,0,0.1), 0 4px 8px rgba(0,0,0,0.04);
-    --radius: 12px;
-    --radius-sm: 8px;
-  }
+:root {
+  --bg:#f3f4f6; --surface:#fff; --surface-2:#f9fafb;
+  --border:#e5e7eb; --border-strong:#d1d5db;
+  --text-primary:#111827; --text-secondary:#6b7280; --text-muted:#9ca3af;
+  --accent:#2563eb; --accent-light:#eff6ff; --accent-dark:#1d4ed8;
+  --green:#16a34a; --green-light:#f0fdf4; --green-border:#86efac;
+  --red:#dc2626; --red-light:#fef2f2; --red-border:#fca5a5;
+  --amber:#d97706; --amber-light:#fffbeb;
+  --radius:12px; --radius-sm:8px;
+  --shadow:0 1px 3px rgba(0,0,0,.07),0 1px 2px rgba(0,0,0,.04);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:var(--text-primary);min-height:100vh;padding:20px 24px;font-size:14px;line-height:1.5;}
+.container{max-width:1100px;margin:0 auto;}
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+/* App Header */
+.app-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+.app-title{display:flex;align-items:center;gap:10px;}
+.app-title h1{font-size:17px;font-weight:700;}
+.app-title span{font-size:12px;color:var(--text-muted);}
+.settings-btn{display:flex;align-items:center;gap:5px;padding:7px 13px;background:var(--surface);border:1px solid var(--border-strong);border-radius:var(--radius-sm);font-family:inherit;font-size:12px;font-weight:500;color:var(--text-secondary);cursor:pointer;transition:all .15s;}
+.settings-btn:hover{border-color:var(--accent);color:var(--accent);}
+.settings-btn.configured{border-color:var(--green);color:var(--green);background:var(--green-light);}
 
-  body {
-    font-family: 'IBM Plex Sans Arabic', sans-serif;
-    background: var(--bg);
-    color: var(--text-primary);
-    min-height: 100vh;
-    padding: 24px 16px;
-    font-size: 14px;
-    line-height: 1.6;
-  }
+/* Search Card */
+.search-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px;margin-bottom:14px;box-shadow:var(--shadow);}
+.search-tabs{display:flex;gap:6px;margin-bottom:14px;background:var(--bg);border-radius:var(--radius-sm);padding:3px;}
+.tab-btn{flex:1;padding:8px 10px;border:none;background:transparent;border-radius:6px;font-family:inherit;font-size:12px;font-weight:500;color:var(--text-secondary);cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:5px;}
+.tab-btn.active{background:var(--surface);color:var(--accent);box-shadow:var(--shadow);}
+.search-input-wrap{display:flex;align-items:center;border:1.5px solid var(--border-strong);border-radius:var(--radius-sm);background:var(--surface);transition:border-color .15s,box-shadow .15s;}
+.search-input-wrap:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px rgba(37,99,235,.08);}
+.search-icon{padding:0 10px;color:var(--text-muted);font-size:15px;}
+#skuSearch{flex:1;border:none;outline:none;padding:10px 4px;font-family:inherit;font-size:13px;color:var(--text-primary);background:transparent;direction:rtl;text-align:right;}
+#skuSearch::placeholder{color:var(--text-muted);}
+.clear-btn{padding:0 10px;background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:15px;display:none;align-items:center;}
+.clear-btn.visible{display:flex;}
+.dropdown-wrap{position:relative;}
+.dropdown-list{position:absolute;top:calc(100% + 5px);right:0;left:0;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);box-shadow:0 8px 24px rgba(0,0,0,.1);max-height:280px;overflow-y:auto;z-index:100;display:none;}
+.dropdown-list.open{display:block;}
+.dropdown-item{padding:9px 14px;cursor:pointer;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;transition:background .1s;}
+.dropdown-item:last-child{border-bottom:none;}
+.dropdown-item:hover{background:var(--accent-light);}
+.item-sku{font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;color:var(--accent);background:var(--accent-light);padding:2px 7px;border-radius:4px;white-space:nowrap;}
+.item-name{font-size:12px;color:var(--text-primary);flex:1;}
+.dropdown-loading,.dropdown-empty{padding:18px;text-align:center;color:var(--text-muted);font-size:12px;}
+.barcode-area{display:none;}
+.barcode-area.active{display:block;}
+.barcode-input-wrap{display:flex;align-items:center;border:1.5px solid var(--border-strong);border-radius:var(--radius-sm);background:var(--surface);transition:all .15s;}
+.barcode-input-wrap.scanning{border-color:var(--green);box-shadow:0 0 0 3px rgba(22,163,74,.1);}
+#barcodeInput{flex:1;border:none;outline:none;padding:10px 14px;font-family:'IBM Plex Mono',monospace;font-size:14px;color:var(--text-primary);background:transparent;direction:rtl;text-align:right;}
+#barcodeInput::placeholder{font-family:'IBM Plex Sans Arabic',sans-serif;color:var(--text-muted);}
+.barcode-icon{padding:0 14px;color:var(--text-muted);font-size:20px;}
 
-  .container {
-    max-width: 900px;
-    margin: 0 auto;
-  }
+/* Results */
+#results{display:none;}
+#results.visible{display:block;}
 
-  /* ─── Header ─── */
-  .header {
-    background: var(--surface);
-    border-radius: var(--radius);
-    padding: 20px 24px;
-    margin-bottom: 20px;
-    box-shadow: var(--shadow-sm);
-    border: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    gap: 14px;
-  }
-  .header-icon {
-    width: 44px; height: 44px;
-    background: var(--accent-light);
-    border-radius: 10px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 22px;
-    flex-shrink: 0;
-  }
-  .header-text { flex: 1; }
-  .header-text h1 { font-size: 18px; font-weight: 700; color: var(--text-primary); }
-  .header-text p { font-size: 13px; color: var(--text-secondary); margin-top: 2px; }
+/* Product Topbar */
+.product-topbar{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:11px 18px;margin-bottom:10px;box-shadow:var(--shadow);display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+.product-name{flex:1;font-size:14px;font-weight:700;color:var(--text-primary);min-width:200px;}
+.sku-link{display:inline-flex;align-items:center;gap:4px;text-decoration:none;}
+.sku-pill{font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;color:var(--accent);background:var(--accent-light);border:1px solid #bfdbfe;border-radius:5px;padding:3px 9px;transition:background .15s;}
+.sku-link:hover .sku-pill{background:#dbeafe;}
+.sku-arrow{font-size:11px;color:var(--text-muted);}
+.status-badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;}
+.status-ACTIVE{background:var(--green-light);color:var(--green);}
+.status-OTHER{background:var(--red-light);color:var(--red);}
+.option-pill{border-radius:5px;padding:2px 9px;font-size:11px;font-weight:600;border:1px solid;}
+.option-pill-shoe{background:#f0fdf4;color:#15803d;border-color:#bbf7d0;}
+.option-pill-color{background:#fdf4ff;color:#7e22ce;border-color:#e9d5ff;}
+.option-pill-other{background:var(--bg);color:var(--text-secondary);border-color:var(--border);}
+.refresh-btn{display:none;align-items:center;gap:5px;padding:5px 11px;background:var(--bg);border:1px solid var(--border-strong);border-radius:var(--radius-sm);font-family:inherit;font-size:11px;font-weight:600;color:var(--text-secondary);cursor:pointer;transition:all .15s;}
+.refresh-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-light);}
 
-  .settings-btn {
-    display: flex; align-items: center; gap: 6px;
-    padding: 8px 14px;
-    background: var(--bg);
-    border: 1.5px solid var(--border-strong);
-    border-radius: var(--radius-sm);
-    font-family: inherit;
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--text-secondary);
-    cursor: pointer;
-    transition: all 0.18s;
-    flex-shrink: 0;
-  }
-  .settings-btn:hover {
-    background: var(--surface);
-    border-color: var(--accent);
-    color: var(--accent);
-  }
-  .settings-btn.configured {
-    border-color: var(--green);
-    color: var(--green);
-    background: var(--green-light);
-  }
+/* Stats Row */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:10px;}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;text-align:center;box-shadow:var(--shadow);}
+.stat-card.shelf-highlight{border:1.5px solid var(--border-strong);background:var(--surface-2);}
+.stat-label{font-size:10px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;}
+.stat-value{font-size:28px;font-weight:700;line-height:1.1;margin:4px 0;font-variant-numeric:tabular-nums;}
+.stat-desc{font-size:11px;color:var(--text-muted);}
+.val-committed{color:var(--accent);}
+.val-available{color:var(--green);}
+.val-onhand{color:var(--text-primary);}
+.val-shelf{color:var(--text-primary);}
 
-  /* ─── Settings Modal ─── */
-  .modal-overlay {
-    position: fixed; inset: 0;
-    background: rgba(0,0,0,0.4);
-    z-index: 200;
-    display: flex; align-items: center; justify-content: center;
-    padding: 20px;
-    opacity: 0; pointer-events: none;
-    transition: opacity 0.2s;
-  }
-  .modal-overlay.open { opacity: 1; pointer-events: all; }
+/* Shelf Strip */
+.shelf-strip{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:10px;box-shadow:var(--shadow);display:flex;overflow:hidden;}
+.shelf-eq{flex:1;display:flex;align-items:center;gap:12px;padding:12px 18px;flex-wrap:wrap;}
+.eq-block{display:flex;flex-direction:column;align-items:center;gap:2px;}
+.eq-num{font-size:20px;font-weight:700;font-variant-numeric:tabular-nums;}
+.eq-lbl{font-size:9px;color:var(--text-muted);white-space:nowrap;}
+.eq-op{font-size:20px;color:var(--text-muted);font-weight:300;}
+.eq-sep{width:1px;background:var(--border);align-self:stretch;flex-shrink:0;}
+.shelf-warn{background:var(--amber-light);padding:12px 16px;font-size:10px;color:#92400e;max-width:200px;line-height:1.5;display:flex;align-items:center;gap:6px;}
 
-  .modal {
-    background: var(--surface);
-    border-radius: var(--radius);
-    width: 100%; max-width: 480px;
-    box-shadow: var(--shadow-lg);
-    overflow: hidden;
-    transform: translateY(16px) scale(0.98);
-    transition: transform 0.2s cubic-bezier(0.34,1.56,0.64,1);
-  }
-  .modal-overlay.open .modal { transform: translateY(0) scale(1); }
+/* Orders Card */
+.orders-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;}
+.orders-card-header{padding:11px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.orders-card-title{font-size:13px;font-weight:600;color:var(--text-primary);}
+.orders-count-badge{background:var(--accent-light);color:var(--accent);border-radius:20px;padding:2px 10px;font-size:12px;font-weight:700;}
+.orders-table{width:100%;border-collapse:collapse;}
+.orders-table th{padding:8px 14px;text-align:right;font-size:10px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;background:var(--surface-2);border-bottom:1px solid var(--border);white-space:nowrap;}
+.orders-table td{padding:10px 14px;border-bottom:1px solid var(--border);font-size:12px;vertical-align:middle;}
+.orders-table tr:last-child td{border-bottom:none;}
+.orders-table tr:hover td{background:#fafafa;}
+.order-name-link{font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:700;color:var(--accent);text-decoration:none;direction:ltr;display:inline-block;}
+.order-name-link:hover{text-decoration:underline;}
+.order-date{color:var(--text-muted);font-size:11px;}
+.qty-badge{display:inline-flex;align-items:center;justify-content:center;min-width:26px;height:26px;border-radius:6px;font-size:13px;font-weight:700;font-variant-numeric:tabular-nums;}
+.qty-unfulfilled{background:var(--accent-light);color:var(--accent);}
+.tags-cell{display:flex;flex-wrap:wrap;gap:3px;}
+.tag-pill{font-size:10px;font-weight:500;padding:2px 6px;border-radius:4px;background:var(--red-light);color:var(--red);border:1px solid var(--red-border);direction:ltr;}
+.pack-status{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:5px;font-size:11px;font-weight:700;white-space:nowrap;}
+.pack-done{background:var(--red-light);color:var(--red);border:1px solid var(--red-border);}
+.pack-shelf{background:var(--green-light);color:var(--green);border:1px solid var(--green-border);}
+.summary-row{background:var(--surface-2);border-top:1.5px solid var(--border-strong);}
+.summary-row td{padding:9px 14px;font-weight:700;font-size:12px;}
+.state-box{padding:36px 20px;text-align:center;color:var(--text-muted);}
+.state-icon{font-size:32px;margin-bottom:8px;}
+.state-box p{font-size:12px;}
+.loading-spinner{display:inline-block;width:18px;height:18px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
 
-  .modal-header {
-    padding: 18px 20px;
-    border-bottom: 1px solid var(--border);
-    font-size: 15px;
-    font-weight: 700;
-    color: var(--text-primary);
-    display: flex; align-items: center; gap: 8px;
-  }
-  .modal-body { padding: 20px; display: flex; flex-direction: column; gap: 14px; }
+/* Modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .2s;}
+.modal-overlay.open{opacity:1;pointer-events:all;}
+.modal{background:var(--surface);border-radius:var(--radius);width:100%;max-width:460px;box-shadow:0 20px 60px rgba(0,0,0,.15);overflow:hidden;transform:translateY(12px);transition:transform .2s cubic-bezier(.34,1.56,.64,1);}
+.modal-overlay.open .modal{transform:translateY(0);}
+.modal-header{padding:16px 20px;border-bottom:1px solid var(--border);font-size:14px;font-weight:700;}
+.modal-body{padding:20px;display:flex;flex-direction:column;gap:14px;}
+.field-group{display:flex;flex-direction:column;gap:5px;}
+.field-label{font-size:11px;font-weight:600;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.4px;}
+.field-input{border:1.5px solid var(--border-strong);border-radius:var(--radius-sm);padding:9px 11px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--text-primary);outline:none;width:100%;direction:ltr;transition:border-color .15s,box-shadow .15s;}
+.field-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(37,99,235,.08);}
+.modal-footer{padding:12px 20px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end;}
+.btn-save{padding:8px 18px;background:var(--accent);color:#fff;border:none;border-radius:var(--radius-sm);font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;transition:background .15s;}
+.btn-save:hover{background:var(--accent-dark);}
+.btn-cancel{padding:8px 14px;background:transparent;color:var(--text-secondary);border:1px solid var(--border-strong);border-radius:var(--radius-sm);font-family:inherit;font-size:12px;cursor:pointer;}
+.btn-cancel:hover{color:var(--text-primary);border-color:var(--text-secondary);}
+.not-configured-banner{background:var(--amber-light);border:1px solid #fde68a;border-radius:var(--radius-sm);padding:9px 13px;font-size:12px;color:var(--amber);margin-bottom:12px;}
 
-  .field-group { display: flex; flex-direction: column; gap: 6px; }
-  .field-label {
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--text-secondary);
-    text-transform: uppercase;
-    letter-spacing: 0.4px;
-  }
-  .field-input {
-    border: 1.5px solid var(--border-strong);
-    border-radius: var(--radius-sm);
-    padding: 10px 12px;
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 13px;
-    color: var(--text-primary);
-    outline: none;
-    width: 100%;
-    direction: ltr;
-    transition: border-color 0.18s, box-shadow 0.18s;
-  }
-  .field-input:focus {
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
-  }
+/* Toast */
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--text-primary);color:#fff;padding:9px 18px;border-radius:8px;font-size:12px;font-weight:500;z-index:999;transition:transform .3s cubic-bezier(.34,1.56,.64,1);white-space:nowrap;}
+.toast.show{transform:translateX(-50%) translateY(0);}
+.toast.error{background:var(--red);}
+.toast.success{background:var(--green);}
 
-  .modal-footer {
-    padding: 14px 20px;
-    border-top: 1px solid var(--border);
-    display: flex; gap: 8px; justify-content: flex-end;
-  }
-  .btn-save {
-    padding: 9px 20px;
-    background: var(--accent);
-    color: white;
-    border: none;
-    border-radius: var(--radius-sm);
-    font-family: inherit;
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background 0.18s;
-  }
-  .btn-save:hover { background: var(--accent-dark); }
-  .btn-cancel {
-    padding: 9px 16px;
-    background: transparent;
-    color: var(--text-secondary);
-    border: 1.5px solid var(--border-strong);
-    border-radius: var(--radius-sm);
-    font-family: inherit;
-    font-size: 13px;
-    cursor: pointer;
-    transition: all 0.18s;
-  }
-  .btn-cancel:hover { border-color: var(--text-secondary); color: var(--text-primary); }
-
-  .refresh-btn {
-    display: flex; align-items: center; gap: 5px;
-    padding: 6px 12px;
-    background: var(--bg);
-    border: 1.5px solid var(--border-strong);
-    border-radius: var(--radius-sm);
-    font-family: inherit;
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--text-secondary);
-    cursor: pointer;
-    transition: all 0.18s;
-  }
-  .refresh-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
-
-  .not-configured-banner {
-    background: var(--orange-light);
-    border: 1px solid #fde68a;
-    border-radius: var(--radius-sm);
-    padding: 10px 14px;
-    font-size: 13px;
-    color: var(--orange);
-    display: flex; align-items: center; gap: 8px;
-    margin-bottom: 4px;
-  }
-
-  /* ─── Search Card ─── */
-  .search-card {
-    background: var(--surface);
-    border-radius: var(--radius);
-    padding: 20px 24px;
-    margin-bottom: 20px;
-    box-shadow: var(--shadow-sm);
-    border: 1px solid var(--border);
-  }
-
-  .search-tabs {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 16px;
-    background: var(--bg);
-    border-radius: var(--radius-sm);
-    padding: 4px;
-  }
-  .tab-btn {
-    flex: 1;
-    padding: 9px 12px;
-    border: none;
-    background: transparent;
-    border-radius: 6px;
-    font-family: inherit;
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--text-secondary);
-    cursor: pointer;
-    transition: all 0.18s;
-    display: flex; align-items: center; justify-content: center; gap: 6px;
-  }
-  .tab-btn.active {
-    background: var(--surface);
-    color: var(--accent);
-    box-shadow: var(--shadow-sm);
-  }
-
-  /* ─── SKU Dropdown ─── */
-  .dropdown-wrap { position: relative; }
-
-  .search-input-wrap {
-    display: flex;
-    align-items: center;
-    border: 1.5px solid var(--border-strong);
-    border-radius: var(--radius-sm);
-    background: var(--surface);
-    overflow: hidden;
-    transition: border-color 0.18s, box-shadow 0.18s;
-  }
-  .search-input-wrap:focus-within {
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
-  }
-  .search-icon {
-    padding: 0 12px;
-    color: var(--text-muted);
-    font-size: 16px;
-    flex-shrink: 0;
-  }
-  #skuSearch {
-    flex: 1;
-    border: none;
-    outline: none;
-    padding: 11px 4px;
-    font-family: inherit;
-    font-size: 14px;
-    color: var(--text-primary);
-    background: transparent;
-    direction: ltr;
-    text-align: right;
-  }
-  #skuSearch::placeholder { color: var(--text-muted); direction: rtl; text-align: right; }
-
-  .clear-btn {
-    padding: 0 12px;
-    background: none;
-    border: none;
-    color: var(--text-muted);
-    cursor: pointer;
-    font-size: 16px;
-    display: none;
-    align-items: center;
-  }
-  .clear-btn.visible { display: flex; }
-
-  .dropdown-list {
-    position: absolute;
-    top: calc(100% + 6px);
-    right: 0; left: 0;
-    background: var(--surface);
-    border: 1.5px solid var(--border);
-    border-radius: var(--radius-sm);
-    box-shadow: var(--shadow-lg);
-    max-height: 320px;
-    overflow-y: auto;
-    z-index: 100;
-    display: none;
-  }
-  .dropdown-list.open { display: block; }
-
-  .dropdown-item {
-    padding: 10px 14px;
-    cursor: pointer;
-    border-bottom: 1px solid var(--border);
-    transition: background 0.12s;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .dropdown-item:last-child { border-bottom: none; }
-  .dropdown-item:hover { background: var(--accent-light); }
-  .dropdown-item.selected { background: var(--accent-light); }
-
-  .item-sku {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--accent);
-    background: var(--accent-light);
-    padding: 2px 7px;
-    border-radius: 4px;
-    white-space: nowrap;
-    direction: ltr;
-  }
-  .item-name { font-size: 13px; color: var(--text-primary); flex: 1; }
-  .item-stock { font-size: 12px; color: var(--text-secondary); white-space: nowrap; }
-
-  .dropdown-loading, .dropdown-empty {
-    padding: 20px;
-    text-align: center;
-    color: var(--text-muted);
-    font-size: 13px;
-  }
-
-  /* ─── Barcode Mode ─── */
-  .barcode-area {
-    display: none;
-  }
-  .barcode-area.active { display: block; }
-
-  .barcode-input-wrap {
-    display: flex;
-    align-items: center;
-    border: 2px solid var(--border-strong);
-    border-radius: var(--radius-sm);
-    background: var(--surface);
-    overflow: hidden;
-    transition: all 0.18s;
-  }
-  .barcode-input-wrap.scanning {
-    border-color: var(--green);
-    box-shadow: 0 0 0 3px rgba(22,163,74,0.12);
-  }
-  #barcodeInput {
-    flex: 1;
-    border: none;
-    outline: none;
-    padding: 12px 14px;
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 15px;
-    color: var(--text-primary);
-    background: transparent;
-    direction: rtl;
-    text-align: right;
-    letter-spacing: 1px;
-  }
-  #barcodeInput::placeholder { font-family: 'IBM Plex Sans Arabic', sans-serif; letter-spacing: 0; color: var(--text-muted); direction: rtl; text-align: right; }
-  .barcode-icon-wrap {
-    padding: 0 14px;
-    color: var(--text-muted);
-    font-size: 22px;
-  }
-  .barcode-hint {
-    margin-top: 8px;
-    font-size: 12px;
-    color: var(--text-muted);
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-  }
-  .pulse-dot {
-    width: 7px; height: 7px;
-    border-radius: 50%;
-    background: var(--green);
-    animation: pulse 1.5s infinite;
-  }
-  @keyframes pulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.4; transform: scale(0.8); }
-  }
-
-  /* ─── Results ─── */
-  #results { display: none; }
-  #results.visible { display: block; }
-
-  /* Status Badge */
-  .status-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    padding: 3px 10px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 600;
-  }
-  .status-ACTIVE { background: var(--green-light); color: var(--green); }
-  .status-DRAFT { background: var(--orange-light); color: var(--orange); }
-  .status-ARCHIVED { background: var(--gray-light); color: var(--gray); }
-
-  /* Product Info Card */
-  .product-card {
-    background: var(--surface);
-    border-radius: var(--radius);
-    border: 1px solid var(--border);
-    box-shadow: var(--shadow-sm);
-    margin-bottom: 16px;
-    overflow: hidden;
-  }
-  .product-card-header {
-    padding: 16px 20px;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 12px;
-    flex-wrap: wrap;
-  }
-  .product-title { font-size: 16px; font-weight: 700; color: var(--text-primary); }
-  .product-sku-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    margin-top: 5px;
-    text-decoration: none;
-    direction: ltr;
-  }
-  .sku-pill {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 12px;
-    font-weight: 700;
-    color: var(--accent);
-    background: var(--accent-light);
-    border: 1px solid #bfdbfe;
-    border-radius: 6px;
-    padding: 3px 10px;
-    direction: ltr;
-    transition: background 0.15s;
-  }
-  .product-sku-link:hover .sku-pill {
-    background: #dbeafe;
-  }
-  .product-options {
-    display: flex;
-    gap: 6px;
-    flex-wrap: wrap;
-    margin-top: 7px;
-  }
-  .option-pill {
-    border-radius: 6px;
-    padding: 3px 10px;
-    font-size: 12px;
-    font-weight: 600;
-    border: 1px solid;
-  }
-  .option-pill-shoe  { background: #f0fdf4; color: #15803d; border-color: #bbf7d0; }
-  .option-pill-color { background: #fdf4ff; color: #7e22ce; border-color: #e9d5ff; }
-  .option-pill-other { background: var(--bg); color: var(--text-secondary); border-color: var(--border); }
-
-  /* Inventory Grid */
-  .inventory-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 0;
-  }
-  @media (max-width: 600px) {
-    .inventory-grid { grid-template-columns: repeat(3, 1fr); }
-  }
-  .inv-cell {
-    padding: 16px;
-    text-align: center;
-    border-left: 1px solid var(--border);
-    position: relative;
-  }
-  .inv-cell:last-child { border-left: none; }
-  @media (max-width: 600px) {
-    .inv-cell:nth-child(2) { border-left: none; }
-    .inv-cell:nth-child(3) { border-top: 1px solid var(--border); }
-    .inv-cell:nth-child(4) { border-top: 1px solid var(--border); border-left: none; }
-  }
-  .inv-label { font-size: 11px; color: var(--text-muted); font-weight: 500; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
-  .inv-value { font-size: 28px; font-weight: 700; line-height: 1; font-variant-numeric: tabular-nums; }
-  .inv-desc { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
-
-  .inv-on-hand .inv-value { color: var(--text-primary); }
-  .inv-available .inv-value { color: var(--green); }
-  .inv-committed .inv-value { color: var(--accent); }
-  .inv-unavailable .inv-value { color: var(--orange); }
-
-  /* Section title */
-  .section-title {
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--text-secondary);
-    margin-bottom: 12px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-
-  /* Orders Card */
-  .orders-card {
-    background: var(--surface);
-    border-radius: var(--radius);
-    border: 1px solid var(--border);
-    box-shadow: var(--shadow-sm);
-    overflow: hidden;
-  }
-  .orders-card-header {
-    padding: 14px 20px;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-  .orders-card-title { font-size: 14px; font-weight: 600; color: var(--text-primary); }
-  .orders-count-badge {
-    background: var(--accent-light);
-    color: var(--accent);
-    border-radius: 20px;
-    padding: 2px 10px;
-    font-size: 12px;
-    font-weight: 700;
-  }
-
-  .orders-table { width: 100%; border-collapse: collapse; }
-  .orders-table th {
-    padding: 10px 16px;
-    text-align: right;
-    font-size: 11px;
-    font-weight: 600;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    background: var(--surface-2);
-    border-bottom: 1px solid var(--border);
-    white-space: nowrap;
-  }
-  .orders-table td {
-    padding: 12px 16px;
-    border-bottom: 1px solid var(--border);
-    font-size: 13px;
-    vertical-align: middle;
-  }
-  .orders-table tr:last-child td { border-bottom: none; }
-  .orders-table tr:hover td { background: var(--surface-2); }
-
-  .order-name-link {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--accent);
-    text-decoration: none;
-    direction: ltr;
-    display: inline-block;
-  }
-  .order-name-link:hover { text-decoration: underline; }
-
-  .qty-badge {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 28px; height: 28px;
-    border-radius: 6px;
-    font-size: 14px;
-    font-weight: 700;
-    font-variant-numeric: tabular-nums;
-  }
-  .qty-unfulfilled { background: var(--accent-light); color: var(--accent); }
-  .qty-total { background: var(--gray-light); color: var(--text-secondary); }
-
-  .order-date { color: var(--text-muted); font-size: 12px; }
-
-  /* Summary row */
-  .summary-row {
-    background: var(--surface-2);
-    border-top: 2px solid var(--border-strong);
-  }
-  .summary-row td {
-    padding: 12px 16px;
-    font-weight: 700;
-    font-size: 13px;
-    border-bottom: none !important;
-  }
-
-  /* Empty / Loading states */
-  .state-box {
-    padding: 40px 20px;
-    text-align: center;
-    color: var(--text-muted);
-  }
-  .state-box .state-icon { font-size: 36px; margin-bottom: 10px; }
-  .state-box p { font-size: 13px; }
-
-  .loading-spinner {
-    display: inline-block;
-    width: 20px; height: 20px;
-    border: 2px solid var(--border);
-    border-top-color: var(--accent);
-    border-radius: 50%;
-    animation: spin 0.7s linear infinite;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  /* Shelf count section */
-  .shelf-section {
-    background: var(--surface);
-    border-radius: var(--radius);
-    border: 1px solid var(--border);
-    box-shadow: var(--shadow-sm);
-    margin-bottom: 16px;
-    overflow: hidden;
-  }
-  .shelf-section-header {
-    padding: 14px 20px;
-    border-bottom: 1px solid var(--border);
-    display: flex; align-items: center; justify-content: space-between;
-  }
-  .shelf-section-title { font-size: 14px; font-weight: 600; color: var(--text-primary); }
-  .shelf-body { padding: 16px 20px; display: flex; flex-direction: column; gap: 12px; }
-
-  .shelf-calc-row {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 13px;
-    flex-wrap: wrap;
-  }
-  .shelf-calc-label { color: var(--text-secondary); min-width: 220px; }
-  .shelf-calc-val {
-    font-weight: 700;
-    font-size: 15px;
-    min-width: 32px;
-    text-align: center;
-  }
-  .shelf-calc-val.green { color: var(--green); }
-  .shelf-calc-val.blue  { color: var(--accent); }
-  .shelf-calc-val.red   { color: var(--red); }
-  .shelf-calc-val.black { color: var(--text-primary); }
-  .shelf-divider { color: var(--text-muted); font-size: 18px; font-weight: 300; }
-
-  .shelf-result {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    background: var(--surface-2);
-    border: 2px solid var(--border-strong);
-    border-radius: var(--radius-sm);
-    padding: 14px 18px;
-    margin-top: 4px;
-  }
-  .shelf-result-label { font-size: 14px; font-weight: 600; color: var(--text-secondary); flex: 1; }
-  .shelf-result-value {
-    font-size: 36px;
-    font-weight: 800;
-    color: var(--text-primary);
-    font-variant-numeric: tabular-nums;
-  }
-  .shelf-result-unit { font-size: 13px; color: var(--text-muted); }
-
-  .warning-banner {
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    background: #fffbeb;
-    border: 1.5px solid #f59e0b;
-    border-radius: var(--radius-sm);
-    padding: 12px 14px;
-    font-size: 12px;
-    font-weight: 600;
-    color: #92400e;
-    line-height: 1.5;
-    margin-top: 4px;
-  }
-  .warning-banner .warn-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
-
-  /* Tags column */
-  .tags-cell { display: flex; flex-wrap: wrap; gap: 4px; }
-  .tag-pill {
-    font-size: 11px;
-    font-weight: 500;
-    padding: 2px 7px;
-    border-radius: 4px;
-    background: #f3f4f6;
-    color: #374151;
-    border: 1px solid #e5e7eb;
-    white-space: nowrap;
-    direction: ltr;
-  }
-  .tag-pill.packed { background: #fee2e2; color: #b91c1c; border-color: #fca5a5; }
-
-  /* Packing status */
-  .pack-status {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    padding: 4px 10px;
-    border-radius: 6px;
-    font-size: 12px;
-    font-weight: 700;
-    white-space: nowrap;
-  }
-  .pack-done  { background: #fef2f2; color: #dc2626; border: 1.5px solid #fca5a5; }
-  .pack-shelf { background: #f0fdf4; color: #16a34a; border: 1.5px solid #86efac; }
-
-  .toast {
-    position: fixed;
-    bottom: 24px;
-    left: 50%;
-    transform: translateX(-50%) translateY(100px);
-    background: var(--text-primary);
-    color: white;
-    padding: 10px 20px;
-    border-radius: 8px;
-    font-size: 13px;
-    font-weight: 500;
-    z-index: 999;
-    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-    white-space: nowrap;
-  }
-  .toast.show { transform: translateX(-50%) translateY(0); }
-  .toast.error { background: var(--red); }
-  .toast.success { background: var(--green); }
-
+@media(max-width:700px){
+  .stats-row{grid-template-columns:repeat(2,1fr);}
+  .shelf-strip{flex-direction:column;}
+  .shelf-warn{max-width:100%;border-top:1px solid var(--border);}
+}
 </style>
 </head>
 <body>
-
 <div class="container">
 
   <!-- Settings Modal -->
@@ -782,60 +187,36 @@
     </div>
   </div>
 
-  <!-- Header -->
-  <div class="header">
-    <div class="header-icon">📦</div>
-    <div class="header-text">
+  <!-- App Header -->
+  <div class="app-header">
+    <div class="app-title">
+      <span>📦</span>
       <h1>StockAudit</h1>
-      <p>ابحث بالـ SKU أو امسح الباركود لعرض تفاصيل المنتج والأوردرات</p>
+      <span>أداة مراجعة وضبط الجرد</span>
     </div>
-    <button class="settings-btn" id="settingsBtn" onclick="openSettings()">
-      ⚙️ الإعدادات
-    </button>
+    <button class="settings-btn" id="settingsBtn" onclick="openSettings()">⚙️ الإعدادات</button>
   </div>
 
   <!-- Search Card -->
   <div class="search-card">
-    <!-- Tabs -->
     <div class="search-tabs">
-      <button class="tab-btn active" id="tabSku" onclick="switchTab('sku')">
-        🔍 بحث بالـ SKU
-      </button>
-      <button class="tab-btn" id="tabBarcode" onclick="switchTab('barcode')">
-        〡 مسح الباركود
-      </button>
+      <button class="tab-btn active" id="tabSku" onclick="switchTab('sku')">🔍 بحث بالـ SKU</button>
+      <button class="tab-btn" id="tabBarcode" onclick="switchTab('barcode')">〡 مسح الباركود</button>
     </div>
-
-    <!-- SKU Dropdown -->
     <div id="skuMode">
       <div class="dropdown-wrap" id="dropdownWrap">
         <div class="search-input-wrap">
           <span class="search-icon">🔍</span>
-          <input
-            type="text"
-            id="skuSearch"
-            placeholder="ابحث بكتابة (SKU) أو اسم المنتج ..."
-            autocomplete="off"
-            spellcheck="false"
-          />
+          <input type="text" id="skuSearch" placeholder="ابحث بكتابة (SKU) أو اسم المنتج ..." autocomplete="off" spellcheck="false" />
           <button class="clear-btn" id="clearBtn" onclick="clearSearch()">✕</button>
         </div>
         <div class="dropdown-list" id="dropdownList"></div>
       </div>
     </div>
-
-    <!-- Barcode Mode -->
     <div id="barcodeMode" class="barcode-area">
       <div class="barcode-input-wrap" id="barcodeWrap">
-        <span class="barcode-icon-wrap">〡</span>
-        <input
-          type="text"
-          id="barcodeInput"
-          placeholder="امسح الباركود هنا..."
-          autocomplete="off"
-          spellcheck="false"
-          inputmode="numeric"
-        />
+        <span class="barcode-icon">〡</span>
+        <input type="text" id="barcodeInput" placeholder="امسح الباركود هنا..." autocomplete="off" spellcheck="false" inputmode="numeric" />
       </div>
     </div>
   </div>
@@ -843,55 +224,53 @@
   <!-- Results -->
   <div id="results">
 
-    <!-- Product Card -->
-    <div class="product-card" id="productCard">
-      <div class="product-card-header">
-        <div>
-          <div class="product-title" id="productTitle">—</div>
-          <a class="product-sku-link" id="productSkuLink" href="#" target="_blank">
-            <span class="sku-pill" id="productSkuDisplay">SKU: —</span>
-          </a>
-          <div class="product-options" id="productOptions"></div>
-        </div>
-        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;">
-          <div id="productStatus"></div>
-          <button class="refresh-btn" id="refreshBtn" onclick="refreshCurrent()" style="display:none;">
-            ↻ Refresh
-          </button>
-        </div>
-      </div>
-      <div class="inventory-grid">
-        <div class="inv-cell inv-on-hand">
-          <div class="inv-label">On Hand</div>
-          <div class="inv-value" id="qtyOnHand">—</div>
-          <div class="inv-desc">إجمالي المخزن</div>
-        </div>
-        <div class="inv-cell inv-available">
-          <div class="inv-label">Available</div>
-          <div class="inv-value" id="qtyAvailable">—</div>
-          <div class="inv-desc">متاح للبيع</div>
-        </div>
-        <div class="inv-cell inv-committed">
-          <div class="inv-label">Committed</div>
-          <div class="inv-value" id="qtyCommitted">—</div>
-          <div class="inv-desc">في أوردرات لم تُشحن</div>
-        </div>
+    <!-- Product Topbar -->
+    <div class="product-topbar">
+      <div class="product-name" id="productTitle">—</div>
+      <a class="sku-link" id="productSkuLink" href="#" target="_blank">
+        <span class="sku-pill" id="productSkuDisplay">SKU: —</span>
+        <span class="sku-arrow">↗</span>
+      </a>
+      <div id="productOptions" style="display:flex;gap:5px;flex-wrap:wrap;"></div>
+      <div id="productStatus"></div>
+      <button class="refresh-btn" id="refreshBtn" onclick="refreshCurrent()">↻ Refresh</button>
+    </div>
 
+    <!-- 4 Stats Cards -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-label">Committed</div>
+        <div class="stat-value val-committed" id="qtyCommitted">—</div>
+        <div class="stat-desc">في أوردرات لم تُشحن</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Available</div>
+        <div class="stat-value val-available" id="qtyAvailable">—</div>
+        <div class="stat-desc">متاح للبيع</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">On Hand</div>
+        <div class="stat-value val-onhand" id="qtyOnHand">—</div>
+        <div class="stat-desc">إجمالي المخزن</div>
+      </div>
+      <div class="stat-card shelf-highlight">
+        <div class="stat-label">قطع الرف</div>
+        <div class="stat-value val-shelf" id="qtyShelf">—</div>
+        <div class="stat-desc">المتوقع عند الجرد</div>
       </div>
     </div>
 
-    <!-- Shelf Count Section -->
-    <div class="shelf-section" id="shelfSection" style="display:none;">
-      <div class="shelf-section-header">
-        <div class="shelf-section-title">📦 عدد القطع المتوقع على الرف عند الجرد</div>
-      </div>
-      <div class="shelf-body" id="shelfBody"></div>
+    <!-- Shelf Equation Strip -->
+    <div class="shelf-strip" id="shelfStrip" style="display:none;">
+      <div class="shelf-eq" id="shelfEq"></div>
+      <div class="eq-sep"></div>
+      <div class="shelf-warn">⚠ تأكد من عدم وجود أوردرات مركونة على طاولة التحضير قبل إجراء الجرد</div>
     </div>
 
     <!-- Orders Loading -->
-    <div id="ordersLoading" style="display:none; text-align:center; padding:20px;">
+    <div id="ordersLoading" style="display:none;text-align:center;padding:20px;">
       <div class="loading-spinner"></div>
-      <p style="margin-top:10px; color:var(--text-muted); font-size:13px;">جاري تحميل الأوردرات...</p>
+      <p style="margin-top:8px;color:var(--text-muted);font-size:12px;">جاري تحميل الأوردرات...</p>
     </div>
 
     <!-- Orders Card -->
@@ -904,454 +283,248 @@
     </div>
 
   </div>
-
 </div>
 
-<!-- Toast -->
 <div class="toast" id="toast"></div>
 
 <script>
-// ─── CONFIG (localStorage) ───────────────────────────────────────────────────
-const SHOP_DOMAIN = '6c7e1a-53.myshopify.com';
-const LS_URL_KEY = 'stockaudit_worker_url';
-const LS_SEC_KEY = 'stockaudit_worker_secret';
+const SHOP_DOMAIN='6c7e1a-53.myshopify.com';
+const LS_URL_KEY='stockaudit_worker_url';
+const LS_SEC_KEY='stockaudit_worker_secret';
 
-function getConfig() {
-  return {
-    url: localStorage.getItem(LS_URL_KEY) || '',
-    secret: localStorage.getItem(LS_SEC_KEY) || '',
-  };
+function getConfig(){return{url:localStorage.getItem(LS_URL_KEY)||'',secret:localStorage.getItem(LS_SEC_KEY)||''};}
+function isConfigured(){const c=getConfig();return c.url.startsWith('http')&&c.secret.length>0;}
+function updateSettingsBtn(){document.getElementById('settingsBtn').classList.toggle('configured',isConfigured());}
+
+function openSettings(){const c=getConfig();document.getElementById('cfWorkerUrl').value=c.url;document.getElementById('cfWorkerSecret').value=c.secret;document.getElementById('settingsOverlay').classList.add('open');}
+function closeSettings(){document.getElementById('settingsOverlay').classList.remove('open');}
+function closeSettingsOnBackdrop(e){if(e.target===document.getElementById('settingsOverlay'))closeSettings();}
+function saveSettings(){
+  const url=document.getElementById('cfWorkerUrl').value.trim();
+  const secret=document.getElementById('cfWorkerSecret').value.trim();
+  if(!url||!secret){showToast('الرجاء إدخال الـ URL والـ Secret','error');return;}
+  localStorage.setItem(LS_URL_KEY,url);localStorage.setItem(LS_SEC_KEY,secret);
+  updateSettingsBtn();closeSettings();showToast('تم حفظ الإعدادات ✓','success');
 }
 
-function isConfigured() {
-  const c = getConfig();
-  return c.url.startsWith('http') && c.secret.length > 0;
-}
+let currentSku=null,searchDebounce=null,lastKeyTime=0,barcodeTimeout=null;
 
-function updateSettingsBtn() {
-  const btn = document.getElementById('settingsBtn');
-  btn.classList.toggle('configured', isConfigured());
-}
-
-// ─── Settings Modal ───────────────────────────────────────────────────────────
-function openSettings() {
-  const c = getConfig();
-  document.getElementById('cfWorkerUrl').value = c.url;
-  document.getElementById('cfWorkerSecret').value = c.secret;
-  document.getElementById('settingsOverlay').classList.add('open');
-}
-
-function closeSettings() {
-  document.getElementById('settingsOverlay').classList.remove('open');
-}
-
-function closeSettingsOnBackdrop(e) {
-  if (e.target === document.getElementById('settingsOverlay')) closeSettings();
-}
-
-function saveSettings() {
-  const url = document.getElementById('cfWorkerUrl').value.trim();
-  const secret = document.getElementById('cfWorkerSecret').value.trim();
-  if (!url || !secret) { showToast('الرجاء إدخال الـ URL والـ Secret', 'error'); return; }
-  localStorage.setItem(LS_URL_KEY, url);
-  localStorage.setItem(LS_SEC_KEY, secret);
-  updateSettingsBtn();
-  closeSettings();
-  showToast('تم حفظ الإعدادات ✓', 'success');
-}
-
-// ─── State ───────────────────────────────────────────────────────────────────
-let currentSku = null;
-let searchDebounce = null;
-let lastKeyTime = 0;
-let barcodeTimeout = null;
-
-// Init settings btn state on load
 updateSettingsBtn();
-if (!isConfigured()) {
-  // show banner
-  const banner = document.createElement('div');
-  banner.className = 'not-configured-banner';
-  banner.id = 'notConfiguredBanner';
-  banner.innerHTML = '⚠️ الأداة غير مضبوطة — افتح الإعدادات وأدخل الـ Worker URL والـ Secret';
-  document.querySelector('.search-card').prepend(banner);
+if(!isConfigured()){
+  const b=document.createElement('div');b.className='not-configured-banner';
+  b.textContent='⚠ الأداة غير مضبوطة — افتح الإعدادات وأدخل الـ Worker URL والـ Secret';
+  document.querySelector('.search-card').prepend(b);
 }
 
-// ─── Toast ───────────────────────────────────────────────────────────────────
-function showToast(msg, type = '') {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.className = 'toast' + (type ? ' ' + type : '');
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 3000);
+function showToast(msg,type=''){
+  const t=document.getElementById('toast');t.textContent=msg;
+  t.className='toast'+(type?' '+type:'');t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3000);
 }
 
-// ─── Tabs ─────────────────────────────────────────────────────────────────────
-function switchTab(tab) {
-  document.getElementById('tabSku').classList.toggle('active', tab === 'sku');
-  document.getElementById('tabBarcode').classList.toggle('active', tab === 'barcode');
-  document.getElementById('skuMode').style.display = tab === 'sku' ? 'block' : 'none';
-  document.getElementById('barcodeMode').classList.toggle('active', tab === 'barcode');
-
-  if (tab === 'barcode') {
-    document.getElementById('barcodeInput').focus();
-  }
+function switchTab(tab){
+  document.getElementById('tabSku').classList.toggle('active',tab==='sku');
+  document.getElementById('tabBarcode').classList.toggle('active',tab==='barcode');
+  document.getElementById('skuMode').style.display=tab==='sku'?'block':'none';
+  document.getElementById('barcodeMode').classList.toggle('active',tab==='barcode');
+  if(tab==='barcode')document.getElementById('barcodeInput').focus();
 }
 
-// ─── API ──────────────────────────────────────────────────────────────────────
-async function apiCall(params) {
-  if (!isConfigured()) {
-    openSettings();
-    throw new Error('الإعدادات غير مكتملة');
-  }
-  const { url: WORKER_URL, secret: WORKER_SECRET } = getConfig();
-  const url = new URL(WORKER_URL);
-  Object.entries(params).forEach(([k, v]) => url.searchParams.set(k, v));
-  const res = await fetch(url.toString(), {
-    headers: { 'X-Worker-Secret': WORKER_SECRET },
-  });
-  const data = await res.json();
-  if (!res.ok || !data.ok) throw new Error(data.error || 'خطأ في الاتصال');
+async function apiCall(params){
+  if(!isConfigured()){openSettings();throw new Error('الإعدادات غير مكتملة');}
+  const{url:WU,secret:WS}=getConfig();
+  const u=new URL(WU);Object.entries(params).forEach(([k,v])=>u.searchParams.set(k,v));
+  const res=await fetch(u.toString(),{headers:{'X-Worker-Secret':WS}});
+  const data=await res.json();
+  if(!res.ok||!data.ok)throw new Error(data.error||'خطأ في الاتصال');
   return data;
 }
 
-// ─── SKU Search / Dropdown ────────────────────────────────────────────────────
-const skuSearch = document.getElementById('skuSearch');
-const dropdownList = document.getElementById('dropdownList');
-const clearBtn = document.getElementById('clearBtn');
+const skuSearch=document.getElementById('skuSearch');
+const dropdownList=document.getElementById('dropdownList');
+const clearBtn=document.getElementById('clearBtn');
 
-skuSearch.addEventListener('input', () => {
-  const val = skuSearch.value.trim();
-  clearBtn.classList.toggle('visible', val.length > 0);
+skuSearch.addEventListener('input',()=>{
+  const val=skuSearch.value.trim();
+  clearBtn.classList.toggle('visible',val.length>0);
   clearTimeout(searchDebounce);
-  if (val.length === 0) {
-    dropdownList.innerHTML = '';
-    dropdownList.classList.remove('open');
-    return;
-  }
-  searchDebounce = setTimeout(() => loadSkus(val), 350);
+  if(!val){dropdownList.innerHTML='';dropdownList.classList.remove('open');return;}
+  searchDebounce=setTimeout(()=>loadSkus(val),350);
 });
+skuSearch.addEventListener('focus',()=>{if(skuSearch.value.trim())loadSkus(skuSearch.value.trim());});
+document.addEventListener('click',e=>{if(!document.getElementById('dropdownWrap').contains(e.target))dropdownList.classList.remove('open');});
 
-skuSearch.addEventListener('focus', () => {
-  if (skuSearch.value.trim()) loadSkus(skuSearch.value.trim());
-});
+function clearSearch(){skuSearch.value='';clearBtn.classList.remove('visible');dropdownList.innerHTML='';dropdownList.classList.remove('open');skuSearch.focus();}
 
-document.addEventListener('click', e => {
-  if (!document.getElementById('dropdownWrap').contains(e.target)) {
-    dropdownList.classList.remove('open');
-  }
-});
-
-function clearSearch() {
-  skuSearch.value = '';
-  clearBtn.classList.remove('visible');
-  dropdownList.innerHTML = '';
-  dropdownList.classList.remove('open');
-  skuSearch.focus();
-}
-
-async function loadSkus(search) {
-  dropdownList.innerHTML = '<div class="dropdown-loading"><div class="loading-spinner"></div></div>';
+async function loadSkus(search){
+  dropdownList.innerHTML='<div class="dropdown-loading"><div class="loading-spinner"></div></div>';
   dropdownList.classList.add('open');
-  try {
-    const data = await apiCall({ action: 'list_skus', search });
-    renderDropdown(data.variants);
-  } catch (e) {
-    dropdownList.innerHTML = `<div class="dropdown-empty">⚠️ ${e.message}</div>`;
-  }
+  try{const data=await apiCall({action:'list_skus',search});renderDropdown(data.variants);}
+  catch(e){dropdownList.innerHTML=`<div class="dropdown-empty">⚠️ ${e.message}</div>`;}
 }
 
-function getStatusLabel(status) {
-  const map = { ACTIVE: 'نشط', DRAFT: 'مسودة', ARCHIVED: 'مؤرشف' };
-  return map[status] || status;
-}
-
-function renderDropdown(variants) {
-  if (!variants.length) {
-    dropdownList.innerHTML = '<div class="dropdown-empty">لا توجد نتائج</div>';
-    return;
-  }
-  dropdownList.innerHTML = variants.map(v => {
-    return `
-      <div class="dropdown-item ${v.sku === currentSku ? 'selected' : ''}"
-           onclick="selectVariant(${JSON.stringify(v).replace(/"/g, '&quot;')})">
-        <span class="item-sku">${v.sku || '—'}</span>
-        <span class="item-name">${v.product?.title || ''} ${v.selectedOptions?.map(o => o.value).join(' / ') || ''}</span>
-      </div>`;
-  }).join('');
+function renderDropdown(variants){
+  if(!variants.length){dropdownList.innerHTML='<div class="dropdown-empty">لا توجد نتائج</div>';return;}
+  dropdownList.innerHTML=variants.map(v=>`
+    <div class="dropdown-item ${v.sku===currentSku?'selected':''}"
+         onclick="selectVariant(${JSON.stringify(v).replace(/"/g,'&quot;')})">
+      <span class="item-sku">${v.sku||'—'}</span>
+      <span class="item-name">${v.product?.title||''} ${v.selectedOptions?.map(o=>o.value).join(' / ')||''}</span>
+    </div>`).join('');
   dropdownList.classList.add('open');
 }
 
-// ─── Select Variant ───────────────────────────────────────────────────────────
-function selectVariant(variant) {
-  currentSku = variant.sku;
-  skuSearch.value = variant.sku;
-  clearBtn.classList.add('visible');
-  dropdownList.classList.remove('open');
-  renderProductCard(variant);
-  loadOrders(variant.sku);
+function selectVariant(variant){
+  currentSku=variant.sku;skuSearch.value=variant.sku;
+  clearBtn.classList.add('visible');dropdownList.classList.remove('open');
+  renderProductCard(variant);loadOrders(variant.sku);
 }
 
-// ─── Barcode Input (scanner gun) ──────────────────────────────────────────────
-const barcodeInput = document.getElementById('barcodeInput');
-const barcodeWrap = document.getElementById('barcodeWrap');
-
-barcodeInput.addEventListener('keydown', e => {
-  const now = Date.now();
-  const gap = now - lastKeyTime;
-  lastKeyTime = now;
-
-  clearTimeout(barcodeTimeout);
-  const isScanner = gap < 80;
-  const delay = isScanner ? 150 : 400;
-
-  barcodeWrap.classList.add('scanning');
-  barcodeTimeout = setTimeout(() => {
-    handleBarcodeScan();
-  }, delay);
+const barcodeInput=document.getElementById('barcodeInput');
+const barcodeWrap=document.getElementById('barcodeWrap');
+barcodeInput.addEventListener('keydown',()=>{
+  const now=Date.now();const gap=now-lastKeyTime;lastKeyTime=now;
+  clearTimeout(barcodeTimeout);barcodeWrap.classList.add('scanning');
+  barcodeTimeout=setTimeout(handleBarcodeScan,gap<80?150:400);
 });
-
-function handleBarcodeScan() {
-  const val = barcodeInput.value.trim();
-  barcodeInput.value = '';
-  barcodeInput.focus();
-  barcodeWrap.classList.remove('scanning');
-  if (!val) return;
-  lookupByBarcode(val);
+function handleBarcodeScan(){
+  const val=barcodeInput.value.trim();barcodeInput.value='';barcodeInput.focus();
+  barcodeWrap.classList.remove('scanning');if(!val)return;lookupByBarcode(val);
+}
+async function lookupByBarcode(barcode){
+  showToast('جاري البحث...','');
+  try{
+    const data=await apiCall({action:'lookup_barcode',barcode});
+    if(!data.variant){showToast('لا يوجد منتج بهذا الباركود','error');return;}
+    showToast('تم العثور على المنتج','success');
+    selectVariant(data.variant);switchTab('sku');
+    skuSearch.value=data.variant.sku;clearBtn.classList.add('visible');
+  }catch(e){showToast(e.message,'error');}
 }
 
-async function lookupByBarcode(barcode) {
-  showToast('جاري البحث...', '');
-  try {
-    const data = await apiCall({ action: 'lookup_barcode', barcode });
-    if (!data.variant) {
-      showToast('لا يوجد منتج بهذا الباركود', 'error');
-      return;
-    }
-    showToast('تم العثور على المنتج', 'success');
-    selectVariant(data.variant);
-    // switch to SKU tab to show results
-    switchTab('sku');
-    skuSearch.value = data.variant.sku;
-    clearBtn.classList.add('visible');
-  } catch (e) {
-    showToast(e.message, 'error');
-  }
-}
+function renderProductCard(variant){
+  document.getElementById('productTitle').textContent=variant.product?.title||'—';
+  const sku=variant.sku||'—';
+  document.getElementById('productSkuDisplay').textContent='SKU: '+sku;
+  const vid=(variant.id||'').split('/').pop();
+  const pid=(variant.product?.id||'').split('/').pop();
+  const vurl=pid&&vid?`https://admin.shopify.com/store/6c7e1a-53/products/${pid}/variants/${vid}`:'#';
+  document.getElementById('productSkuLink').href=vurl;
 
-// ─── Render Product Card ──────────────────────────────────────────────────────
-function renderProductCard(variant) {
-  document.getElementById('productTitle').textContent = variant.product?.title || '—';
-
-  // SKU pill with link to variant page
-  const sku = variant.sku || '—';
-  document.getElementById('productSkuDisplay').textContent = 'SKU: ' + sku;
-  const variantGid = variant.id || '';
-  const productGid = variant.product?.id || '';
-  const variantNumId = variantGid.split('/').pop();
-  const productNumId = productGid.split('/').pop();
-  const variantUrl = productNumId && variantNumId
-    ? `https://admin.shopify.com/store/6c7e1a-53/products/${productNumId}/variants/${variantNumId}`
-    : '#';
-  document.getElementById('productSkuLink').href = variantUrl;
-
-  // Options — color-coded pills
-  const opts = variant.selectedOptions || [];
-  const shoeSizeNames = ['shoe size', 'size', 'مقاس'];
-  const colorNames = ['color', 'colour', 'لون'];
-  document.getElementById('productOptions').innerHTML = opts
-    .filter(o => o.value !== 'Default Title')
-    .map(o => {
-      const key = o.name.toLowerCase();
-      let cls = 'option-pill-other';
-      if (shoeSizeNames.some(n => key.includes(n))) cls = 'option-pill-shoe';
-      else if (colorNames.some(n => key.includes(n))) cls = 'option-pill-color';
-      return `<span class="option-pill ${cls}">${o.name}: ${o.value}</span>`;
+  const opts=variant.selectedOptions||[];
+  const sizeN=['shoe size','size','مقاس'];const colorN=['color','colour','لون'];
+  document.getElementById('productOptions').innerHTML=opts
+    .filter(o=>o.value!=='Default Title')
+    .map(o=>{
+      const k=o.name.toLowerCase();
+      let c='option-pill-other';
+      if(sizeN.some(n=>k.includes(n)))c='option-pill-shoe';
+      else if(colorN.some(n=>k.includes(n)))c='option-pill-color';
+      return`<span class="option-pill ${c}">${o.name}: ${o.value}</span>`;
     }).join('');
 
-  // Status
-  const status = variant.product?.status || '';
-  const statusLabels = { ACTIVE: 'Active ✓', DRAFT: 'Draft', ARCHIVED: 'Archived' };
-  document.getElementById('productStatus').innerHTML =
-    `<span class="status-badge status-${status}">${statusLabels[status] || status}</span>`;
+  const status=variant.product?.status||'';
+  const labels={ACTIVE:'Active ✓',DRAFT:'Draft',ARCHIVED:'Archived',UNLISTED:'Unlisted'};
+  const cls=status==='ACTIVE'?'status-ACTIVE':'status-OTHER';
+  document.getElementById('productStatus').innerHTML=`<span class="status-badge ${cls}">${labels[status]||status}</span>`;
+  document.getElementById('refreshBtn').style.display='flex';
 
-  // Show refresh btn
-  document.getElementById('refreshBtn').style.display = 'flex';
-
-  // Inventory
-  const levels = variant.inventoryItem?.inventoryLevels?.nodes?.[0]?.quantities || [];
-  const get = name => {
-    const q = levels.find(l => l.name === name)?.quantity;
-    return q != null ? q.toLocaleString('en-US') : '—';
-  };
-  document.getElementById('qtyOnHand').textContent = get('on_hand');
-  document.getElementById('qtyAvailable').textContent = get('available');
-  document.getElementById('qtyCommitted').textContent = get('committed');
+  const levels=variant.inventoryItem?.inventoryLevels?.nodes?.[0]?.quantities||[];
+  const get=n=>{const q=levels.find(l=>l.name===n)?.quantity;return q!=null?q.toLocaleString('en-US'):'—';};
+  document.getElementById('qtyOnHand').textContent=get('on_hand');
+  document.getElementById('qtyAvailable').textContent=get('available');
+  document.getElementById('qtyCommitted').textContent=get('committed');
+  document.getElementById('qtyShelf').textContent='—';
 
   document.getElementById('results').classList.add('visible');
-  document.getElementById('ordersCard').style.display = 'none';
+  document.getElementById('ordersCard').style.display='none';
+  document.getElementById('shelfStrip').style.display='none';
 }
 
-// ─── Refresh current SKU ──────────────────────────────────────────────────────
-async function refreshCurrent() {
-  if (!currentSku) return;
-  showToast('جاري التحديث...', '');
-  try {
-    // Use exact SKU search — works correctly with "/" in SKU
-    const data = await apiCall({ action: 'list_skus', search: currentSku });
-    // find() with exact match
-    const variant = (data.variants || []).find(v => v.sku === currentSku);
-    if (variant) {
-      renderProductCard(variant);
-      loadOrders(currentSku);
-      showToast('تم التحديث ✓', 'success');
-    } else {
-      showToast('لم يتم العثور على الـ SKU', 'error');
-    }
-  } catch (e) {
-    showToast('خطأ في التحديث: ' + e.message, 'error');
-  }
+async function refreshCurrent(){
+  if(!currentSku)return;showToast('جاري التحديث...','');
+  try{
+    const data=await apiCall({action:'list_skus',search:currentSku});
+    const variant=(data.variants||[]).find(v=>v.sku===currentSku);
+    if(variant){renderProductCard(variant);loadOrders(currentSku);showToast('تم التحديث ✓','success');}
+    else showToast('لم يتم العثور على الـ SKU','error');
+  }catch(e){showToast('خطأ في التحديث: '+e.message,'error');}
 }
 
-// ─── Load Unfulfilled Orders ──────────────────────────────────────────────────
-async function loadOrders(sku) {
-  document.getElementById('ordersLoading').style.display = 'block';
-  document.getElementById('ordersCard').style.display = 'none';
-
-  try {
-    const data = await apiCall({ action: 'get_details', sku });
-    renderOrders(data.orders, sku);
-  } catch (e) {
-    document.getElementById('ordersLoading').style.display = 'none';
-    showToast('خطأ في تحميل الأوردرات: ' + e.message, 'error');
-  }
+async function loadOrders(sku){
+  document.getElementById('ordersLoading').style.display='block';
+  document.getElementById('ordersCard').style.display='none';
+  try{const data=await apiCall({action:'get_details',sku});renderOrders(data.orders,sku);}
+  catch(e){document.getElementById('ordersLoading').style.display='none';showToast('خطأ في تحميل الأوردرات: '+e.message,'error');}
 }
 
-function renderOrders(orders, sku) {
-  document.getElementById('ordersLoading').style.display = 'none';
-  const card = document.getElementById('ordersCard');
-  card.style.display = 'block';
+function renderOrders(orders,sku){
+  document.getElementById('ordersLoading').style.display='none';
+  const card=document.getElementById('ordersCard');card.style.display='block';
+  document.getElementById('ordersCountBadge').textContent=orders.length;
+  const body=document.getElementById('ordersBody');
 
-  document.getElementById('ordersCountBadge').textContent = orders.length;
+  function isPacked(tags){return tags.some(t=>{const tl=t.toLowerCase().replace(/[\[\]]/g,'');return tl==='packed'||tl.startsWith('packed-by-')||tl.startsWith('packed by');});}
 
-  const body = document.getElementById('ordersBody');
-
-  // Packed tag detection
-  function isPacked(tags) {
-    return tags.some(t => {
-      const tl = t.toLowerCase().replace(/[\[\]]/g, '');
-      return tl === 'packed' || tl.startsWith('packed-by-') || tl.startsWith('packed by');
-    });
-  }
-
-  if (!orders.length) {
-    body.innerHTML = `<div class="state-box"><div class="state-icon">✅</div><p>لا توجد أوردرات Unfulfilled لهذا الـ SKU</p></div>`;
-    document.getElementById('shelfSection').style.display = 'none';
+  if(!orders.length){
+    body.innerHTML=`<div class="state-box"><div class="state-icon">✅</div><p>لا توجد أوردرات Unfulfilled لهذا الـ SKU</p></div>`;
+    document.getElementById('shelfStrip').style.display='none';
+    document.getElementById('qtyShelf').textContent=document.getElementById('qtyAvailable').textContent;
     return;
   }
 
-  let totalUnfulfilled = 0;
-  let packedQty = 0;
-  let unpackedCommitted = 0;
+  let totalUnfulfilled=0,packedQty=0,unpackedCommitted=0;
+  const months=['January','February','March','April','May','June','July','August','September','October','November','December'];
 
-  const rows = orders.map(order => {
-    const unf = order.items.reduce((s, i) => s + i.unfulfilledQuantity, 0);
-    totalUnfulfilled += unf;
-    const d = new Date(order.createdAt);
-    const day = String(d.getDate()).padStart(2,'0');
-    const monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-    const date = `${day}-${monthNames[d.getMonth()]}-${d.getFullYear()}`;
-    const orderId = order.id.split('/').pop();
-    const tags = order.tags || [];
-    const packed = isPacked(tags);
-
-    // Shelf calc: packed orders are NOT on shelf, unpacked are on shelf
-    if (packed) {
-      packedQty += unf;
-    } else {
-      unpackedCommitted += unf;
-    }
-
-    // Tags: show ONLY packed-related tags (highlighted red), hide others
-    const packedTags = tags.filter(t => {
-      const tl = t.toLowerCase().replace(/[\[\]]/g, '');
-      return tl === 'packed' || tl.startsWith('packed-by-') || tl.startsWith('packed by');
-    });
-    const tagsHtml = packedTags.length
-      ? packedTags.map(t => `<span class="tag-pill packed">${t}</span>`).join('')
-      : '<span style="color:var(--text-muted);font-size:11px;">—</span>';
-
-    const packHtml = packed
-      ? `<span class="pack-status pack-done">🔴 تم تغليف الأوردر</span>`
-      : `<span class="pack-status pack-shelf">🟢 القطعة على الرف</span>`;
-
-    return `
-      <tr>
-        <td>
-          <a class="order-name-link"
-             href="https://${SHOP_DOMAIN}/admin/orders/${orderId}"
-             target="_blank">${order.name}</a>
-        </td>
-        <td><span class="order-date">${date}</span></td>
-        <td style="text-align:center;">
-          <span class="qty-badge qty-unfulfilled">${unf.toLocaleString('en-US')}</span>
-        </td>
-        <td><div class="tags-cell">${tagsHtml}</div></td>
-        <td>${packHtml}</td>
-      </tr>`;
+  const rows=orders.map(order=>{
+    const unf=order.items.reduce((s,i)=>s+i.unfulfilledQuantity,0);
+    totalUnfulfilled+=unf;
+    const d=new Date(order.createdAt);
+    const date=`${String(d.getDate()).padStart(2,'0')}-${months[d.getMonth()]}-${d.getFullYear()}`;
+    const orderId=order.id.split('/').pop();
+    const tags=order.tags||[];const packed=isPacked(tags);
+    if(packed)packedQty+=unf;else unpackedCommitted+=unf;
+    const packedTags=tags.filter(t=>{const tl=t.toLowerCase().replace(/[\[\]]/g,'');return tl==='packed'||tl.startsWith('packed-by-')||tl.startsWith('packed by');});
+    const tagsHtml=packedTags.length?packedTags.map(t=>`<span class="tag-pill">${t}</span>`).join(''):`<span style="color:var(--text-muted);font-size:11px;">—</span>`;
+    const packHtml=packed?`<span class="pack-status pack-done">🔴 تم التغليف</span>`:`<span class="pack-status pack-shelf">🟢 على الرف</span>`;
+    return`<tr>
+      <td><a class="order-name-link" href="https://${SHOP_DOMAIN}/admin/orders/${orderId}" target="_blank">${order.name}</a></td>
+      <td><span class="order-date">${date}</span></td>
+      <td style="text-align:center;"><span class="qty-badge qty-unfulfilled">${unf.toLocaleString('en-US')}</span></td>
+      <td><div class="tags-cell">${tagsHtml}</div></td>
+      <td>${packHtml}</td>
+    </tr>`;
   }).join('');
 
-  body.innerHTML = `
-    <table class="orders-table">
-      <thead>
-        <tr>
-          <th>رقم الأوردر</th>
-          <th>التاريخ</th>
-          <th style="text-align:center;">عدد القطع غير مشحونة</th>
-          <th>تاجات التغليف</th>
-          <th>تغليف الأوردر</th>
-        </tr>
-      </thead>
-      <tbody>
-        ${rows}
-        <tr class="summary-row">
-          <td colspan="4">الإجمالي (${orders.length} أوردر)</td>
-          <td style="text-align:center;"><span class="qty-badge qty-unfulfilled">${totalUnfulfilled.toLocaleString('en-US')}</span></td>
-        </tr>
-      </tbody>
-    </table>`;
+  body.innerHTML=`<table class="orders-table">
+    <thead><tr>
+      <th>رقم الأوردر</th><th>التاريخ</th>
+      <th style="text-align:center;">عدد القطع غير مشحونة</th>
+      <th>تاجات التغليف</th><th>تغليف الأوردر</th>
+    </tr></thead>
+    <tbody>${rows}
+      <tr class="summary-row">
+        <td colspan="4">الإجمالي (${orders.length} أوردر)</td>
+        <td style="text-align:center;"><span class="qty-badge qty-unfulfilled">${totalUnfulfilled.toLocaleString('en-US')}</span></td>
+      </tr>
+    </tbody>
+  </table>`;
 
-  // ── Shelf count calculation ──────────────────────────────────────────────────
-  // Get inventory figures from the currently displayed product card
-  const available   = parseInt(document.getElementById('qtyAvailable').textContent.replace(/,/g,'')) || 0;
-  const shelfCount  = available + unpackedCommitted;
+  const available=parseInt(document.getElementById('qtyAvailable').textContent.replace(/,/g,''))||0;
+  const shelfCount=available+unpackedCommitted;
+  document.getElementById('qtyShelf').textContent=shelfCount.toLocaleString('en-US');
 
-  const shelfSection = document.getElementById('shelfSection');
-  const shelfBody    = document.getElementById('shelfBody');
-  shelfSection.style.display = 'block';
-
-  shelfBody.innerHTML = `
-    <div class="shelf-calc-row">
-      <span class="shelf-calc-label">متاح للبيع (Available)</span>
-      <span class="shelf-calc-val green">${available}</span>
-    </div>
-    <div class="shelf-calc-row">
-      <span class="shelf-calc-label">في أوردرات غير مغلفة (على الرف)</span>
-      <span class="shelf-calc-val blue">+ ${unpackedCommitted}</span>
-    </div>
-    <div class="shelf-calc-row">
-      <span class="shelf-calc-label">في أوردرات مغلفة (ليست على الرف)</span>
-      <span class="shelf-calc-val red">− ${packedQty}</span>
-    </div>
-    <div class="shelf-result">
-      <div class="shelf-result-label">عدد القطع المتوقع على الرف عند الجرد</div>
-      <div class="shelf-result-value">${shelfCount.toLocaleString('en-US')}</div>
-      <div class="shelf-result-unit">قطعة</div>
-    </div>
-    <div class="warning-banner">
-      <span class="warn-icon">⚠️</span>
-      <span>يجب التأكد من عدم وجود أوردرات مركونة على طاولة التحضير ولم يتم عمل سكان لها قبل إجراء الجرد</span>
-    </div>`;
+  const shelfStrip=document.getElementById('shelfStrip');
+  const shelfEq=document.getElementById('shelfEq');
+  shelfStrip.style.display='flex';
+  shelfEq.innerHTML=`
+    <div class="eq-block"><span class="eq-num" style="color:var(--green);">${available}</span><span class="eq-lbl">available</span></div>
+    <span class="eq-op">+</span>
+    <div class="eq-block"><span class="eq-num" style="color:var(--accent);">${unpackedCommitted}</span><span class="eq-lbl">غير مغلف</span></div>
+    <span class="eq-op">=</span>
+    <div class="eq-block"><span class="eq-num" style="font-size:24px;">${shelfCount}</span><span class="eq-lbl">على الرف</span></div>
+    ${packedQty>0?`<span class="eq-op" style="font-size:16px;margin:0 6px;">|</span>
+    <div class="eq-block"><span class="eq-num" style="color:var(--red);font-size:16px;">${packedQty}</span><span class="eq-lbl" style="color:var(--red);">مغلف (بعيد)</span></div>`:''}`;
 }
 </script>
 </body>
