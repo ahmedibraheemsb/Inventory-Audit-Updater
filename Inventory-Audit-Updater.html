@@ -906,9 +906,6 @@ async function doFulfillOrders(){
           bearerToken: flowToken,
           itemId: orderId,
           specifier: 'FULFILL',
-          additionalParameters: {
-            stringParameter: currentVariant.id,
-          },
         }),
       });
       if(res.ok)successCount++;
