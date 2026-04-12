@@ -84,7 +84,6 @@ body{font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:va
 
 /* ─── Audit Card ─────────────────────────────────────────────────── */
 .audit-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px;margin-bottom:10px;box-shadow:var(--shadow);}
-/* Phase 1 */
 .audit-phase1{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
 .audit-q-left{display:flex;flex-direction:column;gap:3px;}
 .audit-q-text{font-size:14px;font-weight:700;color:var(--text-primary);display:flex;align-items:center;gap:7px;}
@@ -95,7 +94,6 @@ body{font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:va
 .btn-audit-ok:disabled{opacity:.5;cursor:not-allowed;}
 .btn-want-adjust{display:flex;align-items:center;gap:6px;padding:10px 22px;background:var(--surface-2);color:var(--text-secondary);border:1.5px solid var(--border-strong);border-radius:var(--radius-sm);font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;transition:all .15s;white-space:nowrap;}
 .btn-want-adjust:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-light);}
-/* Phase 2 */
 .adjust-panel{display:none;border-top:1px solid var(--border);margin-top:16px;padding-top:16px;}
 .adjust-panel.visible{display:block;}
 .adjust-panel-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
@@ -119,15 +117,30 @@ body{font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:va
 .btn-apply{display:flex;align-items:center;gap:6px;padding:11px 22px;background:var(--accent);color:#fff;border:none;border-radius:var(--radius-sm);font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;transition:background .15s;white-space:nowrap;}
 .btn-apply:hover{background:var(--accent-dark);}
 .btn-apply:disabled{opacity:.5;cursor:not-allowed;}
-/* Audit date */
 .audit-date-row{display:none;align-items:center;gap:5px;font-size:11px;color:var(--text-muted);margin-top:12px;padding-top:12px;border-top:1px solid var(--border);}
 .audit-date-row .audit-val{font-weight:600;color:var(--text-secondary);}
 
-/* Orders */
+/* ─── Warning Banner (red) ───────────────────────────────────────── */
+#warningBanner{display:none;background:#fef2f2;border:2px solid var(--red);border-radius:var(--radius-sm);padding:16px 20px;margin-bottom:10px;align-items:flex-start;gap:12px;}
+.warning-icon{font-size:22px;flex-shrink:0;margin-top:1px;}
+.warning-text{display:flex;flex-direction:column;gap:3px;}
+.warning-title{font-size:14px;font-weight:800;color:var(--red);}
+.warning-body{font-size:13px;font-weight:500;color:#7f1d1d;}
+
+/* ─── Orders Card (collapsible) ──────────────────────────────────── */
 .orders-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;}
-.orders-card-header{padding:11px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.orders-card-header{padding:11px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;transition:background .12s;}
+.orders-card-header:hover{background:var(--surface-2);}
+.orders-header-right{display:flex;align-items:center;gap:10px;}
 .orders-card-title{font-size:13px;font-weight:600;color:var(--text-primary);}
 .orders-count-badge{background:var(--accent-light);color:var(--accent);border-radius:20px;padding:2px 10px;font-size:12px;font-weight:700;}
+.orders-header-left{display:flex;align-items:center;gap:10px;}
+.orders-history-link{font-size:11px;font-weight:600;color:var(--accent);text-decoration:none;display:flex;align-items:center;gap:3px;padding:3px 8px;border-radius:5px;background:var(--accent-light);transition:background .12s;}
+.orders-history-link:hover{background:#dbeafe;}
+.orders-collapse-icon{font-size:13px;color:var(--text-muted);transition:transform .2s;}
+.orders-collapse-icon.open{transform:rotate(180deg);}
+.orders-body-wrap{display:block;}
+.orders-body-wrap.collapsed{display:none;}
 .orders-table{width:100%;border-collapse:collapse;}
 .orders-table th{padding:8px 14px;text-align:right;font-size:10px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;background:var(--surface-2);border-bottom:1px solid var(--border);white-space:nowrap;}
 .orders-table td{padding:10px 14px;border-bottom:1px solid var(--border);font-size:12px;vertical-align:middle;}
@@ -135,7 +148,7 @@ body{font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:va
 .orders-table tr:hover td{background:#fafafa;}
 .order-name-link{font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:700;color:var(--accent);text-decoration:none;direction:ltr;display:inline-block;}
 .order-name-link:hover{text-decoration:underline;}
-.order-date{color:var(--text-muted);font-size:11px;}
+.order-date{color:var(--text-muted);font-size:11px;font-family:'IBM Plex Mono',monospace;}
 .qty-badge{display:inline-flex;align-items:center;justify-content:center;min-width:26px;height:26px;border-radius:6px;font-size:13px;font-weight:700;font-variant-numeric:tabular-nums;}
 .qty-unfulfilled{background:var(--accent-light);color:var(--accent);}
 .tags-cell{display:flex;flex-wrap:wrap;gap:3px;}
@@ -150,11 +163,13 @@ body{font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:va
 .state-box p{font-size:12px;}
 .loading-spinner{display:inline-block;width:18px;height:18px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg);}}
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .2s;}
+
+/* ─── Confirm Modal ──────────────────────────────────────────────── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .2s;}
 .modal-overlay.open{opacity:1;pointer-events:all;}
-.modal{background:var(--surface);border-radius:var(--radius);width:100%;max-width:460px;box-shadow:0 20px 60px rgba(0,0,0,.15);overflow:hidden;transform:translateY(12px);transition:transform .2s cubic-bezier(.34,1.56,.64,1);}
+.modal{background:var(--surface);border-radius:var(--radius);width:100%;max-width:440px;box-shadow:0 20px 60px rgba(0,0,0,.2);overflow:hidden;transform:translateY(14px);transition:transform .2s cubic-bezier(.34,1.56,.64,1);}
 .modal-overlay.open .modal{transform:translateY(0);}
-.modal-header{padding:16px 20px;border-bottom:1px solid var(--border);font-size:14px;font-weight:700;}
+.modal-header{padding:16px 20px;border-bottom:1px solid var(--border);font-size:14px;font-weight:700;display:flex;align-items:center;gap:8px;}
 .modal-body{padding:20px;display:flex;flex-direction:column;gap:14px;}
 .field-group{display:flex;flex-direction:column;gap:5px;}
 .field-label{font-size:11px;font-weight:600;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.4px;}
@@ -165,6 +180,22 @@ body{font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:va
 .btn-save:hover{background:var(--accent-dark);}
 .btn-cancel{padding:8px 14px;background:transparent;color:var(--text-secondary);border:1px solid var(--border-strong);border-radius:var(--radius-sm);font-family:inherit;font-size:12px;cursor:pointer;}
 .btn-cancel:hover{color:var(--text-primary);border-color:var(--text-secondary);}
+
+/* Confirm modal specifics */
+.confirm-modal .modal-header{background:var(--surface-2);}
+.confirm-detail-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);}
+.confirm-detail-row:last-child{border-bottom:none;}
+.confirm-detail-label{font-size:12px;color:var(--text-secondary);}
+.confirm-detail-val{font-size:13px;font-weight:700;color:var(--text-primary);font-variant-numeric:tabular-nums;}
+.confirm-detail-val.green{color:var(--green);}
+.confirm-detail-val.red{color:var(--red);}
+.confirm-detail-val.accent{color:var(--accent);}
+.confirm-note{font-size:12px;color:var(--text-secondary);background:var(--surface-2);border-radius:var(--radius-sm);padding:10px 12px;border:1px solid var(--border);}
+.btn-confirm-ok{padding:9px 20px;background:var(--green);color:#fff;border:none;border-radius:var(--radius-sm);font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;transition:background .15s;}
+.btn-confirm-ok:hover{background:#15803d;}
+.btn-confirm-ok.accent{background:var(--accent);}
+.btn-confirm-ok.accent:hover{background:var(--accent-dark);}
+
 .not-configured-banner{background:var(--amber-light);border:1px solid #fde68a;border-radius:var(--radius-sm);padding:9px 13px;font-size:12px;color:var(--amber);margin-bottom:12px;}
 .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--text-primary);color:#fff;padding:9px 18px;border-radius:8px;font-size:12px;font-weight:500;z-index:999;transition:transform .3s cubic-bezier(.34,1.56,.64,1);white-space:nowrap;}
 .toast.show{transform:translateX(-50%) translateY(0);}
@@ -175,6 +206,7 @@ body{font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:va
 <body>
 <div class="container">
 
+  <!-- Settings Modal -->
   <div class="modal-overlay" id="settingsOverlay" onclick="closeSettingsOnBackdrop(event)">
     <div class="modal">
       <div class="modal-header">⚙️ الإعدادات</div>
@@ -195,6 +227,19 @@ body{font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:va
     </div>
   </div>
 
+  <!-- Confirm Modal -->
+  <div class="modal-overlay" id="confirmOverlay">
+    <div class="modal confirm-modal">
+      <div class="modal-header" id="confirmHeader">🔎 تأكيد العملية</div>
+      <div class="modal-body" id="confirmBody"></div>
+      <div class="modal-footer">
+        <button class="btn-cancel" onclick="closeConfirm()">إلغاء</button>
+        <button class="btn-confirm-ok" id="confirmOkBtn" onclick="executeConfirmed()">تأكيد</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- App Header -->
   <div class="app-header">
     <div class="app-title">
       <span>📦</span><h1>StockAudit</h1>
@@ -203,6 +248,7 @@ body{font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:va
     <button class="settings-btn" id="settingsBtn" onclick="openSettings()">⚙️ الإعدادات</button>
   </div>
 
+  <!-- Search Card -->
   <div class="search-card">
     <div class="search-tabs">
       <button class="tab-btn active" id="tabSku" onclick="switchTab('sku')">🔍 بحث بالـ SKU</button>
@@ -226,8 +272,10 @@ body{font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:va
     </div>
   </div>
 
+  <!-- Results -->
   <div id="results">
 
+    <!-- Product Topbar -->
     <div class="product-topbar">
       <div class="product-name" id="productTitle">—</div>
       <a class="sku-link" id="productSkuLink" href="#" target="_blank">
@@ -272,22 +320,19 @@ body{font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:va
       </div>
     </div>
 
-    <!-- ─── Audit Card ─────────────────────────────── -->
+    <!-- Audit Card -->
     <div class="audit-card" id="auditCard">
-
-      <!-- Phase 1: Question -->
       <div class="audit-phase1" id="auditPhase1">
         <div class="audit-q-left">
           <div class="audit-q-text">🔎 هل عدد قطع الرف مظبوط؟</div>
           <div class="audit-q-sub" id="auditShelfHint">قطع الرف: —</div>
         </div>
         <div class="audit-q-btns">
-          <button class="btn-audit-ok" id="btnAuditOk" onclick="markAuditOk()">✅ الجرد مظبوط</button>
+          <button class="btn-audit-ok" id="btnAuditOk" onclick="confirmAuditOk()">✅ الجرد مظبوط</button>
           <button class="btn-want-adjust" onclick="showAdjustPanel()">🔧 أريد التعديل</button>
         </div>
       </div>
 
-      <!-- Phase 2: Adjust Panel -->
       <div class="adjust-panel" id="adjustPanel">
         <div class="adjust-panel-header">
           <div class="adjust-panel-title">🔧 تعديل المخزون</div>
@@ -299,7 +344,7 @@ body{font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:va
             <div class="adjust-current-val" id="adjustCurrentVal">—</div>
           </div>
           <div class="adjust-field">
-            <div class="adjust-label">التعديل (+ زيادة / − نقصان)</div>
+            <div class="adjust-label">&nbsp;</div>
             <div class="delta-wrap">
               <button class="delta-btn minus" onclick="stepDelta(-1)">−</button>
               <input type="number" id="deltaInput" value="0" min="-9999" max="9999" oninput="updatePreview()" />
@@ -312,35 +357,48 @@ body{font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:va
           </div>
           <div class="adjust-field" style="padding-bottom:2px;">
             <div class="adjust-label">&nbsp;</div>
-            <button class="btn-apply" id="btnApplyAdjust" onclick="applyAdjust()" disabled>✔ تطبيق التعديل</button>
+            <button class="btn-apply" id="btnApplyAdjust" onclick="confirmAdjust()" disabled>✔ تعديل الكمية</button>
           </div>
         </div>
       </div>
 
-      <!-- Audit date -->
       <div class="audit-date-row" id="auditDateDisplay">
         📅 آخر جرد: <span class="audit-val" id="auditDateVal">—</span>
       </div>
-
     </div>
 
-    <!-- Warning Banner -->
-    <div id="warningBanner" style="display:none;background:var(--amber-light);border:1.5px solid #f59e0b;border-radius:var(--radius-sm);padding:12px 18px;margin-bottom:10px;font-size:13px;font-weight:600;color:#92400e;align-items:center;gap:10px;">
-      <span style="font-size:16px;flex-shrink:0;">⚠️</span>
-      <span>يجب التأكد من عدم وجود أوردرات مركونة على طاولة التحضير ولم يتم عمل سكان لها قبل إجراء الجرد</span>
+    <!-- Warning Banner (RED) -->
+    <div id="warningBanner">
+      <div class="warning-icon">🚨</div>
+      <div class="warning-text">
+        <div class="warning-title">تحذير مهم قبل الجرد</div>
+        <div class="warning-body">يجب التأكد من عدم وجود أوردرات مركونة على طاولة التحضير ولم يتم عمل سكان لها — وإلا ستكون نتيجة الجرد غير دقيقة</div>
+      </div>
     </div>
 
+    <!-- Orders Loading -->
     <div id="ordersLoading" style="display:none;text-align:center;padding:20px;">
       <div class="loading-spinner"></div>
       <p style="margin-top:8px;color:var(--text-muted);font-size:12px;">جاري تحميل الأوردرات...</p>
     </div>
 
+    <!-- Orders Card (collapsible) -->
     <div class="orders-card" id="ordersCard" style="display:none;">
-      <div class="orders-card-header">
-        <div class="orders-card-title">الأوردرات غير المشحونة (Unfulfilled)</div>
-        <div class="orders-count-badge" id="ordersCountBadge">0</div>
+      <div class="orders-card-header" onclick="toggleOrders()">
+        <div class="orders-header-right">
+          <div class="orders-card-title">الأوردرات غير المشحونة (Unfulfilled)</div>
+          <div class="orders-count-badge" id="ordersCountBadge">0</div>
+        </div>
+        <div class="orders-header-left">
+          <a class="orders-history-link" id="historyLink" href="#" target="_blank" onclick="event.stopPropagation()">
+            📋 عرض السجل ↗
+          </a>
+          <span class="orders-collapse-icon open" id="collapseIcon">▾</span>
+        </div>
       </div>
-      <div id="ordersBody"></div>
+      <div class="orders-body-wrap" id="ordersBodyWrap">
+        <div id="ordersBody"></div>
+      </div>
     </div>
 
   </div>
@@ -354,7 +412,10 @@ const LS_URL_KEY = 'stockaudit_worker_url';
 const LS_SEC_KEY = 'stockaudit_worker_secret';
 
 let currentSku = null, currentVariant = null, currentShelfQty = null;
+let currentInventoryItemId = null; // for history link
+let pendingAction = null; // for confirm modal
 
+// ─── Helpers ──────────────────────────────────────────────────────────────────
 function getConfig(){return{url:localStorage.getItem(LS_URL_KEY)||'',secret:localStorage.getItem(LS_SEC_KEY)||''};}
 function isConfigured(){const c=getConfig();return c.url.startsWith('http')&&c.secret.length>0;}
 function updateSettingsBtn(){document.getElementById('settingsBtn').classList.toggle('configured',isConfigured());}
@@ -369,6 +430,24 @@ function saveSettings(){
   updateSettingsBtn();closeSettings();showToast('تم حفظ الإعدادات ✓','success');
 }
 
+function showToast(msg,type=''){
+  const t=document.getElementById('toast');t.textContent=msg;
+  t.className='toast'+(type?' '+type:'');t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3000);
+}
+
+// ─── Date format: DD-MM-YYYY الساعة HH:MM ────────────────────────────────────
+function formatDateTime(isoString){
+  const d=new Date(isoString);
+  const pad=n=>String(n).padStart(2,'0');
+  return `${pad(d.getDate())}-${pad(d.getMonth()+1)}-${d.getFullYear()} الساعة ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+function formatDate(isoString){
+  const d=new Date(isoString);
+  const pad=n=>String(n).padStart(2,'0');
+  return `${pad(d.getDate())}-${pad(d.getMonth()+1)}-${d.getFullYear()}`;
+}
+
 let searchDebounce=null,lastKeyTime=0,barcodeTimeout=null;
 updateSettingsBtn();
 if(!isConfigured()){
@@ -377,11 +456,6 @@ if(!isConfigured()){
   document.querySelector('.search-card').prepend(b);
 }
 
-function showToast(msg,type=''){
-  const t=document.getElementById('toast');t.textContent=msg;
-  t.className='toast'+(type?' '+type:'');t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'),3000);
-}
 function switchTab(tab){
   document.getElementById('tabSku').classList.toggle('active',tab==='sku');
   document.getElementById('tabBarcode').classList.toggle('active',tab==='barcode');
@@ -389,6 +463,7 @@ function switchTab(tab){
   document.getElementById('barcodeMode').classList.toggle('active',tab==='barcode');
   if(tab==='barcode')document.getElementById('barcodeInput').focus();
 }
+
 async function apiCall(params){
   if(!isConfigured()){openSettings();throw new Error('الإعدادات غير مكتملة');}
   const{url:WU,secret:WS}=getConfig();
@@ -413,6 +488,7 @@ skuSearch.addEventListener('input',()=>{
 skuSearch.addEventListener('focus',()=>{if(skuSearch.value.trim())loadSkus(skuSearch.value.trim());});
 document.addEventListener('click',e=>{if(!document.getElementById('dropdownWrap').contains(e.target))dropdownList.classList.remove('open');});
 function clearSearch(){skuSearch.value='';clearBtn.classList.remove('visible');dropdownList.innerHTML='';dropdownList.classList.remove('open');skuSearch.focus();}
+
 async function loadSkus(search){
   dropdownList.innerHTML='<div class="dropdown-loading"><div class="loading-spinner"></div></div>';
   dropdownList.classList.add('open');
@@ -468,6 +544,11 @@ function renderProductCard(variant){
   const pid=(variant.product?.id||'').split('/').pop();
   document.getElementById('productSkuLink').href=pid&&vid?`https://admin.shopify.com/store/6c7e1a-53/products/${pid}/variants/${vid}`:'#';
 
+  // inventory item id (numeric) for history link
+  const iid=(variant.inventoryItem?.id||'').split('/').pop();
+  currentInventoryItemId=iid;
+  updateHistoryLink(iid);
+
   const opts=variant.selectedOptions||[];
   const sizeN=['shoe size','size','مقاس'];const colorN=['color','colour','لون'];
   document.getElementById('productOptions').innerHTML=opts
@@ -498,7 +579,6 @@ function renderProductCard(variant){
   document.getElementById('qtyShelf').textContent='—';
   document.getElementById('qtyPacked').textContent='—';
 
-  // Reset audit card
   currentShelfQty=null;
   hideAdjustPanel();
   document.getElementById('auditShelfHint').textContent='قطع الرف: —';
@@ -509,18 +589,32 @@ function renderProductCard(variant){
   document.getElementById('warningBanner').style.display='none';
 }
 
+function updateHistoryLink(iid){
+  const loc='98849620290';
+  const link=iid
+    ?`https://admin.shopify.com/store/6c7e1a-53/products/inventory/${iid}/inventory_history?location_id=${loc}`
+    :'#';
+  document.getElementById('historyLink').href=link;
+}
+
+// ─── Orders collapse ──────────────────────────────────────────────────────────
+let ordersCollapsed=false;
+function toggleOrders(){
+  ordersCollapsed=!ordersCollapsed;
+  document.getElementById('ordersBodyWrap').classList.toggle('collapsed',ordersCollapsed);
+  document.getElementById('collapseIcon').classList.toggle('open',!ordersCollapsed);
+}
+
 // ─── Audit Panel ──────────────────────────────────────────────────────────────
 function showAdjustPanel(){
   document.getElementById('adjustPanel').classList.add('visible');
-  const shelf=currentShelfQty;
-  document.getElementById('adjustCurrentVal').textContent=shelf!=null?shelf.toLocaleString('en-US'):'—';
+  document.getElementById('adjustCurrentVal').textContent=currentShelfQty!=null?currentShelfQty.toLocaleString('en-US'):'—';
   document.getElementById('deltaInput').value='0';
   updatePreview();
 }
 function hideAdjustPanel(){
   document.getElementById('adjustPanel').classList.remove('visible');
 }
-
 function stepDelta(step){
   const input=document.getElementById('deltaInput');
   input.value=(parseInt(input.value)||0)+step;
@@ -541,11 +635,96 @@ function updatePreview(){
   btnApply.disabled=false;
 }
 
-// ─── Apply Adjustment ─────────────────────────────────────────────────────────
-async function applyAdjust(){
+// ─── Confirm Modal ────────────────────────────────────────────────────────────
+function openConfirm(header,bodyHTML,okLabel,okClass,action){
+  document.getElementById('confirmHeader').innerHTML=header;
+  document.getElementById('confirmBody').innerHTML=bodyHTML;
+  const okBtn=document.getElementById('confirmOkBtn');
+  okBtn.textContent=okLabel;
+  okBtn.className='btn-confirm-ok'+(okClass?' '+okClass:'');
+  pendingAction=action;
+  document.getElementById('confirmOverlay').classList.add('open');
+}
+function closeConfirm(){
+  document.getElementById('confirmOverlay').classList.remove('open');
+  pendingAction=null;
+}
+async function executeConfirmed(){
+  closeConfirm();
+  if(pendingAction)await pendingAction();
+}
+
+// ─── Confirm: Audit OK ────────────────────────────────────────────────────────
+function confirmAuditOk(){
+  if(!currentVariant){showToast('لم يتم اختيار منتج','error');return;}
+  const shelf=currentShelfQty!=null?currentShelfQty.toLocaleString('en-US'):'—';
+  const bodyHTML=`
+    <div class="confirm-detail-row">
+      <span class="confirm-detail-label">المنتج</span>
+      <span class="confirm-detail-val">${currentVariant.product?.title||'—'}</span>
+    </div>
+    <div class="confirm-detail-row">
+      <span class="confirm-detail-label">SKU</span>
+      <span class="confirm-detail-val accent">${currentVariant.sku||'—'}</span>
+    </div>
+    <div class="confirm-detail-row">
+      <span class="confirm-detail-label">قطع الرف</span>
+      <span class="confirm-detail-val green">${shelf}</span>
+    </div>
+    <div class="confirm-note">سيتم تسجيل تاريخ ووقت الجرد الآن على هذا المنتج — بدون تعديل في الكمية.</div>`;
+  openConfirm('✅ تأكيد: الجرد مظبوط',bodyHTML,'تأكيد','',doAuditOk);
+}
+
+async function doAuditOk(){
+  const variantId=currentVariant.id;
+  const btn=document.getElementById('btnAuditOk');
+  btn.disabled=true;btn.textContent='⏳ جاري التسجيل...';
+  try{
+    const data=await apiCall({action:'set_audit_date',variantId});
+    showToast('تم تسجيل الجرد ✓','success');
+    if(data.auditDate)showAuditDate(data.auditDate);
+  }catch(e){showToast('خطأ: '+e.message,'error');}
+  finally{btn.disabled=false;btn.textContent='✅ الجرد مظبوط';}
+}
+
+// ─── Confirm: Adjust ──────────────────────────────────────────────────────────
+function confirmAdjust(){
   const delta=parseInt(document.getElementById('deltaInput').value)||0;
   if(delta===0){showToast('التعديل يجب أن يكون غير صفر','error');return;}
   if(!currentVariant){showToast('لم يتم اختيار منتج','error');return;}
+
+  const current=currentShelfQty!=null?currentShelfQty:0;
+  const newVal=current+delta;
+  const deltaStr=(delta>0?'+':'')+delta.toLocaleString('en-US');
+  const deltaClass=delta>0?'green':'red';
+
+  const bodyHTML=`
+    <div class="confirm-detail-row">
+      <span class="confirm-detail-label">المنتج</span>
+      <span class="confirm-detail-val">${currentVariant.product?.title||'—'}</span>
+    </div>
+    <div class="confirm-detail-row">
+      <span class="confirm-detail-label">SKU</span>
+      <span class="confirm-detail-val accent">${currentVariant.sku||'—'}</span>
+    </div>
+    <div class="confirm-detail-row">
+      <span class="confirm-detail-label">قطع الرف الحالية</span>
+      <span class="confirm-detail-val">${current.toLocaleString('en-US')}</span>
+    </div>
+    <div class="confirm-detail-row">
+      <span class="confirm-detail-label">التعديل</span>
+      <span class="confirm-detail-val ${deltaClass}">${deltaStr}</span>
+    </div>
+    <div class="confirm-detail-row">
+      <span class="confirm-detail-label">الكمية الجديدة (Available)</span>
+      <span class="confirm-detail-val ${delta>0?'green':'red'}">${newVal.toLocaleString('en-US')}</span>
+    </div>
+    <div class="confirm-note">سيتم تطبيق التعديل على الـ Available في Shopify وتسجيل تاريخ الجرد تلقائياً.</div>`;
+  openConfirm('🔧 تأكيد تعديل الكمية',bodyHTML,'تطبيق التعديل','accent',doApplyAdjust);
+}
+
+async function doApplyAdjust(){
+  const delta=parseInt(document.getElementById('deltaInput').value)||0;
   const inventoryItemId=currentVariant.inventoryItem?.id;
   const variantId=currentVariant.id;
   if(!inventoryItemId){showToast('لا يوجد inventoryItem ID','error');return;}
@@ -566,30 +745,12 @@ async function applyAdjust(){
     btn.disabled=false;
   }finally{
     btnAudit.disabled=false;
-    btn.textContent='✔ تطبيق التعديل';
+    btn.textContent='✔ تعديل الكمية';
   }
 }
 
-// ─── Mark Audit OK ────────────────────────────────────────────────────────────
-async function markAuditOk(){
-  if(!currentVariant){showToast('لم يتم اختيار منتج','error');return;}
-  const variantId=currentVariant.id;
-  const btn=document.getElementById('btnAuditOk');
-  btn.disabled=true;btn.textContent='⏳ جاري التسجيل...';
-  try{
-    const data=await apiCall({action:'set_audit_date',variantId});
-    showToast('تم تسجيل الجرد ✓','success');
-    if(data.auditDate)showAuditDate(data.auditDate);
-  }catch(e){showToast('خطأ: '+e.message,'error');}
-  finally{btn.disabled=false;btn.textContent='✅ الجرد مظبوط';}
-}
-
 function showAuditDate(isoString){
-  const d=new Date(isoString);
-  const pad=n=>String(n).padStart(2,'0');
-  const months=['January','February','March','April','May','June','July','August','September','October','November','December'];
-  const formatted=`${pad(d.getDate())}-${months[d.getMonth()]}-${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
-  document.getElementById('auditDateVal').textContent=formatted;
+  document.getElementById('auditDateVal').textContent=formatDateTime(isoString);
   document.getElementById('auditDateDisplay').style.display='flex';
 }
 
@@ -608,6 +769,9 @@ async function refreshCurrent(){
 async function loadOrders(sku){
   document.getElementById('ordersLoading').style.display='block';
   document.getElementById('ordersCard').style.display='none';
+  ordersCollapsed=false;
+  document.getElementById('ordersBodyWrap').classList.remove('collapsed');
+  document.getElementById('collapseIcon').classList.add('open');
   try{const data=await apiCall({action:'get_details',sku});renderOrders(data.orders,sku);}
   catch(e){document.getElementById('ordersLoading').style.display='none';showToast('خطأ في تحميل الأوردرات: '+e.message,'error');}
 }
@@ -632,13 +796,11 @@ function renderOrders(orders,sku){
   }
 
   let totalUnfulfilled=0,packedQty=0,unpackedCommitted=0;
-  const months=['January','February','March','April','May','June','July','August','September','October','November','December'];
 
   const rows=orders.map(order=>{
     const unf=order.items.reduce((s,i)=>s+i.unfulfilledQuantity,0);
     totalUnfulfilled+=unf;
-    const d=new Date(order.createdAt);
-    const date=`${String(d.getDate()).padStart(2,'0')}-${months[d.getMonth()]}-${d.getFullYear()}`;
+    const date=formatDate(order.createdAt);
     const orderId=order.id.split('/').pop();
     const tags=order.tags||[];const packed=isPacked(tags);
     if(packed)packedQty+=unf;else unpackedCommitted+=unf;
@@ -674,7 +836,6 @@ function renderOrders(orders,sku){
   document.getElementById('qtyShelf').textContent=shelfCount.toLocaleString('en-US');
   document.getElementById('qtyPacked').textContent=packedQty>0?'-'+packedQty.toLocaleString('en-US'):'0';
   document.getElementById('auditShelfHint').textContent=`قطع الرف: ${shelfCount.toLocaleString('en-US')}`;
-
   document.getElementById('warningBanner').style.display='flex';
 }
 </script>
