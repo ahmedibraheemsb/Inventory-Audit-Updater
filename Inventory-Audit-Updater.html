@@ -73,8 +73,134 @@
     font-size: 22px;
     flex-shrink: 0;
   }
+  .header-text { flex: 1; }
   .header-text h1 { font-size: 18px; font-weight: 700; color: var(--text-primary); }
   .header-text p { font-size: 13px; color: var(--text-secondary); margin-top: 2px; }
+
+  .settings-btn {
+    display: flex; align-items: center; gap: 6px;
+    padding: 8px 14px;
+    background: var(--bg);
+    border: 1.5px solid var(--border-strong);
+    border-radius: var(--radius-sm);
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.18s;
+    flex-shrink: 0;
+  }
+  .settings-btn:hover {
+    background: var(--surface);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  .settings-btn.configured {
+    border-color: var(--green);
+    color: var(--green);
+    background: var(--green-light);
+  }
+
+  /* ─── Settings Modal ─── */
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.4);
+    z-index: 200;
+    display: flex; align-items: center; justify-content: center;
+    padding: 20px;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.2s;
+  }
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+
+  .modal {
+    background: var(--surface);
+    border-radius: var(--radius);
+    width: 100%; max-width: 480px;
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+    transform: translateY(16px) scale(0.98);
+    transition: transform 0.2s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  .modal-overlay.open .modal { transform: translateY(0) scale(1); }
+
+  .modal-header {
+    padding: 18px 20px;
+    border-bottom: 1px solid var(--border);
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-primary);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .modal-body { padding: 20px; display: flex; flex-direction: column; gap: 14px; }
+
+  .field-group { display: flex; flex-direction: column; gap: 6px; }
+  .field-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+  .field-input {
+    border: 1.5px solid var(--border-strong);
+    border-radius: var(--radius-sm);
+    padding: 10px 12px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    color: var(--text-primary);
+    outline: none;
+    width: 100%;
+    direction: ltr;
+    transition: border-color 0.18s, box-shadow 0.18s;
+  }
+  .field-input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+  }
+
+  .modal-footer {
+    padding: 14px 20px;
+    border-top: 1px solid var(--border);
+    display: flex; gap: 8px; justify-content: flex-end;
+  }
+  .btn-save {
+    padding: 9px 20px;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.18s;
+  }
+  .btn-save:hover { background: var(--accent-dark); }
+  .btn-cancel {
+    padding: 9px 16px;
+    background: transparent;
+    color: var(--text-secondary);
+    border: 1.5px solid var(--border-strong);
+    border-radius: var(--radius-sm);
+    font-family: inherit;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.18s;
+  }
+  .btn-cancel:hover { border-color: var(--text-secondary); color: var(--text-primary); }
+
+  .not-configured-banner {
+    background: var(--orange-light);
+    border: 1px solid #fde68a;
+    border-radius: var(--radius-sm);
+    padding: 10px 14px;
+    font-size: 13px;
+    color: var(--orange);
+    display: flex; align-items: center; gap: 8px;
+    margin-bottom: 4px;
+  }
 
   /* ─── Search Card ─── */
   .search-card {
@@ -239,11 +365,11 @@
     font-size: 15px;
     color: var(--text-primary);
     background: transparent;
-    direction: ltr;
-    text-align: center;
+    direction: rtl;
+    text-align: right;
     letter-spacing: 1px;
   }
-  #barcodeInput::placeholder { font-family: 'IBM Plex Sans Arabic', sans-serif; letter-spacing: 0; color: var(--text-muted); }
+  #barcodeInput::placeholder { font-family: 'IBM Plex Sans Arabic', sans-serif; letter-spacing: 0; color: var(--text-muted); direction: rtl; text-align: right; }
   .barcode-icon-wrap {
     padding: 0 14px;
     color: var(--text-muted);
@@ -503,13 +629,37 @@
 
 <div class="container">
 
+  <!-- Settings Modal -->
+  <div class="modal-overlay" id="settingsOverlay" onclick="closeSettingsOnBackdrop(event)">
+    <div class="modal">
+      <div class="modal-header">⚙️ الإعدادات</div>
+      <div class="modal-body">
+        <div class="field-group">
+          <label class="field-label">Worker URL</label>
+          <input type="text" class="field-input" id="cfWorkerUrl" placeholder="https://stock-audit.ecommoda24.workers.dev" />
+        </div>
+        <div class="field-group">
+          <label class="field-label">Worker Secret</label>
+          <input type="password" class="field-input" id="cfWorkerSecret" placeholder="••••••••••••" />
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-cancel" onclick="closeSettings()">إلغاء</button>
+        <button class="btn-save" onclick="saveSettings()">حفظ</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Header -->
   <div class="header">
     <div class="header-icon">📦</div>
     <div class="header-text">
-      <h1>جرد المخزون</h1>
+      <h1>StockAudit</h1>
       <p>ابحث بالـ SKU أو امسح الباركود لعرض تفاصيل المنتج والأوردرات</p>
     </div>
+    <button class="settings-btn" id="settingsBtn" onclick="openSettings()">
+      ⚙️ الإعدادات
+    </button>
   </div>
 
   <!-- Search Card -->
@@ -532,7 +682,7 @@
           <input
             type="text"
             id="skuSearch"
-            placeholder="ابحث بالـ SKU أو اسم المنتج..."
+            placeholder="ابحث بكتابة (SKU) أو اسم المنتج ..."
             autocomplete="off"
             spellcheck="false"
           />
@@ -554,10 +704,6 @@
           spellcheck="false"
           inputmode="numeric"
         />
-      </div>
-      <div class="barcode-hint">
-        <span class="pulse-dot"></span>
-        جاهز للمسح — ضع المؤشر داخل الحقل ثم امسح
       </div>
     </div>
   </div>
@@ -622,18 +768,71 @@
 <div class="toast" id="toast"></div>
 
 <script>
-// ─── CONFIG ─────────────────────────────────────────────────────────────────
-const WORKER_URL = 'https://inventory-sku-checker.ecommoda24.workers.dev';
-const WORKER_SECRET = 'YOUR_WORKER_SECRET_HERE';
-
+// ─── CONFIG (localStorage) ───────────────────────────────────────────────────
 const SHOP_DOMAIN = '6c7e1a-53.myshopify.com';
+const LS_URL_KEY = 'stockaudit_worker_url';
+const LS_SEC_KEY = 'stockaudit_worker_secret';
+
+function getConfig() {
+  return {
+    url: localStorage.getItem(LS_URL_KEY) || '',
+    secret: localStorage.getItem(LS_SEC_KEY) || '',
+  };
+}
+
+function isConfigured() {
+  const c = getConfig();
+  return c.url.startsWith('http') && c.secret.length > 0;
+}
+
+function updateSettingsBtn() {
+  const btn = document.getElementById('settingsBtn');
+  btn.classList.toggle('configured', isConfigured());
+}
+
+// ─── Settings Modal ───────────────────────────────────────────────────────────
+function openSettings() {
+  const c = getConfig();
+  document.getElementById('cfWorkerUrl').value = c.url;
+  document.getElementById('cfWorkerSecret').value = c.secret;
+  document.getElementById('settingsOverlay').classList.add('open');
+}
+
+function closeSettings() {
+  document.getElementById('settingsOverlay').classList.remove('open');
+}
+
+function closeSettingsOnBackdrop(e) {
+  if (e.target === document.getElementById('settingsOverlay')) closeSettings();
+}
+
+function saveSettings() {
+  const url = document.getElementById('cfWorkerUrl').value.trim();
+  const secret = document.getElementById('cfWorkerSecret').value.trim();
+  if (!url || !secret) { showToast('الرجاء إدخال الـ URL والـ Secret', 'error'); return; }
+  localStorage.setItem(LS_URL_KEY, url);
+  localStorage.setItem(LS_SEC_KEY, secret);
+  updateSettingsBtn();
+  closeSettings();
+  showToast('تم حفظ الإعدادات ✓', 'success');
+}
 
 // ─── State ───────────────────────────────────────────────────────────────────
 let currentSku = null;
 let searchDebounce = null;
-let barcodeBuffer = '';
-let barcodeTimeout = null;
 let lastKeyTime = 0;
+let barcodeTimeout = null;
+
+// Init settings btn state on load
+updateSettingsBtn();
+if (!isConfigured()) {
+  // show banner
+  const banner = document.createElement('div');
+  banner.className = 'not-configured-banner';
+  banner.id = 'notConfiguredBanner';
+  banner.innerHTML = '⚠️ الأداة غير مضبوطة — افتح الإعدادات وأدخل الـ Worker URL والـ Secret';
+  document.querySelector('.search-card').prepend(banner);
+}
 
 // ─── Toast ───────────────────────────────────────────────────────────────────
 function showToast(msg, type = '') {
@@ -658,6 +857,11 @@ function switchTab(tab) {
 
 // ─── API ──────────────────────────────────────────────────────────────────────
 async function apiCall(params) {
+  if (!isConfigured()) {
+    openSettings();
+    throw new Error('الإعدادات غير مكتملة');
+  }
+  const { url: WORKER_URL, secret: WORKER_SECRET } = getConfig();
   const url = new URL(WORKER_URL);
   Object.entries(params).forEach(([k, v]) => url.searchParams.set(k, v));
   const res = await fetch(url.toString(), {
