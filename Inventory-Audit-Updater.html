@@ -963,14 +963,11 @@ function renderDropdown(variants) {
     return;
   }
   dropdownList.innerHTML = variants.map(v => {
-    const levels = v.inventoryItem?.inventoryLevels?.nodes?.[0]?.quantities || [];
-    const avail = levels.find(q => q.name === 'available')?.quantity ?? '—';
     return `
       <div class="dropdown-item ${v.sku === currentSku ? 'selected' : ''}"
            onclick="selectVariant(${JSON.stringify(v).replace(/"/g, '&quot;')})">
         <span class="item-sku">${v.sku || '—'}</span>
         <span class="item-name">${v.product?.title || ''} ${v.selectedOptions?.map(o => o.value).join(' / ') || ''}</span>
-        <span class="item-stock">متاح: ${avail}</span>
       </div>`;
   }).join('');
   dropdownList.classList.add('open');
@@ -1091,8 +1088,10 @@ async function refreshCurrent() {
   if (!currentSku) return;
   showToast('جاري التحديث...', '');
   try {
+    // Use exact SKU search — works correctly with "/" in SKU
     const data = await apiCall({ action: 'list_skus', search: currentSku });
-    const variant = data.variants.find(v => v.sku === currentSku);
+    // find() with exact match
+    const variant = (data.variants || []).find(v => v.sku === currentSku);
     if (variant) {
       renderProductCard(variant);
       loadOrders(currentSku);
@@ -1101,7 +1100,7 @@ async function refreshCurrent() {
       showToast('لم يتم العثور على الـ SKU', 'error');
     }
   } catch (e) {
-    showToast('خطأ: ' + e.message, 'error');
+    showToast('خطأ في التحديث: ' + e.message, 'error');
   }
 }
 
