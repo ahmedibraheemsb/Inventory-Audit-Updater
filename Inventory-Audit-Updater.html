@@ -5,13 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>StockAudit</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@300;400;500;600;700;800&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap');
 
 :root {
   --bg:#f3f4f6; --surface:#fff; --surface-2:#f9fafb;
   --border:#e5e7eb; --border-strong:#d1d5db;
-  --text-primary:#111827; --text-secondary:#6b7280; --text-muted:#9ca3af;
+  --text-primary:#111827; --text-secondary:#6b7280; --text-muted:#6b7280;
   --accent:#2563eb; --accent-light:#eff6ff; --accent-dark:#1d4ed8;
   --green:#16a34a; --green-light:#f0fdf4; --green-border:#86efac;
   --red:#dc2626; --red-light:#fef2f2; --red-border:#fca5a5;
@@ -20,7 +20,7 @@
   --shadow:0 1px 3px rgba(0,0,0,.07),0 1px 2px rgba(0,0,0,.04);
 }
 *{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:var(--text-primary);min-height:100vh;padding:20px 24px;font-size:14px;line-height:1.5;}
+body{font-family:'Noto Sans Arabic',sans-serif;background:var(--bg);color:var(--text-primary);min-height:100vh;padding:20px 24px;font-size:14px;line-height:1.5;}
 .container{max-width:1100px;margin:0 auto;}
 .app-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
 .app-title{display:flex;align-items:center;gap:10px;}
@@ -54,11 +54,13 @@ body{font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:va
 .barcode-input-wrap{display:flex;align-items:center;border:1.5px solid var(--border-strong);border-radius:var(--radius-sm);background:var(--surface);transition:all .15s;}
 .barcode-input-wrap.scanning{border-color:var(--green);box-shadow:0 0 0 3px rgba(22,163,74,.1);}
 #barcodeInput{flex:1;border:none;outline:none;padding:10px 14px;font-family:'IBM Plex Mono',monospace;font-size:14px;color:var(--text-primary);background:transparent;direction:rtl;text-align:right;}
-#barcodeInput::placeholder{font-family:'IBM Plex Sans Arabic',sans-serif;color:var(--text-muted);}
+#barcodeInput::placeholder{font-family:'Noto Sans Arabic',sans-serif;color:var(--text-muted);}
 .barcode-icon{padding:0 14px;color:var(--text-muted);font-size:20px;}
 #results{display:none;}
 #results.visible{display:block;}
-.product-topbar{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:11px 18px;margin-bottom:10px;box-shadow:var(--shadow);display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+.product-topbar{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:11px 18px;margin-bottom:10px;box-shadow:var(--shadow);display:flex;align-items:center;gap:12px;flex-wrap:wrap;transition:background .2s,border-color .2s;}
+.product-topbar.status-active{background:#f0fdf4;border-color:#86efac;}
+.product-topbar.status-other{background:#fef2f2;border-color:#fca5a5;}
 .product-name{flex:1;font-size:14px;font-weight:700;color:var(--text-primary);min-width:200px;}
 .sku-link{display:inline-flex;align-items:center;gap:4px;text-decoration:none;}
 .sku-pill{font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;color:var(--accent);background:var(--accent-light);border:1px solid #bfdbfe;border-radius:5px;padding:3px 9px;transition:background .15s;}
@@ -134,7 +136,7 @@ body{font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:va
 .orders-card-title{font-size:13px;font-weight:600;color:var(--text-primary);}
 .orders-count-badge{background:var(--accent-light);color:var(--accent);border-radius:20px;padding:2px 10px;font-size:12px;font-weight:700;}
 .orders-header-left{display:flex;align-items:center;gap:8px;}
-.orders-collapse-icon{font-size:13px;color:var(--text-muted);transition:transform .2s;}
+.orders-collapse-icon{font-size:18px;color:var(--text-secondary);transition:transform .25s;font-weight:700;line-height:1;}
 .orders-collapse-icon.open{transform:rotate(180deg);}
 .orders-body-wrap{display:block;}
 .orders-body-wrap.collapsed{display:none;}
@@ -274,7 +276,7 @@ body{font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:va
     </div>
     <div id="barcodeMode" class="barcode-area">
       <div class="barcode-input-wrap" id="barcodeWrap">
-        <span class="barcode-icon">〡</span>
+        <span class="barcode-icon">🔫</span>
         <input type="text" id="barcodeInput" placeholder="امسح الباركود هنا..." autocomplete="off" spellcheck="false" inputmode="numeric" />
       </div>
     </div>
@@ -282,7 +284,7 @@ body{font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:va
 
   <!-- Results -->
   <div id="results">
-    <div class="product-topbar">
+    <div class="product-topbar" id="productTopbar">
       <div class="product-name" id="productTitle">—</div>
       <a class="sku-link" id="productSkuLink" href="#" target="_blank">
         <span class="sku-pill" id="productSkuDisplay">SKU: —</span>
@@ -296,7 +298,7 @@ body{font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:va
     <!-- Stats Row -->
     <div style="display:flex;align-items:center;gap:0;margin-bottom:10px;">
       <div class="stat-card" style="flex:1.4;min-width:0;padding:16px 14px;border:2px solid #d97706;background:#fef9c3;">
-        <div class="stat-label" style="font-size:11px;">قطع الرف</div>
+        <div class="stat-label" style="font-size:11px;">عدد القطع على الرف</div>
         <div class="stat-value val-shelf" id="qtyShelf">—</div>
         <div class="stat-desc">المتوقع عند الجرد</div>
       </div>
@@ -334,7 +336,7 @@ body{font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:va
           <div class="audit-last-row" id="auditLastRow">
             <span class="audit-last-label">📅 آخر جرد:</span>
             <span class="audit-last-val" id="auditLastVal">—</span>
-            <a class="audit-history-link" id="historyLink" href="#" target="_blank">📋 عرض السجل ↗</a>
+            <a class="audit-history-link" id="historyLink" href="#" target="_blank">📋 صفحة سجل التعديلات للمنتج ↗</a>
           </div>
         </div>
         <div class="audit-q-btns">
@@ -350,7 +352,7 @@ body{font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:va
         </div>
         <div class="adjust-body">
           <div class="adjust-field">
-            <div class="adjust-label">قطع الرف الحالية</div>
+            <div class="adjust-label">عدد القطع على الرف</div>
             <div class="adjust-current-val" id="adjustCurrentVal">—</div>
           </div>
           <div class="adjust-field">
@@ -399,10 +401,10 @@ body{font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:va
           <span class="selected-count" id="selectedCount">0 محدد</span>
           <button class="btn-select-all" id="btnSelectAll" onclick="event.stopPropagation();toggleSelectAll()" style="display:none;">تحديد الكل</button>
           <button class="btn-fulfill" id="btnFulfill" onclick="event.stopPropagation();confirmFulfill()">✅ Fulfill Orders</button>
-          <span class="orders-collapse-icon open" id="collapseIcon">▾</span>
+          <span class="orders-collapse-icon" id="collapseIcon">▼</span>
         </div>
       </div>
-      <div class="orders-body-wrap" id="ordersBodyWrap">
+      <div class="orders-body-wrap collapsed" id="ordersBodyWrap">
         <div id="ordersBody"></div>
       </div>
     </div>
@@ -572,6 +574,11 @@ function renderProductCard(variant){
   const labels={ACTIVE:'Active ✓',DRAFT:'Draft',ARCHIVED:'Archived',UNLISTED:'Unlisted'};
   const cls=status==='ACTIVE'?'status-ACTIVE':'status-OTHER';
   document.getElementById('productStatus').innerHTML=`<span class="status-badge ${cls}">${labels[status]||status}</span>`;
+
+  // لون الـ topbar حسب الحالة
+  const topbar=document.getElementById('productTopbar');
+  topbar.classList.remove('status-active','status-other');
+  topbar.classList.add(status==='ACTIVE'?'status-active':'status-other');
   document.getElementById('refreshBtn').style.display='flex';
 
   const levels=variant.inventoryItem?.inventoryLevels?.nodes?.[0]?.quantities||[];
@@ -648,7 +655,7 @@ function confirmAuditOk(){
   const body=`
     <div class="confirm-detail-row"><span class="confirm-detail-label">المنتج</span><span class="confirm-detail-val">${currentVariant.product?.title||'—'}</span></div>
     <div class="confirm-detail-row"><span class="confirm-detail-label">SKU</span><span class="confirm-detail-val accent">${currentVariant.sku||'—'}</span></div>
-    <div class="confirm-detail-row"><span class="confirm-detail-label">قطع الرف</span><span class="confirm-detail-val green">${shelf}</span></div>
+    <div class="confirm-detail-row"><span class="confirm-detail-label">عدد القطع على الرف</span><span class="confirm-detail-val green">${shelf}</span></div>
     <div class="confirm-note">سيتم تسجيل تاريخ ووقت الجرد الآن على هذا المنتج — بدون تعديل في الكمية.</div>`;
   openConfirm('✅ تأكيد: الجرد مظبوط',body,'تأكيد','green-btn',doAuditOk);
 }
@@ -676,7 +683,7 @@ function confirmAdjust(){
   const body=`
     <div class="confirm-detail-row"><span class="confirm-detail-label">المنتج</span><span class="confirm-detail-val">${currentVariant.product?.title||'—'}</span></div>
     <div class="confirm-detail-row"><span class="confirm-detail-label">SKU</span><span class="confirm-detail-val accent">${currentVariant.sku||'—'}</span></div>
-    <div class="confirm-detail-row"><span class="confirm-detail-label">قطع الرف الحالية</span><span class="confirm-detail-val">${current.toLocaleString('en-US')}</span></div>
+    <div class="confirm-detail-row"><span class="confirm-detail-label">عدد القطع على الرف</span><span class="confirm-detail-val">${current.toLocaleString('en-US')}</span></div>
     <div class="confirm-detail-row"><span class="confirm-detail-label">التعديل</span><span class="confirm-detail-val ${deltaClass}">${deltaStr}</span></div>
     <div class="confirm-detail-row"><span class="confirm-detail-label">الكمية الجديدة (Available)</span><span class="confirm-detail-val ${delta>0?'green':'red'}">${newVal.toLocaleString('en-US')}</span></div>
     <div class="confirm-note">سيتم تطبيق التعديل على الـ Available في Shopify وتسجيل تاريخ الجرد تلقائياً.</div>`;
@@ -736,9 +743,9 @@ async function refreshCurrent(){
 async function loadOrders(variant){
   document.getElementById('ordersLoading').style.display='block';
   document.getElementById('ordersCard').style.display='none';
-  ordersCollapsed=false;
-  document.getElementById('ordersBodyWrap').classList.remove('collapsed');
-  document.getElementById('collapseIcon').classList.add('open');
+  ordersCollapsed=true;
+  document.getElementById('ordersBodyWrap').classList.add('collapsed');
+  document.getElementById('collapseIcon').classList.remove('open');
   try{
     const [ordersData] = await Promise.all([
       apiCall({
@@ -762,7 +769,7 @@ async function loadAuditDate(){
     if(data.auditDate){
       updateLastAudit(data.auditDate);
     } else {
-      document.getElementById('auditLastVal').textContent='لم يسجَّل بعد';
+      document.getElementById('auditLastVal').textContent='لا يوجد تاريخ مسجّل لهذا المنتج';
     }
   }catch{
     document.getElementById('auditLastVal').textContent='—';
