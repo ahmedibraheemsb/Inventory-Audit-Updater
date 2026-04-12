@@ -193,6 +193,14 @@ body{font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:va
 .btn-confirm-ok.accent-btn:hover{background:var(--accent-dark);}
 
 .not-configured-banner{background:var(--amber-light);border:1px solid #fde68a;border-radius:var(--radius-sm);padding:9px 13px;font-size:12px;color:var(--amber);margin-bottom:12px;}
+.order-checkbox{width:16px;height:16px;cursor:pointer;accent-color:var(--accent);flex-shrink:0;}
+.btn-fulfill{display:none;align-items:center;gap:6px;padding:5px 14px;background:var(--green);color:#fff;border:none;border-radius:var(--radius-sm);font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;transition:background .15s;white-space:nowrap;}
+.btn-fulfill:hover{background:#15803d;}
+.btn-fulfill.visible{display:flex;}
+.btn-select-all{display:flex;align-items:center;gap:5px;padding:4px 10px;background:var(--bg);border:1px solid var(--border-strong);border-radius:var(--radius-sm);font-family:inherit;font-size:11px;font-weight:600;color:var(--text-secondary);cursor:pointer;transition:all .15s;}
+.btn-select-all:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-light);}
+.selected-count{font-size:11px;font-weight:600;color:var(--accent);background:var(--accent-light);padding:2px 8px;border-radius:10px;display:none;}
+.selected-count.visible{display:inline-block;}
 .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--text-primary);color:#fff;padding:9px 18px;border-radius:8px;font-size:12px;font-weight:500;z-index:999;transition:transform .3s cubic-bezier(.34,1.56,.64,1);white-space:nowrap;}
 .toast.show{transform:translateX(-50%) translateY(0);}
 .toast.error{background:var(--red);}
@@ -214,6 +222,10 @@ body{font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:va
         <div class="field-group">
           <label class="field-label">Worker Secret</label>
           <input type="password" class="field-input" id="cfWorkerSecret" placeholder="••••••••••••" />
+        </div>
+        <div class="field-group">
+          <label class="field-label">Flow Companion Token</label>
+          <input type="password" class="field-input" id="cfFlowToken" placeholder="••••••••••••" />
         </div>
       </div>
       <div class="modal-footer">
@@ -384,6 +396,9 @@ body{font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:va
           <div class="orders-count-badge" id="ordersCountBadge">0</div>
         </div>
         <div class="orders-header-left">
+          <span class="selected-count" id="selectedCount">0 محدد</span>
+          <button class="btn-select-all" id="btnSelectAll" onclick="event.stopPropagation();toggleSelectAll()" style="display:none;">تحديد الكل</button>
+          <button class="btn-fulfill" id="btnFulfill" onclick="event.stopPropagation();confirmFulfill()">✅ Fulfill Orders</button>
           <span class="orders-collapse-icon open" id="collapseIcon">▾</span>
         </div>
       </div>
@@ -401,21 +416,25 @@ body{font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:va
 const SHOP_DOMAIN = '6c7e1a-53.myshopify.com';
 const LS_URL_KEY = 'stockaudit_worker_url';
 const LS_SEC_KEY = 'stockaudit_worker_secret';
+const LS_FLOW_KEY = 'stockaudit_flow_token';
 
 let currentSku = null, currentVariant = null, currentShelfQty = null;
 let currentInventoryItemId = null;
+let selectedOrderIds = new Set();
 
-function getConfig(){return{url:localStorage.getItem(LS_URL_KEY)||'',secret:localStorage.getItem(LS_SEC_KEY)||''};}
+function getConfig(){return{url:localStorage.getItem(LS_URL_KEY)||'',secret:localStorage.getItem(LS_SEC_KEY)||'',flowToken:localStorage.getItem(LS_FLOW_KEY)||''};}
 function isConfigured(){const c=getConfig();return c.url.startsWith('http')&&c.secret.length>0;}
 function updateSettingsBtn(){document.getElementById('settingsBtn').classList.toggle('configured',isConfigured());}
-function openSettings(){const c=getConfig();document.getElementById('cfWorkerUrl').value=c.url;document.getElementById('cfWorkerSecret').value=c.secret;document.getElementById('settingsOverlay').classList.add('open');}
+function openSettings(){const c=getConfig();document.getElementById('cfWorkerUrl').value=c.url;document.getElementById('cfWorkerSecret').value=c.secret;document.getElementById('cfFlowToken').value=c.flowToken;document.getElementById('settingsOverlay').classList.add('open');}
 function closeSettings(){document.getElementById('settingsOverlay').classList.remove('open');}
 function closeSettingsOnBackdrop(e){if(e.target===document.getElementById('settingsOverlay'))closeSettings();}
 function saveSettings(){
   const url=document.getElementById('cfWorkerUrl').value.trim();
   const secret=document.getElementById('cfWorkerSecret').value.trim();
+  const flowToken=document.getElementById('cfFlowToken').value.trim();
   if(!url||!secret){showToast('الرجاء إدخال الـ URL والـ Secret','error');return;}
   localStorage.setItem(LS_URL_KEY,url);localStorage.setItem(LS_SEC_KEY,secret);
+  if(flowToken)localStorage.setItem(LS_FLOW_KEY,flowToken);
   updateSettingsBtn();closeSettings();showToast('تم حفظ الإعدادات ✓','success');
 }
 
@@ -756,17 +775,25 @@ function renderOrders(orders){
   document.getElementById('ordersCountBadge').textContent=orders.length;
   const body=document.getElementById('ordersBody');
 
+  // reset selection
+  selectedOrderIds.clear();
+  updateFulfillBtn();
+
   function isPacked(tags){return tags.some(t=>{const tl=t.toLowerCase().replace(/[\[\]]/g,'');return tl==='packed'||tl.startsWith('packed-')||tl.startsWith('packed by');});}
 
   if(!orders.length){
     body.innerHTML=`<div class="state-box"><div class="state-icon">✅</div><p>لا توجد أوردرات Unfulfilled لهذا الـ SKU</p></div>`;
     document.getElementById('warningBanner').style.display='none';
+    document.getElementById('btnSelectAll').style.display='none';
     const available=parseInt(document.getElementById('qtyAvailable').textContent.replace(/,/g,''))||0;
     currentShelfQty=available;
     document.getElementById('qtyShelf').textContent=available.toLocaleString('en-US');
     document.getElementById('qtyPacked').textContent='0';
     return;
   }
+
+  // إظهار زرار Select All
+  document.getElementById('btnSelectAll').style.display='flex';
 
   let totalUnfulfilled=0,packedQty=0,unpackedCommitted=0;
 
@@ -781,6 +808,9 @@ function renderOrders(orders){
     const tagsHtml=packedTags.length?packedTags.map(t=>`<span class="tag-pill">${t}</span>`).join(''):`<span style="color:var(--text-muted);font-size:11px;">—</span>`;
     const packHtml=packed?`<span class="pack-status pack-done">🔴 تم التغليف</span>`:`<span class="pack-status pack-shelf">🟢 على الرف</span>`;
     return`<tr>
+      <td style="text-align:center;padding:10px 10px;">
+        <input type="checkbox" class="order-checkbox" data-orderid="${orderId}" onchange="onCheckboxChange(this)" />
+      </td>
       <td><a class="order-name-link" href="https://${SHOP_DOMAIN}/admin/orders/${orderId}" target="_blank">${order.name}</a></td>
       <td><span class="order-date">${date}</span></td>
       <td style="text-align:center;"><span class="qty-badge qty-unfulfilled">${unf.toLocaleString('en-US')}</span></td>
@@ -791,12 +821,14 @@ function renderOrders(orders){
 
   body.innerHTML=`<table class="orders-table">
     <thead><tr>
+      <th style="width:40px;"></th>
       <th>رقم الأوردر</th><th>التاريخ</th>
       <th style="text-align:center;">عدد القطع غير مشحونة</th>
       <th>تاجات التغليف</th><th>تغليف الأوردر</th>
     </tr></thead>
     <tbody>${rows}
       <tr class="summary-row">
+        <td></td>
         <td colspan="4">الإجمالي (${orders.length} أوردر)</td>
         <td style="text-align:center;"><span class="qty-badge qty-unfulfilled">${totalUnfulfilled.toLocaleString('en-US')}</span></td>
       </tr>
@@ -809,6 +841,101 @@ function renderOrders(orders){
   document.getElementById('qtyShelf').textContent=shelfCount.toLocaleString('en-US');
   document.getElementById('qtyPacked').textContent=packedQty>0?'-'+packedQty.toLocaleString('en-US'):'0';
   document.getElementById('warningBanner').style.display='flex';
+}// ─── Checkbox & Fulfill ───────────────────────────────────────────────────────
+function onCheckboxChange(checkbox){
+  const orderId=checkbox.dataset.orderid;
+  if(checkbox.checked)selectedOrderIds.add(orderId);
+  else selectedOrderIds.delete(orderId);
+  updateFulfillBtn();
+}
+
+function updateFulfillBtn(){
+  const count=selectedOrderIds.size;
+  const btn=document.getElementById('btnFulfill');
+  const counter=document.getElementById('selectedCount');
+  btn.classList.toggle('visible',count>0);
+  counter.classList.toggle('visible',count>0);
+  if(count>0){
+    counter.textContent=count+' محدد';
+    btn.textContent=`✅ Fulfill (${count})`;
+  }
+}
+
+function toggleSelectAll(){
+  const checkboxes=document.querySelectorAll('.order-checkbox');
+  const allChecked=[...checkboxes].every(c=>c.checked);
+  checkboxes.forEach(c=>{
+    c.checked=!allChecked;
+    const orderId=c.dataset.orderid;
+    if(!allChecked)selectedOrderIds.add(orderId);
+    else selectedOrderIds.delete(orderId);
+  });
+  const btn=document.getElementById('btnSelectAll');
+  btn.textContent=allChecked?'تحديد الكل':'إلغاء التحديد';
+  updateFulfillBtn();
+}
+
+function confirmFulfill(){
+  if(selectedOrderIds.size===0)return;
+  const{flowToken}=getConfig();
+  if(!flowToken){showToast('الرجاء إدخال Flow Token في الإعدادات','error');openSettings();return;}
+
+  const orderList=[...selectedOrderIds].map(id=>`<div style="font-family:monospace;font-size:12px;color:var(--accent);">#${id}</div>`).join('');
+  const body=`
+    <div class="confirm-detail-row"><span class="confirm-detail-label">عدد الأوردرات</span><span class="confirm-detail-val green">${selectedOrderIds.size}</span></div>
+    <div style="margin:10px 0 4px;font-size:11px;color:var(--text-secondary);font-weight:600;">الأوردرات المحددة:</div>
+    <div style="background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;display:flex;flex-direction:column;gap:4px;max-height:160px;overflow-y:auto;">${orderList}</div>
+    <div class="confirm-note" style="margin-top:10px;">سيتم إرسال trigger لـ Flow Companion لكل أوردر — تأكد إن الـ Flow شغال ومضبوط على specifier: FULFILL</div>`;
+  openConfirm('✅ تأكيد Fulfill Orders',body,'تأكيد وإرسال','green-btn',doFulfillOrders);
+}
+
+async function doFulfillOrders(){
+  const{flowToken}=getConfig();
+  const orderIds=[...selectedOrderIds];
+  const btn=document.getElementById('btnFulfill');
+  btn.disabled=true;btn.textContent='⏳ جاري الإرسال...';
+
+  let successCount=0,failCount=0;
+
+  for(const orderId of orderIds){
+    try{
+      const res=await fetch('https://flow-companion.mivicle.app/rest/1/flow/start/order',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({
+          bearerToken: flowToken,
+          itemId: orderId,
+          specifier: 'FULFILL',
+          additionalParameters: {
+            stringParameter: currentVariant.id,
+          },
+        }),
+      });
+      if(res.ok)successCount++;
+      else{
+        const err=await res.text();
+        console.error(`Order ${orderId} failed:`,res.status,err);
+        failCount++;
+      }
+    }catch(e){
+      console.error(`Order ${orderId} error:`,e);
+      failCount++;
+    }
+  }
+
+  btn.disabled=false;
+  updateFulfillBtn();
+
+  if(failCount===0){
+    showToast(`تم إرسال ${successCount} أوردر بنجاح ✓`,'success');
+    // إلغاء التحديد بعد النجاح
+    selectedOrderIds.clear();
+    document.querySelectorAll('.order-checkbox').forEach(c=>c.checked=false);
+    document.getElementById('btnSelectAll').textContent='تحديد الكل';
+    updateFulfillBtn();
+  } else {
+    showToast(`نجح ${successCount} / فشل ${failCount}. راجع الـ Console`,'error');
+  }
 }
 </script>
 </body>
