@@ -635,6 +635,35 @@
   }
   @keyframes spin { to { transform: rotate(360deg); } }
 
+  /* Tags column */
+  .tags-cell { display: flex; flex-wrap: wrap; gap: 4px; }
+  .tag-pill {
+    font-size: 11px;
+    font-weight: 500;
+    padding: 2px 7px;
+    border-radius: 4px;
+    background: #f3f4f6;
+    color: #374151;
+    border: 1px solid #e5e7eb;
+    white-space: nowrap;
+    direction: ltr;
+  }
+  .tag-pill.packed { background: #fee2e2; color: #b91c1c; border-color: #fca5a5; }
+
+  /* Packing status */
+  .pack-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .pack-done  { background: #fef2f2; color: #dc2626; border: 1.5px solid #fca5a5; }
+  .pack-shelf { background: #f0fdf4; color: #16a34a; border: 1.5px solid #86efac; }
+
   .toast {
     position: fixed;
     bottom: 24px;
@@ -1134,6 +1163,14 @@ function renderOrders(orders, sku) {
 
   let totalUnfulfilled = 0;
 
+  // Packed tag detection
+  function isPacked(tags) {
+    return tags.some(t => {
+      const tl = t.toLowerCase();
+      return tl === 'packed' || tl.startsWith('packed-by-') || tl.startsWith('[packed-by-');
+    });
+  }
+
   const rows = orders.map(order => {
     const unf = order.items.reduce((s, i) => s + i.unfulfilledQuantity, 0);
     totalUnfulfilled += unf;
@@ -1142,6 +1179,19 @@ function renderOrders(orders, sku) {
     const monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
     const date = `${day}-${monthNames[d.getMonth()]}-${d.getFullYear()}`;
     const orderId = order.id.split('/').pop();
+    const tags = order.tags || [];
+    const packed = isPacked(tags);
+
+    // Tags display — highlight packed-related tags
+    const packedPattern = /^(\[?packed)/i;
+    const tagsHtml = tags.length
+      ? tags.map(t => `<span class="tag-pill ${packedPattern.test(t) ? 'packed' : ''}">${t}</span>`).join('')
+      : '<span style="color:var(--text-muted);font-size:11px;">—</span>';
+
+    const packHtml = packed
+      ? `<span class="pack-status pack-done">🔴 تم تغليف الأوردر</span>`
+      : `<span class="pack-status pack-shelf">🟢 القطعة على الرف</span>`;
+
     return `
       <tr>
         <td>
@@ -1153,6 +1203,8 @@ function renderOrders(orders, sku) {
         <td style="text-align:center;">
           <span class="qty-badge qty-unfulfilled">${unf.toLocaleString('en-US')}</span>
         </td>
+        <td><div class="tags-cell">${tagsHtml}</div></td>
+        <td>${packHtml}</td>
       </tr>`;
   }).join('');
 
@@ -1163,12 +1215,14 @@ function renderOrders(orders, sku) {
           <th>رقم الأوردر</th>
           <th>التاريخ</th>
           <th style="text-align:center;">عدد القطع غير مشحونة</th>
+          <th>التاجات</th>
+          <th>تغليف الأوردر</th>
         </tr>
       </thead>
       <tbody>
         ${rows}
         <tr class="summary-row">
-          <td colspan="2">الإجمالي (${orders.length} أوردر)</td>
+          <td colspan="4">الإجمالي (${orders.length} أوردر)</td>
           <td style="text-align:center;"><span class="qty-badge qty-unfulfilled">${totalUnfulfilled.toLocaleString('en-US')}</span></td>
         </tr>
       </tbody>
