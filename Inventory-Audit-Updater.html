@@ -85,15 +85,23 @@ body{font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:va
 /* ─── Audit Card ─────────────────────────────────────────────────── */
 .audit-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px;margin-bottom:10px;box-shadow:var(--shadow);}
 .audit-phase1{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
-.audit-q-left{display:flex;flex-direction:column;gap:3px;}
+.audit-q-left{display:flex;flex-direction:column;gap:4px;}
 .audit-q-text{font-size:14px;font-weight:700;color:var(--text-primary);display:flex;align-items:center;gap:7px;}
-.audit-q-sub{font-size:12px;color:var(--text-muted);}
+
+/* آخر جرد row — يظهر تحت السؤال */
+.audit-last-row{display:none;align-items:center;gap:8px;margin-top:2px;}
+.audit-last-label{font-size:11px;color:var(--text-muted);}
+.audit-last-val{font-size:11px;font-weight:700;color:var(--text-secondary);font-family:'IBM Plex Mono',monospace;}
+.audit-history-link{font-size:11px;font-weight:600;color:var(--accent);text-decoration:none;display:flex;align-items:center;gap:2px;padding:2px 7px;border-radius:4px;background:var(--accent-light);transition:background .12s;white-space:nowrap;}
+.audit-history-link:hover{background:#dbeafe;}
+
 .audit-q-btns{display:flex;gap:8px;flex-shrink:0;}
 .btn-audit-ok{display:flex;align-items:center;gap:6px;padding:10px 22px;background:var(--green-light);color:var(--green);border:1.5px solid var(--green-border);border-radius:var(--radius-sm);font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;transition:all .15s;white-space:nowrap;}
 .btn-audit-ok:hover{background:var(--green);color:#fff;border-color:var(--green);}
 .btn-audit-ok:disabled{opacity:.5;cursor:not-allowed;}
 .btn-want-adjust{display:flex;align-items:center;gap:6px;padding:10px 22px;background:var(--surface-2);color:var(--text-secondary);border:1.5px solid var(--border-strong);border-radius:var(--radius-sm);font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;transition:all .15s;white-space:nowrap;}
 .btn-want-adjust:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-light);}
+
 .adjust-panel{display:none;border-top:1px solid var(--border);margin-top:16px;padding-top:16px;}
 .adjust-panel.visible{display:block;}
 .adjust-panel-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
@@ -117,8 +125,6 @@ body{font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:va
 .btn-apply{display:flex;align-items:center;gap:6px;padding:11px 22px;background:var(--accent);color:#fff;border:none;border-radius:var(--radius-sm);font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;transition:background .15s;white-space:nowrap;}
 .btn-apply:hover{background:var(--accent-dark);}
 .btn-apply:disabled{opacity:.5;cursor:not-allowed;}
-.audit-date-row{display:none;align-items:center;gap:5px;font-size:11px;color:var(--text-muted);margin-top:12px;padding-top:12px;border-top:1px solid var(--border);}
-.audit-date-row .audit-val{font-weight:600;color:var(--text-secondary);}
 
 /* ─── Warning Banner (red) ───────────────────────────────────────── */
 #warningBanner{display:none;background:#fef2f2;border:2px solid var(--red);border-radius:var(--radius-sm);padding:16px 20px;margin-bottom:10px;align-items:flex-start;gap:12px;}
@@ -134,9 +140,7 @@ body{font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:va
 .orders-header-right{display:flex;align-items:center;gap:10px;}
 .orders-card-title{font-size:13px;font-weight:600;color:var(--text-primary);}
 .orders-count-badge{background:var(--accent-light);color:var(--accent);border-radius:20px;padding:2px 10px;font-size:12px;font-weight:700;}
-.orders-header-left{display:flex;align-items:center;gap:10px;}
-.orders-history-link{font-size:11px;font-weight:600;color:var(--accent);text-decoration:none;display:flex;align-items:center;gap:3px;padding:3px 8px;border-radius:5px;background:var(--accent-light);transition:background .12s;}
-.orders-history-link:hover{background:#dbeafe;}
+.orders-header-left{display:flex;align-items:center;gap:8px;}
 .orders-collapse-icon{font-size:13px;color:var(--text-muted);transition:transform .2s;}
 .orders-collapse-icon.open{transform:rotate(180deg);}
 .orders-body-wrap{display:block;}
@@ -164,12 +168,12 @@ body{font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:va
 .loading-spinner{display:inline-block;width:18px;height:18px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg);}}
 
-/* ─── Confirm Modal ──────────────────────────────────────────────── */
+/* ─── Settings Modal ─────────────────────────────────────────────── */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .2s;}
 .modal-overlay.open{opacity:1;pointer-events:all;}
 .modal{background:var(--surface);border-radius:var(--radius);width:100%;max-width:440px;box-shadow:0 20px 60px rgba(0,0,0,.2);overflow:hidden;transform:translateY(14px);transition:transform .2s cubic-bezier(.34,1.56,.64,1);}
 .modal-overlay.open .modal{transform:translateY(0);}
-.modal-header{padding:16px 20px;border-bottom:1px solid var(--border);font-size:14px;font-weight:700;display:flex;align-items:center;gap:8px;}
+.modal-header{padding:16px 20px;border-bottom:1px solid var(--border);font-size:14px;font-weight:700;}
 .modal-body{padding:20px;display:flex;flex-direction:column;gap:14px;}
 .field-group{display:flex;flex-direction:column;gap:5px;}
 .field-label{font-size:11px;font-weight:600;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.4px;}
@@ -178,23 +182,24 @@ body{font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:va
 .modal-footer{padding:12px 20px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end;}
 .btn-save{padding:8px 18px;background:var(--accent);color:#fff;border:none;border-radius:var(--radius-sm);font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;transition:background .15s;}
 .btn-save:hover{background:var(--accent-dark);}
-.btn-cancel{padding:8px 14px;background:transparent;color:var(--text-secondary);border:1px solid var(--border-strong);border-radius:var(--radius-sm);font-family:inherit;font-size:12px;cursor:pointer;}
-.btn-cancel:hover{color:var(--text-primary);border-color:var(--text-secondary);}
+.btn-modal-cancel{padding:8px 14px;background:transparent;color:var(--text-secondary);border:1px solid var(--border-strong);border-radius:var(--radius-sm);font-family:inherit;font-size:12px;cursor:pointer;}
+.btn-modal-cancel:hover{color:var(--text-primary);border-color:var(--text-secondary);}
 
-/* Confirm modal specifics */
-.confirm-modal .modal-header{background:var(--surface-2);}
+/* ─── Confirm Modal ──────────────────────────────────────────────── */
+.confirm-modal .modal-header{background:var(--surface-2);display:flex;align-items:center;gap:8px;}
 .confirm-detail-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);}
-.confirm-detail-row:last-child{border-bottom:none;}
+.confirm-detail-row:last-of-type{border-bottom:none;}
 .confirm-detail-label{font-size:12px;color:var(--text-secondary);}
 .confirm-detail-val{font-size:13px;font-weight:700;color:var(--text-primary);font-variant-numeric:tabular-nums;}
 .confirm-detail-val.green{color:var(--green);}
 .confirm-detail-val.red{color:var(--red);}
 .confirm-detail-val.accent{color:var(--accent);}
-.confirm-note{font-size:12px;color:var(--text-secondary);background:var(--surface-2);border-radius:var(--radius-sm);padding:10px 12px;border:1px solid var(--border);}
-.btn-confirm-ok{padding:9px 20px;background:var(--green);color:#fff;border:none;border-radius:var(--radius-sm);font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;transition:background .15s;}
-.btn-confirm-ok:hover{background:#15803d;}
-.btn-confirm-ok.accent{background:var(--accent);}
-.btn-confirm-ok.accent:hover{background:var(--accent-dark);}
+.confirm-note{font-size:12px;color:var(--text-secondary);background:var(--surface-2);border-radius:var(--radius-sm);padding:10px 12px;border:1px solid var(--border);margin-top:4px;}
+.btn-confirm-ok{padding:9px 20px;color:#fff;border:none;border-radius:var(--radius-sm);font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;transition:background .15s;}
+.btn-confirm-ok.green-btn{background:var(--green);}
+.btn-confirm-ok.green-btn:hover{background:#15803d;}
+.btn-confirm-ok.accent-btn{background:var(--accent);}
+.btn-confirm-ok.accent-btn:hover{background:var(--accent-dark);}
 
 .not-configured-banner{background:var(--amber-light);border:1px solid #fde68a;border-radius:var(--radius-sm);padding:9px 13px;font-size:12px;color:var(--amber);margin-bottom:12px;}
 .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--text-primary);color:#fff;padding:9px 18px;border-radius:8px;font-size:12px;font-weight:500;z-index:999;transition:transform .3s cubic-bezier(.34,1.56,.64,1);white-space:nowrap;}
@@ -221,7 +226,7 @@ body{font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:va
         </div>
       </div>
       <div class="modal-footer">
-        <button class="btn-cancel" onclick="closeSettings()">إلغاء</button>
+        <button class="btn-modal-cancel" onclick="closeSettings()">إلغاء</button>
         <button class="btn-save" onclick="saveSettings()">حفظ</button>
       </div>
     </div>
@@ -230,11 +235,11 @@ body{font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:va
   <!-- Confirm Modal -->
   <div class="modal-overlay" id="confirmOverlay">
     <div class="modal confirm-modal">
-      <div class="modal-header" id="confirmHeader">🔎 تأكيد العملية</div>
+      <div class="modal-header" id="confirmHeader"></div>
       <div class="modal-body" id="confirmBody"></div>
       <div class="modal-footer">
-        <button class="btn-cancel" onclick="closeConfirm()">إلغاء</button>
-        <button class="btn-confirm-ok" id="confirmOkBtn" onclick="executeConfirmed()">تأكيد</button>
+        <button class="btn-modal-cancel" id="confirmCancelBtn">إلغاء</button>
+        <button class="btn-confirm-ok" id="confirmOkBtn">تأكيد</button>
       </div>
     </div>
   </div>
@@ -274,8 +279,6 @@ body{font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:va
 
   <!-- Results -->
   <div id="results">
-
-    <!-- Product Topbar -->
     <div class="product-topbar">
       <div class="product-name" id="productTitle">—</div>
       <a class="sku-link" id="productSkuLink" href="#" target="_blank">
@@ -322,10 +325,15 @@ body{font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:va
 
     <!-- Audit Card -->
     <div class="audit-card" id="auditCard">
-      <div class="audit-phase1" id="auditPhase1">
+      <div class="audit-phase1">
         <div class="audit-q-left">
           <div class="audit-q-text">🔎 هل عدد قطع الرف مظبوط؟</div>
-          <div class="audit-q-sub" id="auditShelfHint">قطع الرف: —</div>
+          <!-- آخر جرد + عرض السجل -->
+          <div class="audit-last-row" id="auditLastRow">
+            <span class="audit-last-label">📅 آخر جرد:</span>
+            <span class="audit-last-val" id="auditLastVal">—</span>
+            <a class="audit-history-link" id="historyLink" href="#" target="_blank">📋 عرض السجل ↗</a>
+          </div>
         </div>
         <div class="audit-q-btns">
           <button class="btn-audit-ok" id="btnAuditOk" onclick="confirmAuditOk()">✅ الجرد مظبوط</button>
@@ -361,13 +369,9 @@ body{font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:va
           </div>
         </div>
       </div>
-
-      <div class="audit-date-row" id="auditDateDisplay">
-        📅 آخر جرد: <span class="audit-val" id="auditDateVal">—</span>
-      </div>
     </div>
 
-    <!-- Warning Banner (RED) -->
+    <!-- Warning Banner -->
     <div id="warningBanner">
       <div class="warning-icon">🚨</div>
       <div class="warning-text">
@@ -382,7 +386,7 @@ body{font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:va
       <p style="margin-top:8px;color:var(--text-muted);font-size:12px;">جاري تحميل الأوردرات...</p>
     </div>
 
-    <!-- Orders Card (collapsible) -->
+    <!-- Orders Card -->
     <div class="orders-card" id="ordersCard" style="display:none;">
       <div class="orders-card-header" onclick="toggleOrders()">
         <div class="orders-header-right">
@@ -390,9 +394,6 @@ body{font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:va
           <div class="orders-count-badge" id="ordersCountBadge">0</div>
         </div>
         <div class="orders-header-left">
-          <a class="orders-history-link" id="historyLink" href="#" target="_blank" onclick="event.stopPropagation()">
-            📋 عرض السجل ↗
-          </a>
           <span class="orders-collapse-icon open" id="collapseIcon">▾</span>
         </div>
       </div>
@@ -412,10 +413,9 @@ const LS_URL_KEY = 'stockaudit_worker_url';
 const LS_SEC_KEY = 'stockaudit_worker_secret';
 
 let currentSku = null, currentVariant = null, currentShelfQty = null;
-let currentInventoryItemId = null; // for history link
-let pendingAction = null; // for confirm modal
+let currentInventoryItemId = null;
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
+// ─── Config ───────────────────────────────────────────────────────────────────
 function getConfig(){return{url:localStorage.getItem(LS_URL_KEY)||'',secret:localStorage.getItem(LS_SEC_KEY)||''};}
 function isConfigured(){const c=getConfig();return c.url.startsWith('http')&&c.secret.length>0;}
 function updateSettingsBtn(){document.getElementById('settingsBtn').classList.toggle('configured',isConfigured());}
@@ -433,19 +433,18 @@ function saveSettings(){
 function showToast(msg,type=''){
   const t=document.getElementById('toast');t.textContent=msg;
   t.className='toast'+(type?' '+type:'');t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'),3000);
+  setTimeout(()=>t.classList.remove('show'),3500);
 }
 
-// ─── Date format: DD-MM-YYYY الساعة HH:MM ────────────────────────────────────
 function formatDateTime(isoString){
   const d=new Date(isoString);
   const pad=n=>String(n).padStart(2,'0');
-  return `${pad(d.getDate())}-${pad(d.getMonth()+1)}-${d.getFullYear()} الساعة ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  return`${pad(d.getDate())}-${pad(d.getMonth()+1)}-${d.getFullYear()} الساعة ${pad(d.getHours())}:${pad(d.getMinutes())}`;
 }
 function formatDate(isoString){
   const d=new Date(isoString);
   const pad=n=>String(n).padStart(2,'0');
-  return `${pad(d.getDate())}-${pad(d.getMonth()+1)}-${d.getFullYear()}`;
+  return`${pad(d.getDate())}-${pad(d.getMonth()+1)}-${d.getFullYear()}`;
 }
 
 let searchDebounce=null,lastKeyTime=0,barcodeTimeout=null;
@@ -488,7 +487,6 @@ skuSearch.addEventListener('input',()=>{
 skuSearch.addEventListener('focus',()=>{if(skuSearch.value.trim())loadSkus(skuSearch.value.trim());});
 document.addEventListener('click',e=>{if(!document.getElementById('dropdownWrap').contains(e.target))dropdownList.classList.remove('open');});
 function clearSearch(){skuSearch.value='';clearBtn.classList.remove('visible');dropdownList.innerHTML='';dropdownList.classList.remove('open');skuSearch.focus();}
-
 async function loadSkus(search){
   dropdownList.innerHTML='<div class="dropdown-loading"><div class="loading-spinner"></div></div>';
   dropdownList.classList.add('open');
@@ -538,16 +536,16 @@ async function lookupByBarcode(barcode){
 function renderProductCard(variant){
   currentVariant=variant;
   document.getElementById('productTitle').textContent=variant.product?.title||'—';
-  const sku=variant.sku||'—';
-  document.getElementById('productSkuDisplay').textContent='SKU: '+sku;
+  document.getElementById('productSkuDisplay').textContent='SKU: '+(variant.sku||'—');
   const vid=(variant.id||'').split('/').pop();
   const pid=(variant.product?.id||'').split('/').pop();
   document.getElementById('productSkuLink').href=pid&&vid?`https://admin.shopify.com/store/6c7e1a-53/products/${pid}/variants/${vid}`:'#';
 
-  // inventory item id (numeric) for history link
   const iid=(variant.inventoryItem?.id||'').split('/').pop();
   currentInventoryItemId=iid;
-  updateHistoryLink(iid);
+  if(iid){
+    document.getElementById('historyLink').href=`https://admin.shopify.com/store/6c7e1a-53/products/inventory/${iid}/inventory_history?location_id=98849620290`;
+  }
 
   const opts=variant.selectedOptions||[];
   const sizeN=['shoe size','size','مقاس'];const colorN=['color','colour','لون'];
@@ -569,40 +567,21 @@ function renderProductCard(variant){
 
   const levels=variant.inventoryItem?.inventoryLevels?.nodes?.[0]?.quantities||[];
   const getQty=n=>{const q=levels.find(l=>l.name===n)?.quantity;return q!=null?q:null;};
-  const available=getQty('available');
-  const committed=getQty('committed');
-  const onHand=getQty('on_hand');
-
-  document.getElementById('qtyOnHand').textContent=onHand!=null?onHand.toLocaleString('en-US'):'—';
-  document.getElementById('qtyAvailable').textContent=available!=null?available.toLocaleString('en-US'):'—';
-  document.getElementById('qtyCommitted').textContent=committed!=null?committed.toLocaleString('en-US'):'—';
+  document.getElementById('qtyOnHand').textContent=(getQty('on_hand')??'—').toLocaleString?.('en-US')??'—';
+  document.getElementById('qtyAvailable').textContent=(getQty('available')??'—').toLocaleString?.('en-US')??'—';
+  document.getElementById('qtyCommitted').textContent=(getQty('committed')??'—').toLocaleString?.('en-US')??'—';
   document.getElementById('qtyShelf').textContent='—';
   document.getElementById('qtyPacked').textContent='—';
 
   currentShelfQty=null;
   hideAdjustPanel();
-  document.getElementById('auditShelfHint').textContent='قطع الرف: —';
-  document.getElementById('auditDateDisplay').style.display='none';
+  // reset audit last row — don't hide it, just clear date until loaded
+  document.getElementById('auditLastVal').textContent='جاري التحميل...';
+  document.getElementById('auditLastRow').style.display='flex';
 
   document.getElementById('results').classList.add('visible');
   document.getElementById('ordersCard').style.display='none';
   document.getElementById('warningBanner').style.display='none';
-}
-
-function updateHistoryLink(iid){
-  const loc='98849620290';
-  const link=iid
-    ?`https://admin.shopify.com/store/6c7e1a-53/products/inventory/${iid}/inventory_history?location_id=${loc}`
-    :'#';
-  document.getElementById('historyLink').href=link;
-}
-
-// ─── Orders collapse ──────────────────────────────────────────────────────────
-let ordersCollapsed=false;
-function toggleOrders(){
-  ordersCollapsed=!ordersCollapsed;
-  document.getElementById('ordersBodyWrap').classList.toggle('collapsed',ordersCollapsed);
-  document.getElementById('collapseIcon').classList.toggle('open',!ordersCollapsed);
 }
 
 // ─── Audit Panel ──────────────────────────────────────────────────────────────
@@ -612,12 +591,10 @@ function showAdjustPanel(){
   document.getElementById('deltaInput').value='0';
   updatePreview();
 }
-function hideAdjustPanel(){
-  document.getElementById('adjustPanel').classList.remove('visible');
-}
+function hideAdjustPanel(){document.getElementById('adjustPanel').classList.remove('visible');}
 function stepDelta(step){
-  const input=document.getElementById('deltaInput');
-  input.value=(parseInt(input.value)||0)+step;
+  const inp=document.getElementById('deltaInput');
+  inp.value=(parseInt(inp.value)||0)+step;
   updatePreview();
 }
 function updatePreview(){
@@ -635,44 +612,43 @@ function updatePreview(){
   btnApply.disabled=false;
 }
 
-// ─── Confirm Modal ────────────────────────────────────────────────────────────
-function openConfirm(header,bodyHTML,okLabel,okClass,action){
-  document.getElementById('confirmHeader').innerHTML=header;
+// ─── Confirm Modal (fixed) ────────────────────────────────────────────────────
+function openConfirm(headerHTML, bodyHTML, okLabel, okClass, onConfirm){
+  document.getElementById('confirmHeader').innerHTML=headerHTML;
   document.getElementById('confirmBody').innerHTML=bodyHTML;
+
   const okBtn=document.getElementById('confirmOkBtn');
-  okBtn.textContent=okLabel;
-  okBtn.className='btn-confirm-ok'+(okClass?' '+okClass:'');
-  pendingAction=action;
+  const cancelBtn=document.getElementById('confirmCancelBtn');
+
+  // clone to remove old listeners
+  const newOk=okBtn.cloneNode(true);
+  const newCancel=cancelBtn.cloneNode(true);
+  okBtn.parentNode.replaceChild(newOk,okBtn);
+  cancelBtn.parentNode.replaceChild(newCancel,cancelBtn);
+
+  newOk.textContent=okLabel;
+  newOk.className='btn-confirm-ok '+okClass;
+  newOk.addEventListener('click',()=>{
+    document.getElementById('confirmOverlay').classList.remove('open');
+    onConfirm();
+  });
+  newCancel.addEventListener('click',()=>{
+    document.getElementById('confirmOverlay').classList.remove('open');
+  });
+
   document.getElementById('confirmOverlay').classList.add('open');
-}
-function closeConfirm(){
-  document.getElementById('confirmOverlay').classList.remove('open');
-  pendingAction=null;
-}
-async function executeConfirmed(){
-  closeConfirm();
-  if(pendingAction)await pendingAction();
 }
 
 // ─── Confirm: Audit OK ────────────────────────────────────────────────────────
 function confirmAuditOk(){
   if(!currentVariant){showToast('لم يتم اختيار منتج','error');return;}
   const shelf=currentShelfQty!=null?currentShelfQty.toLocaleString('en-US'):'—';
-  const bodyHTML=`
-    <div class="confirm-detail-row">
-      <span class="confirm-detail-label">المنتج</span>
-      <span class="confirm-detail-val">${currentVariant.product?.title||'—'}</span>
-    </div>
-    <div class="confirm-detail-row">
-      <span class="confirm-detail-label">SKU</span>
-      <span class="confirm-detail-val accent">${currentVariant.sku||'—'}</span>
-    </div>
-    <div class="confirm-detail-row">
-      <span class="confirm-detail-label">قطع الرف</span>
-      <span class="confirm-detail-val green">${shelf}</span>
-    </div>
+  const body=`
+    <div class="confirm-detail-row"><span class="confirm-detail-label">المنتج</span><span class="confirm-detail-val">${currentVariant.product?.title||'—'}</span></div>
+    <div class="confirm-detail-row"><span class="confirm-detail-label">SKU</span><span class="confirm-detail-val accent">${currentVariant.sku||'—'}</span></div>
+    <div class="confirm-detail-row"><span class="confirm-detail-label">قطع الرف</span><span class="confirm-detail-val green">${shelf}</span></div>
     <div class="confirm-note">سيتم تسجيل تاريخ ووقت الجرد الآن على هذا المنتج — بدون تعديل في الكمية.</div>`;
-  openConfirm('✅ تأكيد: الجرد مظبوط',bodyHTML,'تأكيد','',doAuditOk);
+  openConfirm('✅ تأكيد: الجرد مظبوط',body,'تأكيد','green-btn',doAuditOk);
 }
 
 async function doAuditOk(){
@@ -682,7 +658,7 @@ async function doAuditOk(){
   try{
     const data=await apiCall({action:'set_audit_date',variantId});
     showToast('تم تسجيل الجرد ✓','success');
-    if(data.auditDate)showAuditDate(data.auditDate);
+    if(data.auditDate)updateLastAudit(data.auditDate);
   }catch(e){showToast('خطأ: '+e.message,'error');}
   finally{btn.disabled=false;btn.textContent='✅ الجرد مظبوط';}
 }
@@ -698,29 +674,14 @@ function confirmAdjust(){
   const deltaStr=(delta>0?'+':'')+delta.toLocaleString('en-US');
   const deltaClass=delta>0?'green':'red';
 
-  const bodyHTML=`
-    <div class="confirm-detail-row">
-      <span class="confirm-detail-label">المنتج</span>
-      <span class="confirm-detail-val">${currentVariant.product?.title||'—'}</span>
-    </div>
-    <div class="confirm-detail-row">
-      <span class="confirm-detail-label">SKU</span>
-      <span class="confirm-detail-val accent">${currentVariant.sku||'—'}</span>
-    </div>
-    <div class="confirm-detail-row">
-      <span class="confirm-detail-label">قطع الرف الحالية</span>
-      <span class="confirm-detail-val">${current.toLocaleString('en-US')}</span>
-    </div>
-    <div class="confirm-detail-row">
-      <span class="confirm-detail-label">التعديل</span>
-      <span class="confirm-detail-val ${deltaClass}">${deltaStr}</span>
-    </div>
-    <div class="confirm-detail-row">
-      <span class="confirm-detail-label">الكمية الجديدة (Available)</span>
-      <span class="confirm-detail-val ${delta>0?'green':'red'}">${newVal.toLocaleString('en-US')}</span>
-    </div>
+  const body=`
+    <div class="confirm-detail-row"><span class="confirm-detail-label">المنتج</span><span class="confirm-detail-val">${currentVariant.product?.title||'—'}</span></div>
+    <div class="confirm-detail-row"><span class="confirm-detail-label">SKU</span><span class="confirm-detail-val accent">${currentVariant.sku||'—'}</span></div>
+    <div class="confirm-detail-row"><span class="confirm-detail-label">قطع الرف الحالية</span><span class="confirm-detail-val">${current.toLocaleString('en-US')}</span></div>
+    <div class="confirm-detail-row"><span class="confirm-detail-label">التعديل</span><span class="confirm-detail-val ${deltaClass}">${deltaStr}</span></div>
+    <div class="confirm-detail-row"><span class="confirm-detail-label">الكمية الجديدة (Available)</span><span class="confirm-detail-val ${delta>0?'green':'red'}">${newVal.toLocaleString('en-US')}</span></div>
     <div class="confirm-note">سيتم تطبيق التعديل على الـ Available في Shopify وتسجيل تاريخ الجرد تلقائياً.</div>`;
-  openConfirm('🔧 تأكيد تعديل الكمية',bodyHTML,'تطبيق التعديل','accent',doApplyAdjust);
+  openConfirm('🔧 تأكيد تعديل الكمية',body,'تطبيق التعديل','accent-btn',doApplyAdjust);
 }
 
 async function doApplyAdjust(){
@@ -737,7 +698,7 @@ async function doApplyAdjust(){
   try{
     const data=await apiCall({action:'adjust_inventory',inventoryItemId,variantId,delta:delta.toString()});
     showToast(`تم التعديل بنجاح (${delta>0?'+':''}${delta}) ✓`,'success');
-    if(data.auditDate)showAuditDate(data.auditDate);
+    if(data.auditDate)updateLastAudit(data.auditDate);
     await refreshCurrent();
     hideAdjustPanel();
   }catch(e){
@@ -749,9 +710,17 @@ async function doApplyAdjust(){
   }
 }
 
-function showAuditDate(isoString){
-  document.getElementById('auditDateVal').textContent=formatDateTime(isoString);
-  document.getElementById('auditDateDisplay').style.display='flex';
+function updateLastAudit(isoString){
+  document.getElementById('auditLastVal').textContent=formatDateTime(isoString);
+  document.getElementById('auditLastRow').style.display='flex';
+}
+
+// ─── Orders collapse ──────────────────────────────────────────────────────────
+let ordersCollapsed=false;
+function toggleOrders(){
+  ordersCollapsed=!ordersCollapsed;
+  document.getElementById('ordersBodyWrap').classList.toggle('collapsed',ordersCollapsed);
+  document.getElementById('collapseIcon').classList.toggle('open',!ordersCollapsed);
 }
 
 // ─── Refresh ──────────────────────────────────────────────────────────────────
@@ -772,8 +741,32 @@ async function loadOrders(sku){
   ordersCollapsed=false;
   document.getElementById('ordersBodyWrap').classList.remove('collapsed');
   document.getElementById('collapseIcon').classList.add('open');
-  try{const data=await apiCall({action:'get_details',sku});renderOrders(data.orders,sku);}
-  catch(e){document.getElementById('ordersLoading').style.display='none';showToast('خطأ في تحميل الأوردرات: '+e.message,'error');}
+  try{
+    // fetch audit date and orders in parallel
+    const [ordersData] = await Promise.all([
+      apiCall({action:'get_details',sku}),
+      loadAuditDate()
+    ]);
+    renderOrders(ordersData.orders,sku);
+  }catch(e){
+    document.getElementById('ordersLoading').style.display='none';
+    showToast('خطأ في تحميل الأوردرات: '+e.message,'error');
+  }
+}
+
+async function loadAuditDate(){
+  if(!currentVariant)return;
+  try{
+    // We read the metafield via a dedicated action
+    const data=await apiCall({action:'get_audit_date',variantId:currentVariant.id});
+    if(data.auditDate){
+      updateLastAudit(data.auditDate);
+    } else {
+      document.getElementById('auditLastVal').textContent='لم يسجَّل بعد';
+    }
+  }catch{
+    document.getElementById('auditLastVal').textContent='—';
+  }
 }
 
 function renderOrders(orders,sku){
@@ -791,7 +784,6 @@ function renderOrders(orders,sku){
     currentShelfQty=available;
     document.getElementById('qtyShelf').textContent=available.toLocaleString('en-US');
     document.getElementById('qtyPacked').textContent='0';
-    document.getElementById('auditShelfHint').textContent=`قطع الرف: ${available.toLocaleString('en-US')}`;
     return;
   }
 
@@ -835,7 +827,6 @@ function renderOrders(orders,sku){
   currentShelfQty=shelfCount;
   document.getElementById('qtyShelf').textContent=shelfCount.toLocaleString('en-US');
   document.getElementById('qtyPacked').textContent=packedQty>0?'-'+packedQty.toLocaleString('en-US'):'0';
-  document.getElementById('auditShelfHint').textContent=`قطع الرف: ${shelfCount.toLocaleString('en-US')}`;
   document.getElementById('warningBanner').style.display='flex';
 }
 </script>
