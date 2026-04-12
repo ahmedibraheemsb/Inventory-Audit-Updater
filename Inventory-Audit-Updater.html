@@ -635,6 +635,78 @@
   }
   @keyframes spin { to { transform: rotate(360deg); } }
 
+  /* Shelf count section */
+  .shelf-section {
+    background: var(--surface);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 16px;
+    overflow: hidden;
+  }
+  .shelf-section-header {
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .shelf-section-title { font-size: 14px; font-weight: 600; color: var(--text-primary); }
+  .shelf-body { padding: 16px 20px; display: flex; flex-direction: column; gap: 12px; }
+
+  .shelf-calc-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    flex-wrap: wrap;
+  }
+  .shelf-calc-label { color: var(--text-secondary); min-width: 220px; }
+  .shelf-calc-val {
+    font-weight: 700;
+    font-size: 15px;
+    min-width: 32px;
+    text-align: center;
+  }
+  .shelf-calc-val.green { color: var(--green); }
+  .shelf-calc-val.blue  { color: var(--accent); }
+  .shelf-calc-val.red   { color: var(--red); }
+  .shelf-calc-val.black { color: var(--text-primary); }
+  .shelf-divider { color: var(--text-muted); font-size: 18px; font-weight: 300; }
+
+  .shelf-result {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: var(--surface-2);
+    border: 2px solid var(--border-strong);
+    border-radius: var(--radius-sm);
+    padding: 14px 18px;
+    margin-top: 4px;
+  }
+  .shelf-result-label { font-size: 14px; font-weight: 600; color: var(--text-secondary); flex: 1; }
+  .shelf-result-value {
+    font-size: 36px;
+    font-weight: 800;
+    color: var(--text-primary);
+    font-variant-numeric: tabular-nums;
+  }
+  .shelf-result-unit { font-size: 13px; color: var(--text-muted); }
+
+  .warning-banner {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    background: #fffbeb;
+    border: 1.5px solid #f59e0b;
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #92400e;
+    line-height: 1.5;
+    margin-top: 4px;
+  }
+  .warning-banner .warn-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+
   /* Tags column */
   .tags-cell { display: flex; flex-wrap: wrap; gap: 4px; }
   .tag-pill {
@@ -806,6 +878,14 @@
         </div>
 
       </div>
+    </div>
+
+    <!-- Shelf Count Section -->
+    <div class="shelf-section" id="shelfSection" style="display:none;">
+      <div class="shelf-section-header">
+        <div class="shelf-section-title">📦 عدد القطع المتوقع على الرف عند الجرد</div>
+      </div>
+      <div class="shelf-body" id="shelfBody"></div>
     </div>
 
     <!-- Orders Loading -->
@@ -1156,20 +1236,23 @@ function renderOrders(orders, sku) {
 
   const body = document.getElementById('ordersBody');
 
+  // Packed tag detection
+  function isPacked(tags) {
+    return tags.some(t => {
+      const tl = t.toLowerCase().replace(/[\[\]]/g, '');
+      return tl === 'packed' || tl.startsWith('packed-by-') || tl.startsWith('packed by');
+    });
+  }
+
   if (!orders.length) {
     body.innerHTML = `<div class="state-box"><div class="state-icon">✅</div><p>لا توجد أوردرات Unfulfilled لهذا الـ SKU</p></div>`;
+    document.getElementById('shelfSection').style.display = 'none';
     return;
   }
 
   let totalUnfulfilled = 0;
-
-  // Packed tag detection
-  function isPacked(tags) {
-    return tags.some(t => {
-      const tl = t.toLowerCase();
-      return tl === 'packed' || tl.startsWith('packed-by-') || tl.startsWith('[packed-by-');
-    });
-  }
+  let packedQty = 0;
+  let unpackedCommitted = 0;
 
   const rows = orders.map(order => {
     const unf = order.items.reduce((s, i) => s + i.unfulfilledQuantity, 0);
@@ -1182,10 +1265,20 @@ function renderOrders(orders, sku) {
     const tags = order.tags || [];
     const packed = isPacked(tags);
 
-    // Tags display — highlight packed-related tags
-    const packedPattern = /^(\[?packed)/i;
-    const tagsHtml = tags.length
-      ? tags.map(t => `<span class="tag-pill ${packedPattern.test(t) ? 'packed' : ''}">${t}</span>`).join('')
+    // Shelf calc: packed orders are NOT on shelf, unpacked are on shelf
+    if (packed) {
+      packedQty += unf;
+    } else {
+      unpackedCommitted += unf;
+    }
+
+    // Tags: show ONLY packed-related tags (highlighted red), hide others
+    const packedTags = tags.filter(t => {
+      const tl = t.toLowerCase().replace(/[\[\]]/g, '');
+      return tl === 'packed' || tl.startsWith('packed-by-') || tl.startsWith('packed by');
+    });
+    const tagsHtml = packedTags.length
+      ? packedTags.map(t => `<span class="tag-pill packed">${t}</span>`).join('')
       : '<span style="color:var(--text-muted);font-size:11px;">—</span>';
 
     const packHtml = packed
@@ -1215,7 +1308,7 @@ function renderOrders(orders, sku) {
           <th>رقم الأوردر</th>
           <th>التاريخ</th>
           <th style="text-align:center;">عدد القطع غير مشحونة</th>
-          <th>التاجات</th>
+          <th>تاجات التغليف</th>
           <th>تغليف الأوردر</th>
         </tr>
       </thead>
@@ -1227,6 +1320,38 @@ function renderOrders(orders, sku) {
         </tr>
       </tbody>
     </table>`;
+
+  // ── Shelf count calculation ──────────────────────────────────────────────────
+  // Get inventory figures from the currently displayed product card
+  const available   = parseInt(document.getElementById('qtyAvailable').textContent.replace(/,/g,'')) || 0;
+  const shelfCount  = available + unpackedCommitted;
+
+  const shelfSection = document.getElementById('shelfSection');
+  const shelfBody    = document.getElementById('shelfBody');
+  shelfSection.style.display = 'block';
+
+  shelfBody.innerHTML = `
+    <div class="shelf-calc-row">
+      <span class="shelf-calc-label">متاح للبيع (Available)</span>
+      <span class="shelf-calc-val green">${available}</span>
+    </div>
+    <div class="shelf-calc-row">
+      <span class="shelf-calc-label">في أوردرات غير مغلفة (على الرف)</span>
+      <span class="shelf-calc-val blue">+ ${unpackedCommitted}</span>
+    </div>
+    <div class="shelf-calc-row">
+      <span class="shelf-calc-label">في أوردرات مغلفة (ليست على الرف)</span>
+      <span class="shelf-calc-val red">− ${packedQty}</span>
+    </div>
+    <div class="shelf-result">
+      <div class="shelf-result-label">عدد القطع المتوقع على الرف عند الجرد</div>
+      <div class="shelf-result-value">${shelfCount.toLocaleString('en-US')}</div>
+      <div class="shelf-result-unit">قطعة</div>
+    </div>
+    <div class="warning-banner">
+      <span class="warn-icon">⚠️</span>
+      <span>يجب التأكد من عدم وجود أوردرات مركونة على طاولة التحضير ولم يتم عمل سكان لها قبل إجراء الجرد</span>
+    </div>`;
 }
 </script>
 </body>
