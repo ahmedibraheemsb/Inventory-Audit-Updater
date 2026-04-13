@@ -16,6 +16,7 @@
   --green:#16a34a; --green-light:#f0fdf4; --green-border:#86efac;
   --red:#dc2626; --red-light:#fef2f2; --red-border:#fca5a5;
   --amber:#d97706; --amber-light:#fffbeb;
+  --purple:#7e22ce; --purple-light:#fdf4ff; --purple-border:#e9d5ff;
   --radius:12px; --radius-sm:8px;
   --shadow:0 1px 3px rgba(0,0,0,.07),0 1px 2px rgba(0,0,0,.04);
 }
@@ -156,6 +157,17 @@ body{font-family:'Noto Sans Arabic',sans-serif;background:var(--bg);color:var(--
 .pack-status{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:5px;font-size:11px;font-weight:700;white-space:nowrap;}
 .pack-done{background:var(--red-light);color:var(--red);border:1px solid var(--red-border);}
 .pack-shelf{background:var(--green-light);color:var(--green);border:1px solid var(--green-border);}
+
+/* Exchange badge */
+.exchange-badge{
+  display:inline-flex;align-items:center;gap:5px;
+  padding:4px 10px;border-radius:6px;font-size:12px;font-weight:700;
+  background:var(--purple-light);color:var(--purple);
+  border:1.5px solid var(--purple-border);
+  white-space:nowrap;
+}
+.exchange-badge-none{color:var(--text-muted);font-size:12px;}
+
 .summary-row{background:var(--surface-2);border-top:1.5px solid var(--border-strong);}
 .summary-row td{padding:9px 14px;font-weight:700;font-size:12px;}
 .state-box{padding:36px 20px;text-align:center;color:var(--text-muted);}
@@ -580,7 +592,6 @@ function renderProductCard(variant){
   const cls=status==='ACTIVE'?'status-ACTIVE':'status-OTHER';
   document.getElementById('productStatus').innerHTML=`<span class="status-badge ${cls}">${labels[status]||status}</span>`;
 
-  // لون الـ topbar حسب الحالة
   const topbar=document.getElementById('productTopbar');
   topbar.classList.remove('status-active','status-other');
   topbar.classList.add(status==='ACTIVE'?'status-active':'status-other');
@@ -602,6 +613,33 @@ function renderProductCard(variant){
   document.getElementById('results').classList.add('visible');
   document.getElementById('ordersCard').style.display='none';
   document.getElementById('warningBanner').style.display='none';
+}
+
+// ─── isPacked — المنطق الجديد ─────────────────────────────────────────────────
+// يحدد إذا كان الـ line item مغلفاً أم لا بناءً على:
+// 1. هل يوجد تاج Packed على الأوردر؟
+// 2. هل الـ item هو exchange item؟
+// 3. إذا كان exchange: هل packingDateTime بعد earliestReturnDate؟
+//    - نعم → تم تغليفه بعد الاستبدال → Packed
+//    - لا  → التاج قديم من قبل الاستبدال → ليس Packed
+function isItemPacked(tags, item, packingDateTime, earliestReturnDate) {
+  const hasPacked = tags.some(t => {
+    const tl = t.toLowerCase().replace(/[\[\]]/g, '');
+    return tl === 'packed' || tl.startsWith('packed-') || tl.startsWith('packed by');
+  });
+
+  if (!hasPacked) return false;
+
+  // أوردر عادي بدون استبدال → الـ tag موثوق
+  if (!item.isExchange) return true;
+
+  // exchange item + Packed tag:
+  // نتحقق هل التغليف حدث بعد إنشاء الـ Return؟
+  if (!packingDateTime || !earliestReturnDate) {
+    // لا يوجد metafield للتغليف → التاج قديم → ليس Packed
+    return false;
+  }
+  return new Date(packingDateTime) > new Date(earliestReturnDate);
 }
 
 // ─── Audit Panel ──────────────────────────────────────────────────────────────
@@ -744,7 +782,6 @@ async function refreshCurrent(){
 }
 
 // ─── Load Orders ──────────────────────────────────────────────────────────────
-// التعديل: بنمرر الـ variant object كاملاً عشان نجيب منه variantId و productId
 async function loadOrders(variant){
   document.getElementById('ordersLoading').style.display='block';
   document.getElementById('ordersCard').style.display='none';
@@ -756,7 +793,7 @@ async function loadOrders(variant){
       apiCall({
         action: 'get_details',
         variantId: variant.id,
-        productId: variant.product?.id,   // ← الجديد: بنبعت productId
+        productId: variant.product?.id,
       }),
       loadAuditDate()
     ]);
@@ -781,6 +818,7 @@ async function loadAuditDate(){
   }
 }
 
+// ─── Render Orders ────────────────────────────────────────────────────────────
 function renderOrders(orders){
   document.getElementById('ordersLoading').style.display='none';
   const card=document.getElementById('ordersCard');card.style.display='block';
@@ -790,8 +828,6 @@ function renderOrders(orders){
   // reset selection
   selectedOrderIds.clear();
   updateFulfillBtn();
-
-  function isPacked(tags){return tags.some(t=>{const tl=t.toLowerCase().replace(/[\[\]]/g,'');return tl==='packed'||tl.startsWith('packed-')||tl.startsWith('packed by');});}
 
   if(!orders.length){
     body.innerHTML=`<div class="state-box"><div class="state-icon">✅</div><p>لا توجد أوردرات Unfulfilled لهذا الـ SKU</p></div>`;
@@ -804,21 +840,50 @@ function renderOrders(orders){
     return;
   }
 
-  // إظهار زرار Select All
   document.getElementById('btnSelectAll').style.display='flex';
 
-  let totalUnfulfilled=0,packedQty=0,unpackedCommitted=0;
+  let totalUnfulfilled=0, packedQty=0, unpackedCommitted=0;
 
   const rows=orders.map(order=>{
+    const { tags=[], packingDateTime=null, earliestReturnDate=null } = order;
     const unf=order.items.reduce((s,i)=>s+i.unfulfilledQuantity,0);
     totalUnfulfilled+=unf;
+
+    // حساب packed/unpacked على مستوى كل item
+    for(const item of order.items){
+      if(isItemPacked(tags, item, packingDateTime, earliestReturnDate)){
+        packedQty += item.unfulfilledQuantity;
+      } else {
+        unpackedCommitted += item.unfulfilledQuantity;
+      }
+    }
+
     const date=formatDate(order.createdAt);
     const orderId=order.id.split('/').pop();
-    const tags=order.tags||[];const packed=isPacked(tags);
-    if(packed)packedQty+=unf;else unpackedCommitted+=unf;
-    const packedTags=tags.filter(t=>{const tl=t.toLowerCase().replace(/[\[\]]/g,'');return tl==='packed'||tl.startsWith('packed-')||tl.startsWith('packed by');});
-    const tagsHtml=packedTags.length?packedTags.map(t=>`<span class="tag-pill">${t}</span>`).join(''):`<span style="color:var(--text-muted);font-size:11px;">—</span>`;
-    const packHtml=packed?`<span class="pack-status pack-done">🔴 تم التغليف</span>`:`<span class="pack-status pack-shelf">🟢 على الرف</span>`;
+
+    // تاجات التغليف للعرض
+    const packedTags=tags.filter(t=>{
+      const tl=t.toLowerCase().replace(/[\[\]]/g,'');
+      return tl==='packed'||tl.startsWith('packed-')||tl.startsWith('packed by');
+    });
+    const tagsHtml=packedTags.length
+      ? packedTags.map(t=>`<span class="tag-pill">${t}</span>`).join('')
+      : `<span style="color:var(--text-muted);font-size:11px;">—</span>`;
+
+    // حالة التغليف للعرض — نأخذها من أول item مطابق
+    // (الأوردر المعروض فيه item واحد مطابق في الغالب)
+    const firstItem = order.items[0];
+    const itemPacked = isItemPacked(tags, firstItem, packingDateTime, earliestReturnDate);
+    const packHtml = itemPacked
+      ? `<span class="pack-status pack-done">🔴 تم التغليف</span>`
+      : `<span class="pack-status pack-shelf">🟢 على الرف</span>`;
+
+    // عمود منتج استبدال
+    const hasExchange = order.items.some(i => i.isExchange);
+    const exchangeHtml = hasExchange
+      ? `<span class="exchange-badge">🔄 استبدال</span>`
+      : `<span class="exchange-badge-none">—</span>`;
+
     return`<tr>
       <td style="text-align:center;padding:10px 10px;">
         <input type="checkbox" class="order-checkbox" data-orderid="${orderId}" onchange="onCheckboxChange(this)" />
@@ -826,6 +891,7 @@ function renderOrders(orders){
       <td><a class="order-name-link" href="https://${SHOP_DOMAIN}/admin/orders/${orderId}" target="_blank">${order.name}</a></td>
       <td><span class="order-date">${date}</span></td>
       <td style="text-align:center;"><span class="qty-badge qty-unfulfilled">${unf.toLocaleString('en-US')}</span></td>
+      <td style="text-align:center;">${exchangeHtml}</td>
       <td><div class="tags-cell">${tagsHtml}</div></td>
       <td>${packHtml}</td>
     </tr>`;
@@ -834,14 +900,17 @@ function renderOrders(orders){
   body.innerHTML=`<table class="orders-table">
     <thead><tr>
       <th style="width:40px;"></th>
-      <th>رقم الأوردر</th><th>التاريخ</th>
+      <th>رقم الأوردر</th>
+      <th>التاريخ</th>
       <th style="text-align:center;">عدد القطع غير مشحونة</th>
-      <th>تاجات التغليف</th><th>تغليف الأوردر</th>
+      <th style="text-align:center;">منتج استبدال</th>
+      <th>تاجات التغليف</th>
+      <th>تغليف الأوردر</th>
     </tr></thead>
     <tbody>${rows}
       <tr class="summary-row">
         <td></td>
-        <td colspan="4">الإجمالي (${orders.length} أوردر)</td>
+        <td colspan="5">الإجمالي (${orders.length} أوردر)</td>
         <td style="text-align:center;"><span class="qty-badge qty-unfulfilled">${totalUnfulfilled.toLocaleString('en-US')}</span></td>
       </tr>
     </tbody>
@@ -853,7 +922,9 @@ function renderOrders(orders){
   document.getElementById('qtyShelf').textContent=shelfCount.toLocaleString('en-US');
   document.getElementById('qtyPacked').textContent=packedQty>0?'-'+packedQty.toLocaleString('en-US'):'0';
   document.getElementById('warningBanner').style.display='flex';
-}// ─── Checkbox & Fulfill ───────────────────────────────────────────────────────
+}
+
+// ─── Checkbox & Fulfill ───────────────────────────────────────────────────────
 function onCheckboxChange(checkbox){
   const orderId=checkbox.dataset.orderid;
   if(checkbox.checked)selectedOrderIds.add(orderId);
@@ -937,7 +1008,6 @@ async function doFulfillOrders(){
 
   if(failCount===0){
     showToast(`تم إرسال ${successCount} أوردر بنجاح ✓`,'success');
-    // إلغاء التحديد بعد النجاح
     selectedOrderIds.clear();
     document.querySelectorAll('.order-checkbox').forEach(c=>c.checked=false);
     document.getElementById('btnSelectAll').textContent='تحديد الكل';
