@@ -787,8 +787,7 @@ function renderLogFiltered(){
       :(e.delta>0
         ?`<span class="log-type-badge log-type-adj-pos">↑ +${e.delta.toLocaleString('en-US')}</span>`
         :`<span class="log-type-badge log-type-adj-neg">↓ ${e.delta.toLocaleString('en-US')}</span>`);
-    let empName=e.employee||'';try{const arr=JSON.parse(empName);if(Array.isArray(arr)&&arr.length)empName=arr[0];}catch(er){}
-    const empHtml=empName?`<span class="log-emp-badge">👤 ${empName.replace(/_/g,' ')}</span>`:'';
+    const empHtml=e.employee?`<span class="log-emp-badge">👤 ${e.employee.replace(/_/g,' ')}</span>`:'';
     const dateStr=e.timestamp?formatDateTime(e.timestamp):'—';
     const qtyInfo=isOk
       ?`قطع الرف: ${(e.shelfBefore||0).toLocaleString('en-US')}`
@@ -1292,9 +1291,7 @@ async function doApplyAdjust(){
 function updateAuditInfo(isoString,employee,notes){
   document.getElementById('auditLastVal').textContent=formatDateTime(isoString);
   const empRow=document.getElementById('auditEmpRow');
-  let empDisplay=employee;
-  try{const arr=JSON.parse(employee);if(Array.isArray(arr)&&arr.length)empDisplay=arr[0];}catch(e){}
-  if(empDisplay){document.getElementById('auditEmpVal').textContent=empDisplay.replace(/_/g,' ');empRow.style.display='flex';}
+  if(employee){document.getElementById('auditEmpVal').textContent=employee.replace(/_/g,' ');empRow.style.display='flex';}
   else{empRow.style.display='none';}
   const notesRow=document.getElementById('auditNotesRow');
   if(notes){document.getElementById('auditNotesVal').textContent=notes;notesRow.style.display='block';}
