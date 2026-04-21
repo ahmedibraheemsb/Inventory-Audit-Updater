@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Inventory Audit</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@300;400;500;600;700;800&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap');
 
 :root {
@@ -22,7 +22,7 @@
   --font-mono:'JetBrains Mono',monospace;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:var(--text-primary);min-height:100vh;padding:20px 24px;font-size:14px;line-height:1.5;}
+body{font-family:'Noto Sans Arabic',sans-serif;background:var(--bg);color:var(--text-primary);min-height:100vh;padding:20px 24px;font-size:14px;line-height:1.5;}
 .container{max-width:1100px;margin:0 auto;}
 
 /* ─── Login Screen ─── */
@@ -132,7 +132,7 @@ body{font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:va
 .barcode-input-wrap{display:flex;align-items:center;border:1.5px solid var(--border-strong);border-radius:var(--radius-sm);background:var(--surface);transition:all .15s;}
 .barcode-input-wrap.scanning{border-color:var(--green);box-shadow:0 0 0 3px rgba(22,163,74,.1);}
 #barcodeInput{flex:1;border:none;outline:none;padding:10px 14px;font-family:var(--font-mono);font-size:14px;color:var(--text-primary);background:transparent;direction:rtl;}
-#barcodeInput::placeholder{font-family:'IBM Plex Sans Arabic',sans-serif;color:var(--text-muted);}
+#barcodeInput::placeholder{font-family:'Noto Sans Arabic',sans-serif;color:var(--text-muted);}
 .barcode-icon{padding:0 14px;color:var(--text-muted);font-size:20px;}
 
 /* ─── Results ─── */
@@ -143,7 +143,7 @@ body{font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:va
 .product-topbar{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:12px 16px;margin-bottom:10px;box-shadow:var(--shadow);display:flex;align-items:center;gap:12px;transition:background .2s,border-color .2s;}
 .product-topbar.status-active{background:#f0fdf4;border-color:#86efac;}
 .product-topbar.status-other{background:#fef2f2;border-color:#fca5a5;}
-.product-img-wrap{width:110px;height:110px;border-radius:var(--radius-sm);overflow:hidden;flex-shrink:0;background:var(--surface-2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:40px;color:var(--text-muted);}
+.product-img-wrap{width:165px;height:165px;border-radius:var(--radius-sm);overflow:hidden;flex-shrink:0;background:var(--surface-2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:56px;color:var(--text-muted);}
 .product-img-wrap img{width:100%;height:100%;object-fit:cover;}
 .product-main-info{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px;}
 .product-name{font-size:14px;font-weight:700;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
@@ -181,12 +181,12 @@ body{font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:va
 .audit-phase1{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
 .audit-q-left{display:flex;flex-direction:column;gap:6px;flex:1;}
 .audit-q-text{font-size:14px;font-weight:700;color:var(--text-primary);display:flex;align-items:center;gap:7px;}
-.audit-info-box{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px 14px;display:flex;flex-direction:column;gap:5px;}
-.audit-info-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
-.audit-info-label{font-size:12px;font-weight:600;color:var(--text-secondary);}
-.audit-info-val{font-size:13px;font-weight:700;color:var(--text-primary);font-variant-numeric:tabular-nums;}
-.audit-emp-badge{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:600;color:#1d4ed8;background:#eff6ff;border:1px solid #bfdbfe;border-radius:5px;padding:2px 9px;}
-.audit-notes-row{font-size:12px;color:var(--text-secondary);font-style:italic;padding-top:4px;border-top:1px solid var(--border);}
+.audit-info-box{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 16px;display:flex;flex-direction:column;gap:7px;}
+.audit-info-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.audit-info-label{font-size:13px;font-weight:600;color:var(--text-secondary);}
+.audit-info-val{font-size:15px;font-weight:700;color:var(--text-primary);font-variant-numeric:tabular-nums;}
+.audit-emp-badge{display:inline-flex;align-items:center;gap:4px;font-size:13px;font-weight:600;color:#1d4ed8;background:#eff6ff;border:1px solid #bfdbfe;border-radius:5px;padding:3px 11px;}
+.audit-notes-row{font-size:13px;color:var(--text-secondary);padding-top:6px;border-top:1px solid var(--border);display:flex;align-items:center;gap:10px;}
 .audit-q-btns{display:flex;gap:8px;flex-shrink:0;}
 .btn-audit-ok{display:flex;align-items:center;gap:6px;padding:10px 22px;background:var(--green-light);color:var(--green);border:1.5px solid var(--green-border);border-radius:var(--radius-sm);font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;transition:all .15s;white-space:nowrap;}
 .btn-audit-ok:hover{background:var(--green);color:#fff;border-color:var(--green);}
@@ -441,25 +441,41 @@ body{font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:va
     </div>
     <div class="changelog-body" style="overflow-y:auto;padding:20px;flex:1;">
       <div class="cl-version">
-        <span class="cl-ver-badge">v1.1.0</span>
+        <span class="cl-ver-badge">v1.3.0</span>
+        <span class="cl-ver-date">21-04-2026</span>
+      </div>
+      <ul class="cl-items">
+        <li class="cl-item"><span class="cl-item-label cl-change">تغيير</span><span>الخط الأساسي من IBM Plex Sans Arabic إلى Noto Sans Arabic</span></li>
+        <li class="cl-item"><span class="cl-item-label cl-change">تغيير</span><span>حجم صورة المنتج أصبح 165×165px (+50%)</span></li>
+        <li class="cl-item"><span class="cl-item-label cl-change">تغيير</span><span>بيانات آخر جرد أكبر حجماً مع إضافة label "الملحوظات السابقة" بجوار الأيقونة</span></li>
+        <li class="cl-item"><span class="cl-item-label cl-new">جديد</span><span>ملاحظة ثابتة تلقائية عند الجرد المظبوط: "تم المراجعة والتأكد من الجرد مظبوط في المخزن"</span></li>
+      </ul>
+      <div class="cl-version">
+        <span class="cl-ver-badge" style="background:#f9fafb;color:#6b7280;border-color:#d1d5db;">v1.2.0</span>
+        <span class="cl-ver-date">21-04-2026</span>
+      </div>
+      <ul class="cl-items">
+        <li class="cl-item"><span class="cl-item-label cl-change">تغيير</span><span>شاشة تسجيل الدخول في صفحة واحدة — اسم + PIN معاً</span></li>
+        <li class="cl-item"><span class="cl-item-label cl-new">جديد</span><span>صوت beep عند PIN خطأ أو عدم تطابق التأكيد</span></li>
+        <li class="cl-item"><span class="cl-item-label cl-fix">إصلاح</span><span>نوع metafield الموظف متوافق مع Choice list في Shopify</span></li>
+        <li class="cl-item"><span class="cl-item-label cl-fix">إصلاح</span><span>عدم إرسال ملاحظات فارغة لـ Shopify (Value can't be blank)</span></li>
+      </ul>
+      <div class="cl-version">
+        <span class="cl-ver-badge" style="background:#f9fafb;color:#6b7280;border-color:#d1d5db;">v1.1.0</span>
         <span class="cl-ver-date">21-04-2026</span>
       </div>
       <ul class="cl-items">
         <li class="cl-item"><span class="cl-item-label cl-new">جديد</span><span>تسجيل دخول الموظف بـ username + PIN مخزّن في Cloudflare KV</span></li>
-        <li class="cl-item"><span class="cl-item-label cl-new">جديد</span><span>تسجيل اسم الموظف الذي يجري الجرد في metafield <code>custom.last_stock_audit_employee</code></span></li>
-        <li class="cl-item"><span class="cl-item-label cl-new">جديد</span><span>حقل ملاحظات اختياري مع كل عملية جرد أو تعديل، يُحفظ في <code>custom.last_stock_audit_notes</code></span></li>
-        <li class="cl-item"><span class="cl-item-label cl-new">جديد</span><span>سجل جرد KV — يوثّق كل عملية بتفاصيلها مع فلاتر (موظف / نوع / بحث بالـ SKU أو اسم المنتج)</span></li>
-        <li class="cl-item"><span class="cl-item-label cl-new">جديد</span><span>عرض صورة المنتج في بطاقة المنتج العلوية</span></li>
-        <li class="cl-item"><span class="cl-item-label cl-change">تغيير</span><span>الاسم من StockAudit إلى Inventory Audit</span></li>
-        <li class="cl-item"><span class="cl-item-label cl-change">تغيير</span><span>layout بطاقة المنتج: SKU link ورابط سجل التعديلات أصبحا أسفل اسم المنتج مباشرةً</span></li>
-        <li class="cl-item"><span class="cl-item-label cl-change">تغيير</span><span>إضافة رقم النسخة وسجل التحديثات في الـ header</span></li>
+        <li class="cl-item"><span class="cl-item-label cl-new">جديد</span><span>تسجيل اسم الموظف وملاحظات الجرد في metafields</span></li>
+        <li class="cl-item"><span class="cl-item-label cl-new">جديد</span><span>سجل جرد KV مع فلاتر متقدمة وصورة المنتج</span></li>
+        <li class="cl-item"><span class="cl-item-label cl-change">تغيير</span><span>الاسم من StockAudit إلى Inventory Audit + رقم النسخة في الـ header</span></li>
       </ul>
       <div class="cl-version">
         <span class="cl-ver-badge" style="background:#f9fafb;color:#6b7280;border-color:#d1d5db;">v1.0.0</span>
         <span class="cl-ver-date">13-04-2026</span>
       </div>
       <ul class="cl-items">
-        <li class="cl-item"><span class="cl-item-label cl-new">جديد</span><span>إصدار أولي — بحث بالـ SKU والباركود، عرض المخزون، جرد وتعديل، عرض Unfulfilled Orders مع منطق التغليف والاستبدال</span></li>
+        <li class="cl-item"><span class="cl-item-label cl-new">جديد</span><span>إصدار أولي — بحث بالـ SKU والباركود، عرض المخزون، جرد وتعديل، Unfulfilled Orders مع التغليف والاستبدال</span></li>
       </ul>
     </div>
   </div>
@@ -510,7 +526,7 @@ body{font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:va
       </div>
     </div>
     <div class="app-header-btns">
-      <button class="hbtn ver-btn" onclick="openChangelog()">v1.1.0 📋</button>
+      <button class="hbtn ver-btn" onclick="openChangelog()">v1.3.0 📋</button>
       <button class="hbtn" onclick="openLog()">📋 سجل الجرد</button>
       <button class="hbtn" id="activeUserBtn" onclick="doLogout()">👤 —</button>
       <button class="hbtn" id="settingsBtn" onclick="openSettings()">⚙️ الإعدادات</button>
@@ -612,7 +628,8 @@ body{font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:va
               <span class="audit-emp-badge" id="auditEmpVal">—</span>
             </div>
             <div class="audit-notes-row" id="auditNotesRow" style="display:none;">
-              <span>📝 </span><span id="auditNotesVal">—</span>
+              <span class="audit-info-label">📝 الملحوظات السابقة:</span>
+              <span id="auditNotesVal" style="font-size:13px;color:var(--text-primary);flex:1;">—</span>
             </div>
           </div>
         </div>
