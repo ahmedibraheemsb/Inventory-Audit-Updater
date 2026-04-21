@@ -265,7 +265,7 @@ body{font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:va
 /* ─── Shared ─── */
 .loading-spinner{display:inline-block;width:18px;height:18px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg);}}
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .2s;}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:400;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .2s;}
 .modal-overlay.open{opacity:1;pointer-events:all;}
 .modal{background:var(--surface);border-radius:var(--radius);width:100%;max-width:440px;box-shadow:0 20px 60px rgba(0,0,0,.2);overflow:hidden;transform:translateY(14px);transition:transform .2s cubic-bezier(.34,1.56,.64,1);}
 .modal-overlay.open .modal{transform:translateY(0);}
@@ -315,6 +315,9 @@ body{font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--bg);color:va
 <!-- ─── Login Screen ─────────────────────────────────────────────────────────── -->
 <div class="login-overlay" id="loginOverlay">
   <div class="login-box">
+    <div style="display:flex;justify-content:flex-start;margin-bottom:4px;">
+      <button onclick="openSettingsFromLogin()" style="display:flex;align-items:center;gap:4px;padding:5px 10px;border:1px solid var(--border-strong);background:var(--surface-2);border-radius:var(--radius-sm);font-family:inherit;font-size:11px;font-weight:600;color:var(--text-secondary);cursor:pointer;" id="loginSettingsBtn">⚙️ الإعدادات</button>
+    </div>
     <div style="text-align:center;margin-bottom:10px;font-size:28px;">📦</div>
     <div class="login-title">Inventory Audit</div>
     <div class="login-sub" id="loginSub">أداة مراجعة وضبط الجرد</div>
@@ -706,9 +709,24 @@ let allLogEntries = [];
 // ─── Config ───────────────────────────────────────────────────────────────────
 function getConfig(){return{url:localStorage.getItem(LS_URL_KEY)||'',secret:localStorage.getItem(LS_SEC_KEY)||'',flowToken:localStorage.getItem(LS_FLOW_KEY)||''};}
 function isConfigured(){const c=getConfig();return c.url.startsWith('http')&&c.secret.length>0;}
-function updateSettingsBtn(){document.getElementById('settingsBtn').classList.toggle('settings-configured',isConfigured());}
+function updateSettingsBtn(){
+  document.getElementById('settingsBtn').classList.toggle('settings-configured',isConfigured());
+  const loginBtn=document.getElementById('loginSettingsBtn');
+  if(loginBtn){
+    if(isConfigured()){loginBtn.style.borderColor='var(--green)';loginBtn.style.color='var(--green)';loginBtn.style.background='var(--green-light)';}
+    else{loginBtn.style.borderColor='var(--red)';loginBtn.style.color='var(--red)';loginBtn.style.background='var(--red-light)';}
+  }
+}
 
 // ─── Settings Modal ───────────────────────────────────────────────────────────
+function openSettingsFromLogin(){
+  // نفتح الإعدادات من فوق شاشة الـ login
+  const c=getConfig();
+  document.getElementById('cfWorkerUrl').value=c.url;
+  document.getElementById('cfWorkerSecret').value=c.secret;
+  document.getElementById('cfFlowToken').value=c.flowToken;
+  document.getElementById('settingsOverlay').classList.add('open');
+}
 function openSettings(){const c=getConfig();document.getElementById('cfWorkerUrl').value=c.url;document.getElementById('cfWorkerSecret').value=c.secret;document.getElementById('cfFlowToken').value=c.flowToken;document.getElementById('settingsOverlay').classList.add('open');}
 function closeSettings(){document.getElementById('settingsOverlay').classList.remove('open');}
 function closeSettingsOnBackdrop(e){if(e.target===document.getElementById('settingsOverlay'))closeSettings();}
@@ -798,10 +816,16 @@ let isNewUser = false;
 let firstPin = '';
 let confirmPinBuffer = '';
 
-// beep صوت خطأ
+// beep صوت خطأ — AudioContext مشترك يُفعَّل عند أول click
+let _audioCtx=null;
+function getAudioCtx(){
+  if(!_audioCtx){_audioCtx=new(window.AudioContext||window.webkitAudioContext)();}
+  if(_audioCtx.state==='suspended'){_audioCtx.resume();}
+  return _audioCtx;
+}
 function playErrorBeep(){
   try{
-    const ctx=new(window.AudioContext||window.webkitAudioContext)();
+    const ctx=getAudioCtx();
     const osc=ctx.createOscillator();const gain=ctx.createGain();
     osc.connect(gain);gain.connect(ctx.destination);
     osc.type='triangle';osc.frequency.value=880;gain.gain.value=0.70;
@@ -831,6 +855,7 @@ function onUsernameChange(){
   document.getElementById('btnLogin').disabled=true;
   isNewUser=false;
   if(!username)return;
+  if(!isConfigured())return; // لو الإعدادات مش موجودة متعملش check
   // تحقق صامت من KV
   apiCall({action:'check_user',username}).then(data=>{
     isNewUser=!data.registered;
@@ -839,11 +864,12 @@ function onUsernameChange(){
       document.getElementById('pinLabel').textContent='اختر PIN جديد';
       document.getElementById('btnLogin').textContent='متابعة →';
     }
-  }).catch(()=>{});
+  }).catch(()=>{}); // فشل صامت — الموظف يكمل ويدخل PIN
 }
 
 // PIN الرئيسي
 function pinPress(val){
+  getAudioCtx(); // unlock AudioContext عند أول تفاعل
   const ids=['pd0','pd1','pd2','pd3'];
   if(val==='clear'){pinBuffer='';resetPinDots(ids);}
   else if(val==='back'){if(pinBuffer.length>0){pinBuffer=pinBuffer.slice(0,-1);const d=document.getElementById(ids[pinBuffer.length]);d.textContent='_';d.classList.remove('filled');}}
