@@ -826,10 +826,14 @@ function getAudioCtx(){
 function playErrorBeep(){
   try{
     const ctx=getAudioCtx();
-    const osc=ctx.createOscillator();const gain=ctx.createGain();
-    osc.connect(gain);gain.connect(ctx.destination);
-    osc.type='triangle';osc.frequency.value=880;gain.gain.value=0.70;
-    osc.start();osc.stop(ctx.currentTime+0.2);
+    const play=()=>{
+      const osc=ctx.createOscillator();const gain=ctx.createGain();
+      osc.connect(gain);gain.connect(ctx.destination);
+      osc.type='triangle';osc.frequency.value=880;gain.gain.value=0.70;
+      osc.start();osc.stop(ctx.currentTime+0.2);
+    };
+    if(ctx.state==='suspended'){ctx.resume().then(play);}
+    else{play();}
   }catch(e){}
 }
 
@@ -867,9 +871,9 @@ function onUsernameChange(){
   }).catch(()=>{}); // فشل صامت — الموظف يكمل ويدخل PIN
 }
 
-// PIN الرئيسي
+// PIN الرئيسي — يفعّل AudioContext عند أول ضغطة
 function pinPress(val){
-  getAudioCtx(); // unlock AudioContext عند أول تفاعل
+  try{getAudioCtx();}catch(e){}
   const ids=['pd0','pd1','pd2','pd3'];
   if(val==='clear'){pinBuffer='';resetPinDots(ids);}
   else if(val==='back'){if(pinBuffer.length>0){pinBuffer=pinBuffer.slice(0,-1);const d=document.getElementById(ids[pinBuffer.length]);d.textContent='_';d.classList.remove('filled');}}
@@ -917,6 +921,7 @@ async function doLogin(){
 
 // PIN التأكيد (تسجيل جديد)
 function confirmPinPress(val){
+  try{getAudioCtx();}catch(e){}
   const ids=['cd0','cd1','cd2','cd3'];
   if(val==='clear'){confirmPinBuffer='';resetPinDots(ids);}
   else if(val==='back'){if(confirmPinBuffer.length>0){confirmPinBuffer=confirmPinBuffer.slice(0,-1);const d=document.getElementById(ids[confirmPinBuffer.length]);d.textContent='_';d.classList.remove('filled');}}
